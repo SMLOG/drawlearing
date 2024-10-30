@@ -38,6 +38,30 @@
     </style>
     <script src="anime.min.js"></script>
     <script>
+        function adjustFontSize(textElement, containerWidth, padding) {
+        let minFontSize = 1; // Minimum font size
+        let maxFontSize = 100; // Start with a reasonably large font size
+        let availableWidth = containerWidth - padding * 2;
+
+        // Binary search for maximum font size
+        while (minFontSize <= maxFontSize) {
+            const midFontSize = Math.floor((minFontSize + maxFontSize) / 2);
+            textElement.setAttribute('font-size', midFontSize);
+            const bbox = textElement.getBBox();
+
+            if (bbox.width > availableWidth) {
+                maxFontSize = midFontSize - 1; // Too wide, decrease max
+            } else {
+                minFontSize = midFontSize + 1; // Fits, increase min
+            }
+        }
+
+        // Set the font size to the largest fitting value
+        const finalFontSize = maxFontSize;
+        textElement.setAttribute('font-size', finalFontSize);
+
+        return finalFontSize; // Return the final font size
+    }
       async function playAudio(word) {
         return new Promise((resolve) => {
           // Create a new audio element
@@ -87,7 +111,7 @@
     </audio>
     <svg id="gameArea">
       <rect width="100%" height="37.5%" fill="#e6e6e6" />
-
+      <text id="myText" x="0" y="20" fill="black" dominant-baseline="hanging" opacity="0"></text>
       <!-- Top Part Lines -->
       <line x1="0" y1="12.5%" x2="100%" y2="12.5%" class="solid" />
       <line x1="0" y1="25%" x2="100%" y2="25%" class="dashed" />
@@ -155,12 +179,16 @@
         [document.querySelector("#start"), startbtn].map((e) =>
           e.classList.remove("started")
         );
+ 
         const letters = id.split("");
         const svg = document.getElementById("gameArea");
         const lettersNode = document.getElementById("letters");
         const topHalf = svg.clientHeight / 2; // Height of the top half
-        const fontSize = svg.clientHeight / 4;
+       // const fontSize = svg.clientHeight / 4;
         svg.setAttribute("viewBox","0 0 "+svg.clientWidth+" "+svg.clientHeight);
+        document.querySelector("#myText").textContent=id;
+        let fontSize = adjustFontSize(document.querySelector("#myText"),svg.clientWidth,10);
+
         const finalYPosition = (svg.clientHeight * 2) / 8; // Y position between the two solid lines
         lettersNode.setAttribute("font-size", fontSize);
 
