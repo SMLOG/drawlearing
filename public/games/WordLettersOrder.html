@@ -62,6 +62,12 @@
 
         return finalFontSize; // Return the final font size
     }
+    function playAudio2(url) {
+            const audio = new Audio(url);
+            audio.play().catch(error => {
+                console.error('Error playing audio:', error);
+            });
+        }
       async function playAudio(word) {
         return new Promise((resolve) => {
           // Create a new audio element
@@ -175,13 +181,16 @@
       const params = new URLSearchParams(url.search);
 
       const id = params.get("id");
+      let musiceOn = true;
 
       document.querySelector('#backgroundMusicCtrl').onclick=()=>{
        let audio= document.querySelector('#backgroundMusic');
         if (audio.paused) {
                 audio.play();
+                musiceOn = true;
             } else {
                 audio.pause();
+                musiceOn=false;
             }
       }
 
@@ -389,6 +398,7 @@
             });
         };
         const startBtnHandle = () => {
+            playAudio2("/sound/effect/mixkit-select-click.wav");
           let isFinish =
             orderLetters.length == letters.length &&
             letters.filter(
@@ -401,7 +411,7 @@
 
             return;
           }
-
+          if(musiceOn)
           document
             .querySelector("#backgroundMusic")
             .play()
