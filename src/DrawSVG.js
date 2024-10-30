@@ -308,9 +308,9 @@ const mouseLeave = ()=>{
   return (
     <div className="container" style={{userSelect:'none',overflow:'hidden'}}>
       {isSettingsVisible&&<Settings onClose ={toggleSettings} settings={settings}  />}
-      <div id="top" style={{ height: "43px",userSelect:'none' }}>
+      {settings.showTopNav&&<div id="top" style={{ height: "43px",userSelect:'none' }}>
         <PlayList setItem={setItem} isShowUnitList={isShowUnitList} setIsShowUnitList={setIsShowUnitList} activeCategory={activeCategory} />
-      </div>
+      </div>}
       <div id="middle" style={{display:'flex',flexGrow:1,position:'relative'}}>
         <div id="leftbar" style={{display:'flex',position:'absolute',top:'0',left:'0',height:'100%'}}>
           <ColorPicker

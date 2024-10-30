@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { updateSettings } from './features/settingsSlice';
 
 const Settings = ({ onClose ,settings}) => {
+  const dispatch = useDispatch();
 
   const contentRef = useRef(null);
   const maskRef = useRef(null);
@@ -78,6 +79,7 @@ const Settings = ({ onClose ,settings}) => {
         </div>
 
         <div style={{ textAlign: 'left' }}>
+          <div>Show Top Nave:<input type="checkbox" onChange={()=>dispatch(updateSettings({showTopNav:!settings.showTopNav}))} defaultChecked={settings.showTopNav}/></div>
           {categories.map((category) => (
             <div key={category.name}>
               <div style={{display:'flex'}}>

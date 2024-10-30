@@ -6,7 +6,8 @@ const settingsSlice = createSlice({
         Draw:{
             isShowGrid:true,
             lineType:3
-        }
+        },
+        showTopNav:true
     },
     reducers: {
         updateSettings: (state, action) => {
