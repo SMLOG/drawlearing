@@ -369,7 +369,10 @@
               (e, i) => orderLetters[i].getAttribute("letter") != e
             ).length == 0;
           if (isFinish) {
+            window.started=1;
+
             doFinish && doFinish();
+
             return;
           }
 
@@ -383,6 +386,7 @@
           playAudio(letters.join(""));
           randomPostion(orderLetters.length == letters.length);
         };
+        if(window.started)setTimeout(()=>startBtnHandle(),1000);
         [document.querySelector("#start"), startbtn].map(
           (button) => (button.onclick = startBtnHandle)
         );
