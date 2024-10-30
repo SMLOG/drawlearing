@@ -18,8 +18,7 @@
       .letter {
         cursor: pointer;
         transition: all 1s;
-        -webkit-transition: transform 1s;
-        -webkit-transition: -webkit-transform 1s
+        -webkit-transition: all 1s;
       }
       .dashed {
         stroke: #000;
@@ -37,6 +36,7 @@
         display: none;
       }
     </style>
+    <script src="anime.min.js"></script>
     <script>
       async function playAudio(word) {
         return new Promise((resolve) => {
@@ -63,34 +63,7 @@
           return audio;
         });
       }
-      function getVisibleCircleCoordinates(numCircles, distance, canvasSize) {
-        const coordinates = [];
-        const centerX = 0; // X coordinate of the center point
-        const centerY = 0; // Y coordinate of the center point
-        const halfCanvasSize = canvasSize / 2;
 
-        for (let i = 0; i < numCircles; i++) {
-          // Calculate the angle for even distribution
-          const angle = (i * 2 * Math.PI) / numCircles;
-
-          // Calculate x and y positions at a fixed distance
-          const x = centerX + distance * Math.cos(angle);
-          const y = centerY + distance * Math.sin(angle);
-
-          coordinates.push({ x, y });
-        }
-
-        return coordinates;
-      }
-      function calculateDistance(pointA, pointB) {
-        const x1 = pointA.x;
-        const y1 = pointA.y;
-        const x2 = pointB.x;
-        const y2 = pointB.y;
-
-        const distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-        return distance;
-      }
 
       function drawCircle(svgCanvas, cx, cy, r, color) {
         const newCircle = document.createElementNS(
@@ -187,6 +160,7 @@
         const lettersNode = document.getElementById("letters");
         const topHalf = svg.clientHeight / 2; // Height of the top half
         const fontSize = svg.clientHeight / 4;
+        svg.setAttribute("viewBox","0 0 "+svg.clientWidth+" "+svg.clientHeight);
         const finalYPosition = (svg.clientHeight * 2) / 8; // Y position between the two solid lines
         lettersNode.setAttribute("font-size", fontSize);
 
@@ -232,10 +206,22 @@
               startX
             );
             let translateY = 0;
-            textElement.setAttribute(
+            false&&textElement.setAttribute(
               "transform",
               `translate(${translateX}, ${translateY}) rotate(0) scale(1,1)`
             );
+           let randomRotation=0;
+            anime({
+                targets: textElement,
+                translateX: translateX,
+                translateY: translateY,
+                rotate: randomRotation,
+                easing: 'linear',
+                duration: 500,
+                scale: [1], 
+                loop: false
+                });
+
             orderLetters.push(textElement);
             textElement.setAttribute(
               "fill",
@@ -325,14 +311,26 @@
               translateX = ppoints[index].x - startX;
               translateY = ppoints[index].y - finalYPosition;
 
+      
+
               if (ppoints[index].x + fontSize / 2 > svg.clientWidth)
                 randomRotation = 0;
 
-             text.setAttribute(
+                anime({
+                targets: text,
+                translateX: translateX,
+                translateY: translateY,
+                rotate: randomRotation,
+                easing: 'easeInElastic(1, .6)',
+                duration: 500,
+                scale: [1], 
+                loop: false
+                });
+
+             false&&text.setAttribute(
                 "transform",
-                `translate(${0}, ${translateY}) rotate(${randomRotation}) scale(1)`
+                `translate(${translateX}, ${translateY}) rotate(${randomRotation}) scale(1)`
               );
-              text.setAttribute('x',ppoints[index].x )
               text.removeAttribute("fill");
             });
         };
