@@ -6,7 +6,7 @@ import React, { Component,forwardRef } from "react";
  * SVG rendering
  */
 
-export default class SVG extends Component {
+export default class SVGPathEditor extends Component {
     render() {
         const {
             path,
@@ -77,8 +77,8 @@ export default class SVG extends Component {
             <svg
                 className="ad-SVG"
                 ref={svgRef}
-                width={ w }
-                height={ h }
+                width="100%"
+                height="100%"
                 onClick={ (e) => addPoint(e) }
                 onMouseMove={ (e) => handleMouseMove(e) }>
                 <Grid
@@ -96,6 +96,7 @@ export default class SVG extends Component {
     }
 }
 
+const controlCircleR=0.42296579909945525;
 function Cubic(props) {
     return (
         <g className="ad-Anchor">
@@ -116,13 +117,13 @@ function Cubic(props) {
                 onMouseDown={ (e) => props.setDraggedCubic(props.index, 0) }
                 cx={ props.x1 }
                 cy={ props.y1 }
-                r={ 6 } />
+                r={ controlCircleR } />
             <circle
                 className="ad-Anchor-point"
                 onMouseDown={ (e) => props.setDraggedCubic(props.index, 1) }
                 cx={ props.x2 }
                 cy={ props.y2 }
-                r={ 6 } />
+                r={ controlCircleR } />
         </g>
     )
 }
@@ -147,7 +148,7 @@ function Quadratic(props) {
                 onMouseDown={ (e) => props.setDraggedQuadratic(props.index) }
                 cx={ props.x }
                 cy={ props.y }
-                r={ 6 } />
+                r={ controlCircleR } />
         </g>
     )
 }
@@ -159,7 +160,7 @@ function Point(props) {
             onMouseDown={ (e) => props.setDraggedPoint(props.index) }
             cx={ props.x }
             cy={ props.y }
-            r={ 8 } />
+            r={ controlCircleR } />
     )
 }
 

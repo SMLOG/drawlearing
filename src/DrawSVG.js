@@ -5,12 +5,12 @@ import CursorIcon from "./CursorIcon";
 import "./DrawSVG.css";
 import PlayList from "./PlayList";
 import WordTrack from "./WordTrack";
-import SvgEditPlayer from "./SvgEdit2/SvgPlayer";
 import ModeSwitchButton from './ModeSwitchButton';
 import YoutubePlayer from './YoutubePlayer';
 import UnitList from './UnitList';
 import Settings from './Settings';
 import { useSelector, useDispatch } from 'react-redux';
+import SvgEditorWrap from "./SvgEditorWrap";
 
 
 
@@ -75,6 +75,28 @@ const Draw = () => {
       return ret;
     });
   }, []);
+
+  function canAdjustToLine(points, threshold = 5) {
+    if (points.length < 2) return true; // Less than 2 points can always be a line
+
+    const [p1, p2] = [points[0], points[points.length - 1]]; // First and last points
+
+    // Calculate line coefficients
+    const A = p2.y - p1.y; // Rise
+    const B = p1.x - p2.x; // Run
+    const C = A * p1.x + B * p1.y; // C in Ax + By = C
+
+    // Check the distance of each point from the line
+    for (let point of points) {
+        const distance = Math.abs(A * point.x + B * point.y - C) / Math.sqrt(A * A + B * B);
+        console.log(distance);
+        if (distance > threshold) {
+            return false; // Point is too far from the line
+        }
+    }
+
+    return true; // All points are within the threshold
+}
 
   function shouldAddPoint(newPoint,lastPoint) {
     const distance = Math.sqrt(Math.pow(newPoint.x - lastPoint.x, 2) + Math.pow(newPoint.y - lastPoint.y, 2));
@@ -171,7 +193,7 @@ const mouseLeave = ()=>{
           cursorRef.current.style.top = `${point.y}px`;
           setSvgElements((prev) => [
             ...prev,
-            { type: "polyline", points: curPoints, 
+            { type: "path", points: curPoints, 
               color: action.color,
               penType:action.penType,
               penWidth:action.penWidth, 
@@ -253,7 +275,10 @@ const mouseLeave = ()=>{
   function pointsToPathData(points) {
     if (points.length < 2) return '';
 
+
+
     let pathData = `M ${points[0].x} ${points[0].y} `; // Move to the first point
+
 
     for (let i = 0; i < points.length - 1; i++) {
         const p1 = points[i];
@@ -361,11 +386,9 @@ const mouseLeave = ()=>{
         <div id="right" style={{flexGrow:1,display:'flex',marginLeft:'30px',position:'relative'}}>
           <div className="svg-wrapper" style={{border:'1px solid #ccc',position:'absolute',left:0,right:0,top:0,bottom:0,overflow:'hidden'}}>
            { settings.currentMode=='Video'&&<YoutubePlayer  item={item}/>}
+           {settings.showSvgEditor&&<SvgEditorWrap/>}
+           { settings.currentMode=='Track'&&<WordTrack item={item} />}
 
-            {(false &&<SvgEditPlayer/>)}
-
-           
-            { settings.currentMode=='Track'&&<WordTrack item={item} />}
             <svg
               ref={svgRef}
               className="svg"
@@ -387,9 +410,11 @@ const mouseLeave = ()=>{
                 y="50%"
                 textAnchor="middle"
                 dominantBaseline="middle"
-                fill="#000000"
-                fontSize="100"
-              >
+                fill="none"
+                fontSize="200"
+                stroke="red"
+                strokeWidth={2}
+              >a
               </text>}
               {settings.Draw.isShowGrid&& lines}
 

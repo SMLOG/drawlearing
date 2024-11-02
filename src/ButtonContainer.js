@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUndo, faRedo, faPlay, faPause, faSync,  faEllipsisH, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faUndo, faRedo, faPlay, faPause, faSync,  faEllipsisH, faTrashAlt,faSave } from '@fortawesome/free-solid-svg-icons';
 import './ButtonContainer.css'; // Updated CSS file import
 
 const ButtonContainer = ({
@@ -44,6 +44,9 @@ const ButtonContainer = ({
             setConfirmReset(true);
         }
     };
+    const handleSave = () => {
+        setIsMoreOpen(false);
+    };
 
     return (
         <div className="button-container">
@@ -69,7 +72,11 @@ const ButtonContainer = ({
                         >
                             <FontAwesomeIcon icon={faTrashAlt} /> {confirmReset ? 'Confirm Reset' : 'Reset'}
                         </li>
-       
+                        <li
+                            onClick={handleSave}
+                        >
+                            <FontAwesomeIcon icon={faSave} /> {'Save'}
+                        </li>
                     </ul>
                 )}
             </div>

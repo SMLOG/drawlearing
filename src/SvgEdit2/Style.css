@@ -29,7 +29,7 @@ body {
     height: 100%;
     width: 100%;
     display: flex;
-    background: #fff;
+    background: rgba(255,255,255,0.5);
     position: absolute;
     top:0
 }
@@ -45,7 +45,6 @@ body {
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #f3f3f3;
         }
     
     .ad-Container-controls {
@@ -65,7 +64,7 @@ body {
     }
 
 .ad-Foot {
-    padding: 1.5rem 2rem;
+    padding: 1.5rem 10px;
     display: flex;
     background: #fff;
     border-top: 2px solid #eee;
@@ -88,7 +87,7 @@ body {
             }
     
     .ad-Foot-meta {
-        margin-left: 2rem;
+        margin-left: 10px;
         text-align: right;
         line-height: 1.4;
         font-size: .7rem;
@@ -102,7 +101,6 @@ body {
 
 .ad-SVG {
     display: block;
-    background: #fff;
     border-radius: 4px;
 }
     .ad-Grid {
@@ -116,16 +114,17 @@ body {
     .ad-Path {
         fill: none;
         stroke: #555;
-        stroke-width: 4px;
+        stroke-width:0.14098859969981842;
         stroke-linecap: round;
     }
     .ad-Point {
         cursor: pointer;
         fill: #fff;
         stroke: #555;
-        stroke-width: 5px;
+        stroke-width: 3.388651801588142;
         transition: fill .2s;
     }
+
     .ad-Point:hover,
     .ad-PointGroup.is-active .ad-Point {
         fill: var(--ad-Color-sec);
@@ -155,7 +154,7 @@ body {
 .ad-Controls {
     overflow: auto;
     flex: 1;
-    padding: 2rem;
+    padding: 10px;
 }
     .ad-Controls :first-child {
         margin-top: 0;
@@ -245,7 +244,7 @@ body {
 
 .ad-Text {
     height: 18px;
-    width: 2rem;
+    width: 10px;
     background: color(var(--ad-Color-prim) l(+10%));
     border: none;
     border-radius: 4px;
@@ -265,7 +264,7 @@ body {
 .ad-Checkbox-fake {
     position: relative;
     height: 14px;
-    width: 2rem;
+    width: 10px;
     background: color(var(--ad-Color-prim) l(+10%));
     border-radius: 30px;
 }
@@ -291,7 +290,7 @@ body {
 
 .ad-Choices {
     display: flex;
-    width: 12rem;
+    width: 110px;
 }
     .ad-Choice {
         flex: 1;

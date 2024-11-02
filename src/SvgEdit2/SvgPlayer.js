@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import SVG from "./SVG"; // Ensure this component exists
+import SVG from "./SVGPathEditor"; // Ensure this component exists
 import Controls from "./Controls"; // Ensure this component exists
 import Result from "./Result"; // Ensure this component exists
 import  './Style.css';
@@ -404,7 +404,7 @@ L 218.18 252.504
                     </div>
                 </div>
 
-                <div className="ad-Container-controls">
+                <div className="ad-Container-controls" >
                 <Controls
                         { ...this.state }
                         reset={ this.reset }

@@ -79,8 +79,9 @@ const Settings = ({ onClose ,settings}) => {
         </div>
 
         <div style={{ textAlign: 'left' }}>
-          <div>Show Top Nave:<input type="checkbox" onChange={()=>dispatch(updateSettings({showTopNav:!settings.showTopNav}))} defaultChecked={settings.showTopNav}/></div>
-          {categories.map((category) => (
+        <div>Show Top Nav:<input type="checkbox" onChange={()=>dispatch(updateSettings({showTopNav:!settings.showTopNav}))} defaultChecked={settings.showTopNav}/></div>
+        <div>Show Svg Editor:<input type="checkbox" onChange={()=>dispatch(updateSettings({showSvgEditor:!settings.showSvgEditor}))} defaultChecked={settings.showSvgEditor}/></div>
+        {categories.map((category) => (
             <div key={category.name}>
               <div style={{display:'flex'}}>
                 <h3>{category.name}</h3>
