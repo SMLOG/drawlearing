@@ -76,6 +76,11 @@ const Draw = () => {
     });
   }, []);
 
+  function shouldAddPoint(newPoint,lastPoint) {
+    const distance = Math.sqrt(Math.pow(newPoint.x - lastPoint.x, 2) + Math.pow(newPoint.y - lastPoint.y, 2));
+    return distance > 5; // Threshold for adding new points
+}
+
   const moveDraw = useCallback((e) => {
 
     const { offsetX, offsetY } = getOffset(e);
@@ -86,18 +91,15 @@ const Draw = () => {
 
     if (!isDrawingRef.current) return;
 
-    const rect = svgRef.current.getBoundingClientRect();
 
-
-    const newPoint = { x: parseInt(offsetX), y: parseInt(offsetY) };
+    const newPoint = { x: (offsetX), y: (offsetY) };
 
     // Avoid duplicates by checking against the last point
     const lastPoint =
       settingRef.current.points[settingRef.current.points.length - 1];
     if (
       !lastPoint ||
-      lastPoint.x !== newPoint.x ||
-      lastPoint.y !== newPoint.y
+      shouldAddPoint(newPoint,lastPoint)
     ) {
       settingRef.current.points.push(newPoint);
       let points = [...settingRef.current.points];
@@ -248,14 +250,47 @@ const mouseLeave = ()=>{
 
   },[]);
 
+  function pointsToPathData(points) {
+    if (points.length < 2) return '';
+
+    let pathData = `M ${points[0].x} ${points[0].y} `; // Move to the first point
+
+    for (let i = 0; i < points.length - 1; i++) {
+        const p1 = points[i];
+        const p2 = points[i + 1];
+        let cp1, cp2;
+
+        // Calculate control points for cubic Bezier curves
+        if (i > 0) {
+            cp1 = {
+                x: p1.x + (p2.x - points[i - 1].x) / 2,
+                y: p1.y + (p2.y - points[i - 1].y) / 2
+            };
+        } else {
+            cp1 = { x: p1.x, y: p1.y };
+        }
+
+        if (i < points.length - 2) {
+            cp2 = {
+                x: p2.x + (p1.x - points[i + 2].x) / 2,
+                y: p2.y + (p1.y - points[i + 2].y) / 2
+            };
+        } else {
+            cp2 = { x: p2.x, y: p2.y };
+        }
+
+        // Append Bezier curve command to the path data
+        pathData += `C ${cp1.x} ${cp1.y}, ${cp2.x} ${cp2.y}, ${p2.x} ${p2.y} `;
+    }
+
+    return pathData.trim(); // Return the path data string
+}
   const drawElements = () => {
     return svgElements.map((element, index) => {
-      if (element.type === "polyline") {
-        const points = element.points.map((p) => `${p.x},${p.y}`).join(" ");
         return (
-          <polyline
+          <path
             key={index}
-            points={points}
+            d={pointsToPathData(element.points)}
             stroke={element.color }
             strokeWidth={element.penWidth}
             fill="none"
@@ -263,7 +298,6 @@ const mouseLeave = ()=>{
             strokeLinecap="round"
           />
         );
-      }
       return null;
     });
   };
