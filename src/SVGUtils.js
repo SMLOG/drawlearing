@@ -50,6 +50,34 @@ export function translateAndScaleSvgPath(pathData, dx, dy, scaleX, scaleY) {
         return command + transformedCoords.join(' ');
     });
 }
+
+export  function pointsSmooth  (list) {
+    var returnVal = new Array();
+    var prevX = -1;
+    var prevY = -1;
+    var prevSize = -1;
+    for (var loop = 0; loop < list.length; loop++) {
+      if (prevX == -1) {
+        prevX = list[loop][0];
+        prevY = list[loop][1];
+        prevSize = list[loop][2] || 0;
+      } else {
+        var dx = list[loop][0] - prevX;
+        var dy = list[loop][1] - prevY;
+        var dSize = list[loop][2] || 0 - prevSize;
+        for (var adLoop = 0; adLoop < 10; adLoop++) {
+          var addX = prevX + (dx / 10) * adLoop;
+          var addY = prevY + (dy / 10) * adLoop;
+          var addSize = prevSize + (dSize / 10) * adLoop;
+          returnVal.push([addX, addY, addSize]);
+        }
+        prevX = list[loop][0];
+        prevY = list[loop][1];
+        prevSize = list[loop][2] || 0;
+      }
+    }
+    return returnVal;
+  };
 // Example usage
 //const svgPath = "M 88 83 L 79 85 Q 73 86.5 67 88 Q 61 89 55 90";
 //const jsonData = parseSVGPath(svgPath);

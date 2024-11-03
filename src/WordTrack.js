@@ -1,38 +1,10 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { translateAndScaleSvgPath } from "./SVGUtils";
+import { translateAndScaleSvgPath, pointsSmooth } from "./SVGUtils";
 const WordTrack = ({ item }) => {
-  const [word, setWord] = useState({});
+  const [word, setWord] = useState(null);
   const [playedIndex, setPlayedIndex] = useState(-1);
   const [points, setPoints] = useState([]);
   const wordRef = useRef(null);
-
-  const pointsSmooth = function (list) {
-    var returnVal = new Array();
-    var prevX = -1;
-    var prevY = -1;
-    var prevSize = -1;
-    for (var loop = 0; loop < list.length; loop++) {
-      if (prevX == -1) {
-        prevX = list[loop][0];
-        prevY = list[loop][1];
-        prevSize = list[loop][2] || 0;
-      } else {
-        var dx = list[loop][0] - prevX;
-        var dy = list[loop][1] - prevY;
-        var dSize = list[loop][2] || 0 - prevSize;
-        for (var adLoop = 0; adLoop < 10; adLoop++) {
-          var addX = prevX + (dx / 10) * adLoop;
-          var addY = prevY + (dy / 10) * adLoop;
-          var addSize = prevSize + (dSize / 10) * adLoop;
-          returnVal.push([addX, addY, addSize]);
-        }
-        prevX = list[loop][0];
-        prevY = list[loop][1];
-        prevSize = list[loop][2] || 0;
-      }
-    }
-    return returnVal;
-  };
 
   const playStokes = useCallback(async () => {
     const word = wordRef.current;
@@ -51,26 +23,36 @@ const WordTrack = ({ item }) => {
 
   useEffect(() => {
     wordRef.current = null;
-    setWord({});
     const fetchPaths = async () => {
       try {
         // let chs = item.text.plit('');
 
         //isASCII(chs)
-        let str = "上下";
+        let str = "王文宇";
 
-        let word = { stroke: [] };
+        let word = { stroke: [],chs:[] };
         let i = 0;
         for (let c of str.split("")) {
+          try{
+
+          
           let t = c.charCodeAt(0).toString(16).toUpperCase();
           const response = await fetch(`/api/stroke/${t}.json`);
           const cdata = await response.json();
+
           cdata.stroke.map((s) => {
             s.d = translateAndScaleSvgPath(s.d, i * 348, 0, 1, 1);
             s.track.map((t) => (t[0] += i * 348));
           });
+          const chData = {ch:c,begin:word.stroke.length};
+
           word.stroke.push(...cdata.stroke);
+          chData.end=word.stroke.length;
+          word.chs.push(chData);
           i++;
+        }catch(error){
+          console.error(error);
+        }
         }
 
         setWord(word); // Update state with the paths
@@ -87,26 +69,23 @@ const WordTrack = ({ item }) => {
     })();
   }, [item]); // Empty dependency array to run once on mount
 
-  useEffect(()=>{
+  useEffect(() => {
     playStokes();
-
-  },[word])
+  }, [word]);
 
   return (
     <>
-      <svg
+      {word&&<svg
         width="100%"
-        height={348 * 2}
-        
-        viewBox="0 0 696  348 "
+        viewBox={`0 0 ${word.chs.length*348}  348 `}
         style={{
           position: "absolute",
           left: "50%",
           top: "50%",
           zIndex: -1,
           transform: "translate(-50%, -50%)",
-          maxHeight:'100%',
-          maxWidth:'100%'
+          maxHeight: "100%",
+          maxWidth: "100%",
         }}
       >
         <g>
@@ -159,6 +138,7 @@ const WordTrack = ({ item }) => {
           </g>
         </g>
       </svg>
+}
     </>
   );
 };
