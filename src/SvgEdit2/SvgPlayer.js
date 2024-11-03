@@ -8,10 +8,13 @@ export default class SvgEditPlayer extends Component {
     constructor(props) {
         super(props);
         this.state =  {
-            
+            scale: 1,
+            isDragging: false,
+            startX: 0,
+            startY: 0,
             w: 800,
             h: 600,
-            viewBox:{minX:0,minY:0,width:800,height:600},
+            viewBox: [0, 0, 100, 100],
             grid: {
                 show: true,
                 snap: true,
@@ -40,52 +43,18 @@ L 218.18 252.504
         document.addEventListener("keyup", this.handleKeyUp);
         document.addEventListener("resize", this.handleResizeSvg);
         this.handleResizeSvg();
-        this.handleWhell();
-
+        this.svgRef.current.addEventListener('wheel', this.handleScale, { passive: false });
+        this.svgRef.current.removeEventListener('mousedown', this.startDrag);
+        this.svgRef.current.addEventListener('mousedown', this.startDrag);
+        document.addEventListener('mousemove', this.drag);
+        document.addEventListener('mouseup', this.endDrag);
     }
 
-    handleWhell(){
-        let svg = this.svgRef.current;
-        let scale = 1;
-
-       let  handleScale=(event)=> {
-            event.preventDefault(); // Prevent default scroll behavior
-            let svg = this.svgRef.current;
-    
-            // Get scroll distance and adjust scale
-            const delta = event.deltaY;
-            const scaleFactor = delta > 0 ? -0.01 * delta : 0.01 * -delta; // Scale factor related to scroll distance
-    
-            // Get mouse position relative to the SVG
-            const mouseX = event.offsetX;
-            const mouseY = event.offsetY;
-    
-            // Get the latest SVG width and height
-            const svgWidth = svg.clientWidth;
-            const svgHeight = svg.clientHeight;
-    
-            // Calculate the new scale
-            scale = Math.max(scale + scaleFactor, 0.1); // Prevent negative scale
-    
-            // Calculate new width and height for the viewBox
-            const newWidth = 100 / scale;
-            const newHeight = 100 / scale;
-    
-            // Calculate new minX and minY to keep the mouse position centered
-            const newMinX = (mouseX / svgWidth * 100) - (newWidth / 2);
-            const newMinY = (mouseY / svgHeight * 100) - (newHeight / 2);
-    
-            // Update the viewBox
-            this.setState({viewBox:{minX:newMinX,minY:newMinY,width:newWidth,height:newHeight}});
-    
-        };
-        svg.addEventListener('wheel',handleScale);
-    }
     handleResizeSvg(){
         let {width,height} = this.svgRef.current.getBoundingClientRect();
 
         this.setState({w:width,h:height,
-            viewBox:{...this.state.viewBox,width:width,height:height}
+            viewBox:[0,0,width,height]
         });
     }
 
@@ -93,12 +62,70 @@ L 218.18 252.504
         document.removeEventListener("keydown", this.handleKeyDown);
         document.removeEventListener("keyup", this.handleKeyUp);
         document.removeEventListener("resize", this.handleResizeSvg);
-
+        this.svgRef.current.removeEventListener('wheel', this.handleScale);
+        this.svgRef.current.removeEventListener('mousedown', this.startDrag);
+        document.removeEventListener('mousemove', this.drag);
+        document.removeEventListener('mouseup', this.endDrag);
     }
 
     componentDidUpdate(prevProps, prevState) {
     }
+    handleScale = (event) => {
+        event.preventDefault(); // Prevent default scroll behavior
+        console.error('handleScale')
+        const delta = event.deltaY;
+        const baseScaleFactor = 0.01; // Base scale increment
+        const scaleFactor = (delta > 0 ? -baseScaleFactor : baseScaleFactor) * Math.min(Math.abs(delta) / 100, 3);
 
+        // Get mouse position relative to the SVG
+        const rect = this.svgRef.current.getBoundingClientRect();
+        const mouseX = event.clientX - rect.left; // Calculate mouseX relative to the SVG
+        const mouseY = event.clientY - rect.top;  // Calculate mouseY relative to the SVG
+
+        // Calculate the new scale
+        const newScale = Math.max(this.state.scale + scaleFactor, 0.1); // Prevent negative scale
+        this.setState({ scale: newScale });
+
+        // Calculate new width and height for the viewBox
+        const newWidth = this.state.w / newScale;
+        const newHeight = this.state.h / newScale;
+
+        // Calculate new minX and minY to keep the mouse position centered
+        const newMinX = (mouseX / this.svgRef.current.clientWidth * this.state.w) - (newWidth / 2);
+        const newMinY = (mouseY / this.svgRef.current.clientHeight * this.state.h) - (newHeight / 2);
+
+        // Update the viewBox
+        this.setState({ viewBox: [newMinX, newMinY, newWidth, newHeight] });
+    };
+    startDrag = (event) => {
+        this.setState({ 
+            isDragging: true,
+            startX: event.clientX,
+            startY: event.clientY 
+        });
+    };
+
+    drag = (event) => {
+        if (!this.state.isDragging) return;
+
+        const dx = event.clientX - this.state.startX;
+        const dy = event.clientY - this.state.startY;
+
+        // Update the viewBox by translating the SVG
+        this.setState(prevState => {
+            const newViewBox = [
+                prevState.viewBox[0] - (dx / this.svgRef.current.clientWidth) * 100,
+                prevState.viewBox[1] - (dy / this.svgRef.current.clientHeight) * 100,
+                prevState.viewBox[2],
+                prevState.viewBox[3]
+            ];
+            return { viewBox: newViewBox, startX: event.clientX, startY: event.clientY };
+        });
+    };
+
+    endDrag = () => {
+        this.setState({ isDragging: false });
+    };
     positiveNumber(n) {
         n = parseInt(n)
         if (isNaN(n) || n < 0) n = 0

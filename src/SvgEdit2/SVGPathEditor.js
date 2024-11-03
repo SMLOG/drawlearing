@@ -86,7 +86,7 @@ export default class SVGPathEditor extends Component {
                 ref={svgRef}
                 width="100%"
                 height="100%"
-                viewBox={[this.props.viewBox.minX,this.props.viewBox.minY,this.props.viewBox.width,this.props.viewBox.height]}
+                viewBox={this.props.viewBox.join(' ')}
                 onClick={ (e) => addPoint(e) }
                 onMouseMove={ (e) => handleMouseMove(e) }>
                 <Grid

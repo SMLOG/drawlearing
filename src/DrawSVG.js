@@ -1,33 +1,35 @@
-import React, { useRef, useEffect, useState, useCallback,useReducer } from "react";
+import React, {
+  useRef,
+  useEffect,
+  useState,
+  useCallback,
+  useReducer,
+} from "react";
 import ColorPicker from "./ColorPicker";
 import ButtonContainer from "./ButtonContainer";
 import CursorIcon from "./CursorIcon";
 import "./DrawSVG.css";
 import PlayList from "./PlayList";
 import WordTrack from "./WordTrack";
-import ModeSwitchButton from './ModeSwitchButton';
-import YoutubePlayer from './YoutubePlayer';
-import UnitList from './UnitList';
-import Settings from './Settings';
-import { useSelector, useDispatch } from 'react-redux';
+import ModeSwitchButton from "./ModeSwitchButton";
+import YoutubePlayer from "./YoutubePlayer";
+import UnitList from "./UnitList";
+import Settings from "./Settings";
+import { useSelector, useDispatch } from "react-redux";
 import SvgEditorWrap from "./SvgEditorWrap";
 
-
+import { parseSVGPath } from "./SVGUtils";
 
 const Draw = () => {
-
   const svgRef = useRef(null);
   const cursorRef = useRef(null);
   const settingRef = useRef({ color: "#000000", penWidth: 5, opacity: 1 });
   const isDrawingRef = useRef(false);
   const actions = useRef([]);
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
-  const [lines,setLines] = useState([]);
-
-
+  const [lines, setLines] = useState([]);
 
   const settings = useSelector((state) => state.settings);
-
 
   const [isShowUnitList, setIsShowUnitList] = useState(false);
   const theme = useSelector((state) => state.theme);
@@ -42,19 +44,18 @@ const Draw = () => {
   const [isReplaying, setIsReplaying] = useState(false);
   const [item, setItem] = useState(null);
   const [activeCategory, setActiveCategory] = useState(null);
-  
-  const [penType, setPenType] = useState('solid');
+
+  const [penType, setPenType] = useState("solid");
 
   const toggleSettings = () => {
     setIsSettingsVisible(!isSettingsVisible);
   };
 
-  useEffect(()=>{
-    settingRef.current.color=selectedColor;
-    settingRef.current.penWidth=penWidth
-    settingRef.current.opacity=opacity
-    
-  },[opacity,selectedColor,penWidth])
+  useEffect(() => {
+    settingRef.current.color = selectedColor;
+    settingRef.current.penWidth = penWidth;
+    settingRef.current.opacity = opacity;
+  }, [opacity, selectedColor, penWidth]);
 
   const startDrawing = useCallback((e) => {
     e.preventDefault();
@@ -63,111 +64,91 @@ const Draw = () => {
     settingRef.current.points = [
       { x: parseInt(offsetX), y: parseInt(offsetY) },
     ];
-    setSvgElements((prev) =>{
-      let ret= [
+    console.log('startDrawing');
+    setSvgElements((prev) => {
+      let ret = [
         ...prev,
-        { type: "polyline", 
+        {
+          type: "polyline",
           points: settingRef.current.points,
-          color:settingRef.current.color,
-          opacity:settingRef.current.opacity,
-          penWidth:settingRef.current.penWidth },
+          color: settingRef.current.color,
+          opacity: settingRef.current.opacity,
+          penWidth: settingRef.current.penWidth,
+        },
       ];
       return ret;
     });
   }, []);
 
-  function canAdjustToLine(points, threshold = 5) {
-    if (points.length < 2) return true; // Less than 2 points can always be a line
-
-    const [p1, p2] = [points[0], points[points.length - 1]]; // First and last points
-
-    // Calculate line coefficients
-    const A = p2.y - p1.y; // Rise
-    const B = p1.x - p2.x; // Run
-    const C = A * p1.x + B * p1.y; // C in Ax + By = C
-
-    // Check the distance of each point from the line
-    for (let point of points) {
-        const distance = Math.abs(A * point.x + B * point.y - C) / Math.sqrt(A * A + B * B);
-        console.log(distance);
-        if (distance > threshold) {
-            return false; // Point is too far from the line
-        }
-    }
-
-    return true; // All points are within the threshold
-}
-
-  function shouldAddPoint(newPoint,lastPoint) {
-    const distance = Math.sqrt(Math.pow(newPoint.x - lastPoint.x, 2) + Math.pow(newPoint.y - lastPoint.y, 2));
+  function shouldAddPoint(newPoint, lastPoint) {
+    const distance = Math.sqrt(
+      Math.pow(newPoint.x - lastPoint.x, 2) +
+        Math.pow(newPoint.y - lastPoint.y, 2)
+    );
     return distance > 5; // Threshold for adding new points
-}
+  }
 
   const moveDraw = useCallback((e) => {
-
     const { offsetX, offsetY } = getOffset(e);
 
-
-    cursorRef.current.style.left = `${offsetX }px`;
-    cursorRef.current.style.top = `${offsetY  }px`;
+    cursorRef.current.style.left = `${offsetX}px`;
+    cursorRef.current.style.top = `${offsetY}px`;
 
     if (!isDrawingRef.current) return;
 
-
-    const newPoint = { x: (offsetX), y: (offsetY) };
+    const newPoint = { x: offsetX, y: offsetY };
 
     // Avoid duplicates by checking against the last point
     const lastPoint =
       settingRef.current.points[settingRef.current.points.length - 1];
-    if (
-      !lastPoint ||
-      shouldAddPoint(newPoint,lastPoint)
-    ) {
+    if (!lastPoint || shouldAddPoint(newPoint, lastPoint)) {
       settingRef.current.points.push(newPoint);
       let points = [...settingRef.current.points];
       setSvgElements((prev) => {
         const lastElement = prev[prev.length - 1];
         lastElement.points.length = 0;
         lastElement.points.push(...points);
+        console.log(prev.length)
         return [...prev];
       });
     }
   }, []);
 
   const stopDrawing = () => {
+    console.log('stopDrawing')
     if (!isDrawingRef.current) return;
     isDrawingRef.current = false;
     const newAction = {
       color: settingRef.current.color,
       points: settingRef.current.points,
       penWidth: settingRef.current.penWidth,
-      opacity:settingRef.current. opacity,
+      opacity: settingRef.current.opacity,
     };
     saveAction(newAction);
     settingRef.current.points = [];
   };
 
-  const mouseEnter = ()=>{
-    cursorRef.current.style.display='block';
-}
-const mouseLeave = ()=>{
-    cursorRef.current.style.display='none';
-}
+  const mouseEnter = () => {
+    cursorRef.current.style.display = "block";
+  };
+  const mouseLeave = () => {
+    cursorRef.current.style.display = "none";
+  };
   const getOffset = (e) => {
     const rect = svgRef.current.getBoundingClientRect();
     const scaleX = svgRef.current.clientWidth / rect.width;
     const scaleY = svgRef.current.clientHeight / rect.height;
     let x, y;
     if (e.touches) {
-        const touch = e.touches[0];
-        x = (touch.clientX - rect.left) * scaleX;
-        y = (touch.clientY - rect.top) * scaleY;
+      const touch = e.touches[0];
+      x = (touch.clientX - rect.left) * scaleX;
+      y = (touch.clientY - rect.top) * scaleY;
     } else {
-        x = (e.clientX - rect.left) * scaleX;
-        y = (e.clientY - rect.top) * scaleY;
+      x = (e.clientX - rect.left) * scaleX;
+      y = (e.clientY - rect.top) * scaleY;
     }
     return { offsetX: x, offsetY: y };
-};
+  };
 
   const saveAction = (newAction) => {
     actions.current.splice(currentIndexRef.current + 1);
@@ -180,154 +161,186 @@ const mouseLeave = ()=>{
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   const restoreCanvas = async (isReplay = false) => {
-    if (isReplay) {
-      setSvgElements([]);
-      cursorRef.current.style.display='';
-      for (let i = 0; i < actions.current.length; i++) {
-        const action = actions.current[i];
-        const curPoints = [];
-        for (const point of action.points) {
-          curPoints.push(point);
-         
-          cursorRef.current.style.left = `${point.x }px`;
-          cursorRef.current.style.top = `${point.y}px`;
-          setSvgElements((prev) => [
-            ...prev,
-            { type: "path", points: curPoints, 
-              color: action.color,
-              penType:action.penType,
-              penWidth:action.penWidth, 
-              opacity:action.opacity
-            },
-          ]);
-          await sleep(50); // Adjust timing as needed
-        }
-        await sleep(100); // Adjust timing for action separation
-      }
-      setIsReplaying(false);
-      cursorRef.current.style.display='none';
-
-    } else {
-      // Restore all elements without animation
-      setSvgElements([]);
-      actions.current.slice(0,currentIndexRef.current+1).forEach((action) => {
-        setSvgElements((prev) => [
-          ...prev,
-          { type: "polyline", points: action.points, color: action.color,penWidth:action.penWidth,   opacity:action.opacity  },
-        ]);
+    setSvgElements([]);
+    console.log('restoreCanvas')
+    let paths=[];
+    cursorRef.current.style.display = "";
+    for (let i = 0; i <= currentIndexRef.current; i++) {
+      const action = actions.current[i];
+      const curPoints = [];
+      paths.push( {
+        type: "path",
+        points: curPoints,
+        color: action.color,
+        penType: action.penType,
+        penWidth: action.penWidth,
+        opacity: action.opacity,
       });
+
+      for (const point of action.points) {
+        curPoints.push(point);
+
+        cursorRef.current.style.left = `${point.x}px`;
+        cursorRef.current.style.top = `${point.y}px`;
+        setSvgElements(paths);
+        isReplay && (await sleep(50)); // Adjust timing as needed
+      }
+      isReplay && (await sleep(100)); // Adjust timing for action separation
     }
+    setIsReplaying(false);
+    cursorRef.current.style.display = "none";
   };
 
   useEffect(() => {
     restoreCanvas(false); // Default to non-replay mode
   }, [actionsLen]);
 
-  const drawLines = () =>{
-    if(settings.Draw.isShowGrid && svgRef.current){
-     let padding = 10;
-     let minHeight = 150;
-     let x2= svgRef.current.clientWidth - padding;
+  const drawLines = () => {
+    if (settings.Draw.isShowGrid && svgRef.current) {
+      let padding = 10;
+      let minHeight = 150;
+      let x2 = svgRef.current.clientWidth - padding;
 
-     let count =1;
-     for(;true;count++){
-        if( (svgRef.current.clientHeight - 2*padding - (count-1)*padding )/count <  minHeight )break;
-     }
-     if(count>1)count--;
+      let count = 1;
+      for (; true; count++) {
+        if (
+          (svgRef.current.clientHeight - 2 * padding - (count - 1) * padding) /
+            count <
+          minHeight
+        )
+          break;
+      }
+      if (count > 1) count--;
 
+      let l = [];
+      let lineHeight =
+        (svgRef.current.clientHeight - (count - 1 + 2) * padding) / count / 3;
+      let y = 0;
+      for (let i = 0; i < count; i++) {
+        y += padding;
+        l.push(
+          <line
+            key={y}
+            x1={padding}
+            y1={y}
+            x2={x2}
+            y2={y}
+            stroke="#000000"
+            strokeWidth="1"
+          />
+        );
+        y += lineHeight;
+        l.push(
+          <line
+            key={y}
+            x1={padding}
+            y1={y}
+            x2={x2}
+            y2={y}
+            stroke="#000000"
+            strokeDasharray="5 5"
+            strokeWidth="1"
+          />
+        );
+        y += lineHeight;
+        l.push(
+          <line
+            key={y}
+            x1={padding}
+            y1={y}
+            x2={x2}
+            y2={y}
+            stroke="#000000"
+            strokeDasharray="5 5"
+            strokeWidth="1"
+          />
+        );
+        y += lineHeight;
+        l.push(
+          <line
+            key={y}
+            x1={padding}
+            y1={y}
+            x2={x2}
+            y2={y}
+            stroke="#000000"
+            strokeWidth="1"
+          />
+        );
+      }
 
-     let l = [];
-     let lineHeight = (svgRef.current.clientHeight - (count-1+2)*padding)/count/3;
-     let y=0;
-     for(let i=0;i<count;i++){
-      y+=padding;
-      l.push((<line key={y} x1={padding} y1={y} x2={x2} y2={y} stroke="#000000" strokeWidth="1" />));
-      y+=lineHeight;
-      l.push((<line key={y} x1={padding} y1={y} x2={x2} y2={y} stroke="#000000" strokeDasharray="5 5" strokeWidth="1" />));
-      y+=lineHeight;
-      l.push((<line key={y} x1={padding} y1={y} x2={x2} y2={y} stroke="#000000" strokeDasharray="5 5" strokeWidth="1" />));
-      y+=lineHeight;
-      l.push((<line key={y} x1={padding} y1={y} x2={x2} y2={y} stroke="#000000"  strokeWidth="1" />));
-     }
-
-     setLines(l);
-     return l;
+      setLines(l);
+      return l;
     }
     return null;
-  }
+  };
 
-  useEffect(()=>{
-
+  useEffect(() => {
     const handleResize = () => {
       drawLines();
+    };
 
-  };
+    window.addEventListener("resize", handleResize);
+    handleResize();
 
-  window.addEventListener('resize', handleResize);
-  handleResize();
-
-  return () => {
-      window.removeEventListener('resize', handleResize);
-  };
-
-  },[]);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   function pointsToPathData(points) {
-    if (points.length < 2) return '';
-
-
+    if (points.length < 2) return "";
 
     let pathData = `M ${points[0].x} ${points[0].y} `; // Move to the first point
 
-
     for (let i = 0; i < points.length - 1; i++) {
-        const p1 = points[i];
-        const p2 = points[i + 1];
-        let cp1, cp2;
+      const p1 = points[i];
+      const p2 = points[i + 1];
 
-        // Calculate control points for cubic Bezier curves
-        if (i > 0) {
-            cp1 = {
-                x: p1.x + (p2.x - points[i - 1].x) / 2,
-                y: p1.y + (p2.y - points[i - 1].y) / 2
-            };
-        } else {
-            cp1 = { x: p1.x, y: p1.y };
-        }
+      let cp1, cp2;
 
-        if (i < points.length - 2) {
-            cp2 = {
-                x: p2.x + (p1.x - points[i + 2].x) / 2,
-                y: p2.y + (p1.y - points[i + 2].y) / 2
-            };
-        } else {
-            cp2 = { x: p2.x, y: p2.y };
-        }
+      // Calculate control points for cubic Bezier curves
+      if (i > 0) {
+        cp1 = {
+          x: p1.x + (p2.x - points[i - 1].x) / 2,
+          y: p1.y + (p2.y - points[i - 1].y) / 2,
+        };
+      } else {
+        cp1 = { x: p1.x, y: p1.y };
+      }
 
-        // Append Bezier curve command to the path data
-        pathData += `C ${cp1.x} ${cp1.y}, ${cp2.x} ${cp2.y}, ${p2.x} ${p2.y} `;
+      if (i < points.length - 2) {
+        cp2 = {
+          x: p2.x + (p1.x - points[i + 2].x) / 2,
+          y: p2.y + (p1.y - points[i + 2].y) / 2,
+        };
+      } else {
+        cp2 = { x: p2.x, y: p2.y };
+      }
+
+      // Append Bezier curve command to the path data
+      pathData += `C ${cp1.x} ${cp1.y}, ${cp2.x} ${cp2.y}, ${p2.x} ${p2.y} `;
     }
 
     return pathData.trim(); // Return the path data string
-}
+  }
   const drawElements = () => {
+    console.log(svgElements);
     return svgElements.map((element, index) => {
-        return (
-          <path
-            key={index}
-            d={pointsToPathData(element.points)}
-            stroke={element.color }
-            strokeWidth={element.penWidth}
-            fill="none"
-            opacity={element.opacity}
-            strokeLinecap="round"
-          />
-        );
+      return (
+        <path
+          key={index}
+          d={pointsToPathData(element.points)}
+          stroke={element.color}
+          strokeWidth={element.penWidth}
+          fill="none"
+          opacity={element.opacity}
+          strokeLinecap="round"
+        />
+      );
       return null;
     });
   };
-
-
 
   const undo = () => {
     if (currentIndex > -1) {
@@ -365,13 +378,37 @@ const mouseLeave = ()=>{
   };
 
   return (
-    <div className="container" style={{userSelect:'none',overflow:'hidden'}}>
-      {isSettingsVisible&&<Settings onClose ={toggleSettings} settings={settings}  />}
-      {settings.showTopNav&&<div id="top" style={{ height: "43px",userSelect:'none' }}>
-        <PlayList setItem={setItem} isShowUnitList={isShowUnitList} setIsShowUnitList={setIsShowUnitList} activeCategory={activeCategory} />
-      </div>}
-      <div id="middle" style={{display:'flex',flexGrow:1,position:'relative'}}>
-        <div id="leftbar" style={{display:'flex',position:'absolute',top:'0',left:'0',height:'100%'}}>
+    <div
+      className="container"
+      style={{ userSelect: "none", overflow: "hidden" }}
+    >
+      {isSettingsVisible && (
+        <Settings onClose={toggleSettings} settings={settings} />
+      )}
+      {settings.showTopNav && (
+        <div id="top" style={{ height: "43px", userSelect: "none" }}>
+          <PlayList
+            setItem={setItem}
+            isShowUnitList={isShowUnitList}
+            setIsShowUnitList={setIsShowUnitList}
+            activeCategory={activeCategory}
+          />
+        </div>
+      )}
+      <div
+        id="middle"
+        style={{ display: "flex", flexGrow: 1, position: "relative" }}
+      >
+        <div
+          id="leftbar"
+          style={{
+            display: "flex",
+            position: "absolute",
+            top: "0",
+            left: "0",
+            height: "100%",
+          }}
+        >
           <ColorPicker
             selectedColor={selectedColor}
             setSelectedColor={setSelectedColor}
@@ -383,11 +420,30 @@ const mouseLeave = ()=>{
             setPenType={setPenType}
           />
         </div>
-        <div id="right" style={{flexGrow:1,display:'flex',marginLeft:'30px',position:'relative'}}>
-          <div className="svg-wrapper" style={{border:'1px solid #ccc',position:'absolute',left:0,right:0,top:0,bottom:0,overflow:'hidden'}}>
-           { settings.currentMode=='Video'&&<YoutubePlayer  item={item}/>}
-           {settings.showSvgEditor&&<SvgEditorWrap/>}
-           { settings.currentMode=='Track'&&<WordTrack item={item} />}
+        <div
+          id="right"
+          style={{
+            flexGrow: 1,
+            display: "flex",
+            marginLeft: "30px",
+            position: "relative",
+          }}
+        >
+          <div
+            className="svg-wrapper"
+            style={{
+              border: "1px solid #ccc",
+              position: "absolute",
+              left: 0,
+              right: 0,
+              top: 0,
+              bottom: 0,
+              overflow: "hidden",
+            }}
+          >
+            {settings.currentMode == "Video" && <YoutubePlayer item={item} />}
+            {settings.showSvgEditor && <SvgEditorWrap />}
+            {settings.currentMode == "Track" && <WordTrack item={item} />}
 
             <svg
               ref={svgRef}
@@ -400,34 +456,53 @@ const mouseLeave = ()=>{
               onTouchEnd={stopDrawing}
               onMouseEnter={mouseEnter}
               onMouseLeave={mouseLeave}
-
               width="100%"
               height="100%"
-              style={{position:settings.drawEnabled?'absolute':'',left:0}}
+              style={{
+                position: settings.drawEnabled ? "absolute" : "",
+                left: 0,
+              }}
             >
-              {<text
-                x="50%"
-                y="50%"
-                textAnchor="middle"
-                dominantBaseline="middle"
-                fill="none"
-                fontSize="200"
-                stroke="red"
-                strokeWidth={2}
-              >a
-              </text>}
-              {settings.Draw.isShowGrid&& lines}
+              {
+                <text
+                  x="50%"
+                  y="50%"
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  fill="none"
+                  fontSize="200"
+                  stroke="red"
+                  strokeWidth={2}
+                >
+                  a
+                </text>
+              }
+              {settings.Draw.isShowGrid && lines}
 
               {drawElements()}
-              
             </svg>
-            <div className="cursor" ref={cursorRef} style={{zIndex:2111}}>
-                <CursorIcon penWidth={penWidth} selectedColor={selectedColor} />
-                <div className="point" style={{width:penWidth,height:penWidth,background:selectedColor}}></div>
+            <div className="cursor" ref={cursorRef} style={{ zIndex: 2111 }}>
+              <CursorIcon penWidth={penWidth} selectedColor={selectedColor} />
+              <div
+                className="point"
+                style={{
+                  width: penWidth,
+                  height: penWidth,
+                  background: selectedColor,
+                }}
+              ></div>
             </div>
           </div>
-            <ModeSwitchButton settings={settings}  toggleSettings={toggleSettings}/>
-            <UnitList isShowUnitList={isShowUnitList} setIsShowUnitList={setIsShowUnitList} activeCategory={activeCategory} setActiveCategory={setActiveCategory}  />
+          <ModeSwitchButton
+            settings={settings}
+            toggleSettings={toggleSettings}
+          />
+          <UnitList
+            isShowUnitList={isShowUnitList}
+            setIsShowUnitList={setIsShowUnitList}
+            activeCategory={activeCategory}
+            setActiveCategory={setActiveCategory}
+          />
         </div>
       </div>
       <div id="bottom">

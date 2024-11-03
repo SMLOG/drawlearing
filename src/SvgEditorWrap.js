@@ -4,7 +4,7 @@ import SvgEditPlayer from "./SvgEdit2/SvgPlayer"; // Ensure this is a valid comp
 
 const SvgEditorWrap = () => {
     return (
-        <div style={{ position: 'absolute', inset: 0 }}>
+        <div style={{ position: 'absolute', inset: 0,background:'black' }}>
             <LettersSvg />
             <SvgEditPlayer />
         </div>
