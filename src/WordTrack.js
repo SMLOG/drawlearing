@@ -6,18 +6,6 @@ const WordTrack = ({item}) => {
   const wordRef = useRef(null);
 
 
-  const scaleStroke = (stroke,scaleFactor,pointFactor) => {
-    stroke.d=stroke.d.replace(/([MLHVCSQTAZ])|(-?\d+(\.\d+)?)/g, (match, command, number) => {
-      if (number) {
-        return (parseFloat(number) * scaleFactor).toFixed(2); // Scale each number
-      }
-      return command; 
-    });
-    stroke.track=stroke.ps.map(p=>[parseFloat(p[0])*scaleFactor,parseFloat(p[1])*scaleFactor,120*pointFactor]);
-    
-    return stroke;
-  };
-
   const pointsSmooth = function(list) {
     var returnVal = new Array();
     var prevX = -1;

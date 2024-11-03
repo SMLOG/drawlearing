@@ -165,6 +165,7 @@ const Draw = () => {
     console.log('restoreCanvas')
     let paths=[];
     cursorRef.current.style.display = "";
+
     for (let i = 0; i <= currentIndexRef.current; i++) {
       const action = actions.current[i];
       const curPoints = [];
@@ -176,13 +177,12 @@ const Draw = () => {
         penWidth: action.penWidth,
         opacity: action.opacity,
       });
-
       for (const point of action.points) {
         curPoints.push(point);
 
         cursorRef.current.style.left = `${point.x}px`;
         cursorRef.current.style.top = `${point.y}px`;
-        setSvgElements(paths);
+        setSvgElements([...paths]);
         isReplay && (await sleep(50)); // Adjust timing as needed
       }
       isReplay && (await sleep(100)); // Adjust timing for action separation
@@ -292,10 +292,18 @@ const Draw = () => {
     if (points.length < 2) return "";
 
     let pathData = `M ${points[0].x} ${points[0].y} `; // Move to the first point
-
+    console.log('hello')
     for (let i = 0; i < points.length - 1; i++) {
       const p1 = points[i];
       const p2 = points[i + 1];
+      if(p1.command){
+        pathData += p1.command+' '+p1.params.join(' ')+' ';
+       if( points.length - 2 == i) {
+        pathData += p2.command+' '+p2.params.join(' ')+' ';
+        console.log(p2)
+       }
+        continue;
+      }
 
       let cp1, cp2;
 
@@ -463,20 +471,7 @@ const Draw = () => {
                 left: 0,
               }}
             >
-              {
-                <text
-                  x="50%"
-                  y="50%"
-                  textAnchor="middle"
-                  dominantBaseline="middle"
-                  fill="none"
-                  fontSize="200"
-                  stroke="red"
-                  strokeWidth={2}
-                >
-                  a
-                </text>
-              }
+  
               {settings.Draw.isShowGrid && lines}
 
               {drawElements()}
