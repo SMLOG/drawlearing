@@ -372,6 +372,7 @@ const Draw = () => {
     actions.current = [];
     setActionsLen(0);
     setCurrentIndex(-1);
+    currentIndexRef.current=-1;
     setSvgElements([]);
   };
 
