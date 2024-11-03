@@ -8,8 +8,10 @@ export default class SvgEditPlayer extends Component {
     constructor(props) {
         super(props);
         this.state =  {
+            
             w: 800,
             h: 600,
+            viewBox:{minX:0,minY:0,width:800,height:600},
             grid: {
                 show: true,
                 snap: true,
@@ -36,11 +38,62 @@ L 218.18 252.504
     componentDidMount() {
         document.addEventListener("keydown", this.handleKeyDown);
         document.addEventListener("keyup", this.handleKeyUp);
+        document.addEventListener("resize", this.handleResizeSvg);
+        this.handleResizeSvg();
+        this.handleWhell();
+
+    }
+
+    handleWhell(){
+        let svg = this.svgRef.current;
+        let scale = 1;
+
+       let  handleScale=(event)=> {
+            event.preventDefault(); // Prevent default scroll behavior
+            let svg = this.svgRef.current;
+    
+            // Get scroll distance and adjust scale
+            const delta = event.deltaY;
+            const scaleFactor = delta > 0 ? -0.01 * delta : 0.01 * -delta; // Scale factor related to scroll distance
+    
+            // Get mouse position relative to the SVG
+            const mouseX = event.offsetX;
+            const mouseY = event.offsetY;
+    
+            // Get the latest SVG width and height
+            const svgWidth = svg.clientWidth;
+            const svgHeight = svg.clientHeight;
+    
+            // Calculate the new scale
+            scale = Math.max(scale + scaleFactor, 0.1); // Prevent negative scale
+    
+            // Calculate new width and height for the viewBox
+            const newWidth = 100 / scale;
+            const newHeight = 100 / scale;
+    
+            // Calculate new minX and minY to keep the mouse position centered
+            const newMinX = (mouseX / svgWidth * 100) - (newWidth / 2);
+            const newMinY = (mouseY / svgHeight * 100) - (newHeight / 2);
+    
+            // Update the viewBox
+            this.setState({viewBox:{minX:newMinX,minY:newMinY,width:newWidth,height:newHeight}});
+    
+        };
+        svg.addEventListener('wheel',handleScale);
+    }
+    handleResizeSvg(){
+        let {width,height} = this.svgRef.current.getBoundingClientRect();
+
+        this.setState({w:width,h:height,
+            viewBox:{...this.state.viewBox,width:width,height:height}
+        });
     }
 
     componentWillUnmount() {
         document.removeEventListener("keydown", this.handleKeyDown);
         document.removeEventListener("keyup", this.handleKeyUp);
+        document.removeEventListener("resize", this.handleResizeSvg);
+
     }
 
     componentDidUpdate(prevProps, prevState) {

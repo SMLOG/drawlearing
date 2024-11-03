@@ -7,6 +7,13 @@ import React, { Component,forwardRef } from "react";
  */
 
 export default class SVGPathEditor extends Component {
+    constructor(props) {
+        super(props);
+
+    }
+    componentDidMount (){
+
+    }
     render() {
         const {
             path,
@@ -79,6 +86,7 @@ export default class SVGPathEditor extends Component {
                 ref={svgRef}
                 width="100%"
                 height="100%"
+                viewBox={[this.props.viewBox.minX,this.props.viewBox.minY,this.props.viewBox.width,this.props.viewBox.height]}
                 onClick={ (e) => addPoint(e) }
                 onMouseMove={ (e) => handleMouseMove(e) }>
                 <Grid
