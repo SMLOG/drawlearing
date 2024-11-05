@@ -5,6 +5,31 @@ import {
   scaleStroke,
 } from "./SVGUtils";
 import { createStrokeJSON } from "./SvgEdit2/SVGUtils";
+import { svgPathProperties } from "svg-path-properties";
+
+function getPointsOnPath(svgPath, minRadius) {
+  const pathProperties = new svgPathProperties(svgPath);
+  const length = pathProperties.getTotalLength();
+  const points = [];
+  
+  // Start from the beginning of the path
+  let currentLength = 0;
+
+  while (currentLength <= length) {
+    const point = pathProperties.getPointAtLength(currentLength);
+    points.push({ x: point.x, y: point.y });
+    // Move to the next point based on minRadius
+    currentLength += minRadius;
+  }
+
+  // Handle the case where the last point might be added beyond the path length
+  if (currentLength - minRadius < length) {
+    const point = pathProperties.getPointAtLength(length);
+    points.push({ x: point.x, y: point.y });
+  }
+
+  return points;
+}
 const WordTrack = ({ item }) => {
   const [word, setWord] = useState(null);
   const [playedIndex, setPlayedIndex] = useState(-1);
@@ -25,8 +50,7 @@ const WordTrack = ({ item }) => {
 
         let stroke = word.stroke[i];
         await new Promise((resolve) => setTimeout(resolve, 50));
-
-        let spoints = pointsSmooth(stroke.track);
+        let spoints =stroke.track;// pointsSmooth(stroke.track);
         for (let j = 0; j < spoints.length; j++) {
           setPoints((prev) => [...prev, spoints[j]]);
           await new Promise((resolve) => setTimeout(resolve, 50));
@@ -40,16 +64,9 @@ const WordTrack = ({ item }) => {
     wordRef.current = null;
     const fetchPaths = async () => {
       try {
-        // let chs = item.text.plit('');
 
-        // const xmlString = await response.text(); // Get the XML string
-        //const word = await response.json();// createStrokeJSON(xmlString); // Convert XML to JSON
 
-        // Assuming strokeData has a property 'path' that is an array
-        // word.stroke.map(s=>scaleStroke(s,348 /2048,348 /1792))
-
-        //isASCII(chs)
-        let str = "玩";
+        let str = "a";
 
         let word = { stroke: [], chs: [] };
         let i = 0;
@@ -61,7 +78,8 @@ const WordTrack = ({ item }) => {
 
             cdata.stroke.map((s) => {
               s.d = translateAndScaleSvgPath(s.d, i * 100, 0, 1, 1);
-              s.track.map((t) => (t[0] += i * 100));
+              s.track = getPointsOnPath(s.t||s.d, s.r||word.r||8);
+              s.track.map((t) => (t.x += i * 100));
             });
             const chData = { ch: c, begin: word.stroke.length };
 
@@ -121,32 +139,67 @@ const WordTrack = ({ item }) => {
           }}
         >
           <g>
-          <rect x="0" y="0" width="100%" height="100%" stroke="black" strokeWidth="1" fill="#aaa" vectorEffect="non-scaling-stroke"/>
-          <line x1="0" y1="50%" x2="100%" y2="50%" strokeDasharray={[5,5]} stroke="black" strokeWidth="1" vectorEffect="non-scaling-stroke"/>
-          {word.chs &&
+            <rect
+              x="0"
+              y="0"
+              width="100%"
+              height="100%"
+              stroke="black"
+              strokeWidth="1"
+              fill="#aaa"
+              vectorEffect="non-scaling-stroke"
+            />
+            <line
+              x1="0"
+              y1="50%"
+              x2="100%"
+              y2="50%"
+              strokeDasharray={[5, 5]}
+              stroke="black"
+              strokeWidth="1"
+              vectorEffect="non-scaling-stroke"
+            />
+            {word.chs &&
               word.chs.map((ch, index) => (
-                <>
-                <line x1={100*index+50} y1="0" x2={100*index+50} y2="100%" strokeDasharray={[5,5]}  stroke="black" strokeWidth="1" vectorEffect="non-scaling-stroke"/>
-                {index>0&&<line x1={100*index} y1="0" x2={100*index} y2="100%"  stroke="black" strokeWidth="1" vectorEffect="non-scaling-stroke"/>}
-                </>
+                <g    key={index}>
+                  <line
+                 
+                    x1={100 * index + 50}
+                    y1="0"
+                    x2={100 * index + 50}
+                    y2="100%"
+                    strokeDasharray={[5, 5]}
+                    stroke="black"
+                    strokeWidth="1"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                  {index > 0 && (
+                    <line
+                      x1={100 * index}
+                      y1="0"
+                      x2={100 * index}
+                      y2="100%"
+                      stroke="black"
+                      strokeWidth="1"
+                      vectorEffect="non-scaling-stroke"
+                    />
+                  )}
+                </g>
               ))}
           </g>
 
           <g>
             {word.stroke &&
-              word.stroke.map(
-                (stroke, index) =>
-                  (
-                    <path
-                      key={index}
-                      d={stroke.d}
-                      stroke="#000000"
-                      strokeWidth="0"
-                      fill="#FFF"
-                      strokeLinejoin="round"
-                    />
-                  )
-              )}
+              word.stroke.map((stroke, index) => (
+                <path
+                  key={index}
+                  d={stroke.d}
+                  stroke="#000000"
+                  strokeWidth="0"
+                  fill={stroke.nf ? "none" : "#FFF"}
+                  strokeLinejoin="round"
+                />
+              ))}
           </g>
 
           <g>
@@ -159,7 +212,7 @@ const WordTrack = ({ item }) => {
                       d={stroke.d}
                       stroke="#000000"
                       strokeWidth="2"
-                      fill="#000000"
+                      fill={stroke.nf ? "none" : "#000"}
                       strokeLinejoin="round"
                     />
                   )
@@ -179,7 +232,7 @@ const WordTrack = ({ item }) => {
                           d={stroke.d}
                           stroke="white"
                           strokeWidth="2"
-                          fill="white"
+                          fill={ stroke.nf ? "none" :"#FFF"}
                         />
                       )
                   )}
@@ -191,8 +244,8 @@ const WordTrack = ({ item }) => {
               {points.map((point, index) => (
                 <circle
                   key={index}
-                  cx={point[0]}
-                  cy={point[1]}
+                  cx={point.x}
+                  cy={point.y}
                   r={8}
                   fill="#000000"
                 />

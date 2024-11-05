@@ -411,11 +411,12 @@ const Draw = () => {
         <div
           id="leftbar"
           style={{
-            display: "flex",
+            display: "none",
             position: "absolute",
             top: "0",
             left: "0",
             height: "100%",
+
           }}
         >
           <ColorPicker
