@@ -6,6 +6,7 @@ import {
 } from "./SVGUtils";
 import { createStrokeJSON } from "./SvgEdit2/SVGUtils";
 import { svgPathProperties } from "svg-path-properties";
+import {playSound} from './sound';
 
 function getPointsOnPath(svgPath, minRadius) {
   const pathProperties = new svgPathProperties(svgPath);
@@ -44,19 +45,28 @@ const WordTrack = ({ item }) => {
     setPlayedIndex(-1);
     setPoints([]);
 
-    if (word?.stroke)
-      for (let i = 0; i < word.stroke.length; i++) {
-        setPoints([]);
+    if (word?.stroke){
+      for(let w of word.chs){
 
-        let stroke = word.stroke[i];
-        await new Promise((resolve) => setTimeout(resolve, 50));
-        let spoints =stroke.track;// pointsSmooth(stroke.track);
-        for (let j = 0; j < spoints.length; j++) {
-          setPoints((prev) => [...prev, spoints[j]]);
+        for (let i = w.begin; i < w.end; i++) {
+          setPoints([]);
+  
+          let stroke = word.stroke[i];
           await new Promise((resolve) => setTimeout(resolve, 50));
+          let spoints =stroke.track;// pointsSmooth(stroke.track);
+
+          for (let j = 0; j < spoints.length; j++) {
+            setPoints((prev) => [...prev, spoints[j]]);
+            if(j!=spoints.length-1) await new Promise((resolve) => setTimeout(resolve, 50));
+          }
+          setPlayedIndex(i);
         }
-        setPlayedIndex(i);
+        playSound(`/sound/tc/${encodeURIComponent(w.ch)}.mp3`)
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
+
+    }
+
     playingRef.current = false;
   };
 
@@ -66,7 +76,7 @@ const WordTrack = ({ item }) => {
       try {
 
 
-        let str = "a";
+        let str = "學習";
 
         let word = { stroke: [], chs: [] };
         let i = 0;
