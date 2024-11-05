@@ -51,6 +51,17 @@ export function translateAndScaleSvgPath(pathData, dx, dy, scaleX, scaleY) {
     });
 }
 
+export function scaleStroke(stroke,scaleFactor,pointFactor)  {
+    stroke.d=stroke.d.replace(/([MLHVCSQTAZ])|(-?\d+(\.\d+)?)/g, (match, command, number) => {
+      if (number) {
+        return ((number) * scaleFactor).toFixed(2); // Scale each number
+      }
+      return command; 
+    });
+    stroke.track=stroke.ps.map(p=>[parseFloat(p[0])*scaleFactor,parseFloat(p[1])*scaleFactor,120*pointFactor]);
+    
+    return stroke;
+  };
 export  function pointsSmooth  (list) {
     var returnVal = new Array();
     var prevX = -1;
@@ -60,20 +71,22 @@ export  function pointsSmooth  (list) {
       if (prevX == -1) {
         prevX = list[loop][0];
         prevY = list[loop][1];
-        prevSize = list[loop][2] || 0;
+        prevSize = list[loop][2]/2 || 0;
+        returnVal.push([prevX, prevY, prevSize])
       } else {
         var dx = list[loop][0] - prevX;
         var dy = list[loop][1] - prevY;
-        var dSize = list[loop][2] || 0 - prevSize;
-        for (var adLoop = 0; adLoop < 10; adLoop++) {
-          var addX = prevX + (dx / 10) * adLoop;
-          var addY = prevY + (dy / 10) * adLoop;
-          var addSize = prevSize + (dSize / 10) * adLoop;
+        for (var adLoop = 0; adLoop < 8; adLoop++) {
+          var addX = prevX + (dx / 8) * adLoop;
+          var addY = prevY + (dy / 8) * adLoop;
+          var addSize = prevSize;
           returnVal.push([addX, addY, addSize]);
         }
         prevX = list[loop][0];
         prevY = list[loop][1];
-        prevSize = list[loop][2] || 0;
+        prevSize = list[loop][2]/2 || 0;
+        returnVal.push([prevX, prevY, prevSize])
+
       }
     }
     return returnVal;
