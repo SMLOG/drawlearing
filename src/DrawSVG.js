@@ -411,7 +411,7 @@ const Draw = () => {
         <div
           id="leftbar"
           style={{
-            display: "none",
+            display: "flex",
             position: "absolute",
             top: "0",
             left: "0",

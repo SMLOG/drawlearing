@@ -4,7 +4,7 @@ const settingsSlice = createSlice({
     name: 'settings',
     initialState: {
         Draw:{
-            isShowGrid:true,
+            isShowGrid:false,
             lineType:3
         },
         showTopNav:true,

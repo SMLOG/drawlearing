@@ -7,9 +7,20 @@ import {
 import { createStrokeJSON } from "./SvgEdit2/SVGUtils";
 import { svgPathProperties } from "svg-path-properties";
 import {playSound} from './sound';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlay } from '@fortawesome/free-solid-svg-icons';
+function scaleSvgPath(path, scaleFactor) {
+  return path.replace(/([MLZCQUHSVA])([^MLZCQUHSVA]*)/g, (match, command, coords) => {
+      const scaledCoords = coords.trim().split(/[\s,]+/).map(num => {
+          return (parseFloat(num) * scaleFactor).toFixed(6); // Scale and format to 6 decimal places
+      }).join(' ');
+      return command + ' ' + scaledCoords;
+  });
+}
 
-function getPointsOnPath(svgPath, minRadius) {
-  const pathProperties = new svgPathProperties(svgPath);
+function getPointsOnPath(svgPath, minRadius,scaleFactor) {
+  const path = scaleSvgPath(svgPath,scaleFactor);
+  const pathProperties = new svgPathProperties(path);
   const length = pathProperties.getTotalLength();
   const points = [];
   
@@ -18,7 +29,7 @@ function getPointsOnPath(svgPath, minRadius) {
 
   while (currentLength <= length) {
     const point = pathProperties.getPointAtLength(currentLength);
-    points.push({ x: point.x, y: point.y });
+    points.push({ x: point.x, y: point.y,r:minRadius });
     // Move to the next point based on minRadius
     currentLength += minRadius;
   }
@@ -26,7 +37,7 @@ function getPointsOnPath(svgPath, minRadius) {
   // Handle the case where the last point might be added beyond the path length
   if (currentLength - minRadius < length) {
     const point = pathProperties.getPointAtLength(length);
-    points.push({ x: point.x, y: point.y });
+    points.push({ x: point.x, y: point.y,r:minRadius });
   }
 
   return points;
@@ -76,10 +87,11 @@ const WordTrack = ({ item }) => {
       try {
 
 
-        let str = "學習";
+        let str = item.text;
 
         let word = { stroke: [], chs: [] };
         let i = 0;
+        let tranX=0;
         for (let c of str.split("")) {
           try {
             let t = c.charCodeAt(0).toString(16).toUpperCase();
@@ -87,11 +99,17 @@ const WordTrack = ({ item }) => {
             const cdata = await response.json();
 
             cdata.stroke.map((s) => {
-              s.d = translateAndScaleSvgPath(s.d, i * 100, 0, 1, 1);
-              s.track = getPointsOnPath(s.t||s.d, s.r||word.r||8);
-              s.track.map((t) => (t.x += i * 100));
+              let scale = 100/(cdata.h||100);
+              cdata.scale = scale;
+              s.d = translateAndScaleSvgPath(s.d, tranX, 0, scale, scale);
+
+              s.track = getPointsOnPath(s.t||s.d, s.r||cdata.r||8,s.t?scale:1);
+              s.track.map((t) => (t.x =(s.t?tranX:0)+t.x));
             });
-            const chData = { ch: c, begin: word.stroke.length };
+            tranX +=cdata.scale * (cdata.w||100);
+            
+
+            const chData = { ch: c, begin: word.stroke.length,tranX:tranX,w:(cdata.w||100) };
 
             word.stroke.push(...cdata.stroke);
             chData.end = word.stroke.length;
@@ -101,6 +119,7 @@ const WordTrack = ({ item }) => {
             console.error(error);
           }
         }
+        word.viewBoxWidth=tranX;
 
         setWord(word); // Update state with the paths
         wordRef.current = word;
@@ -135,18 +154,20 @@ const WordTrack = ({ item }) => {
         Replay
       </div>
       {word && (
+        <div     style={{
+          position: "absolute",
+          left: "50%",
+          top: "50%",
+          transform: "translate(-50%, -50%)",
+          maxHeight: "80%",
+          maxWidth: "80%",
+          width:'80%',
+          flexDirection:'column'
+        }}      >
         <svg
           width="100%"
-          viewBox={`0 0 ${word.chs.length * 100}  100 `}
-          style={{
-            position: "absolute",
-            left: "50%",
-            top: "50%",
-            zIndex: -1,
-            transform: "translate(-50%, -50%)",
-            maxHeight: "80%",
-            maxWidth: "80%",
-          }}
+          viewBox={`0 0 ${word.viewBoxWidth}  100 `}
+         
         >
           <g>
             <rect
@@ -172,7 +193,7 @@ const WordTrack = ({ item }) => {
             {word.chs &&
               word.chs.map((ch, index) => (
                 <g    key={index}>
-                  <line
+                  {(false&&<line
                  
                     x1={100 * index + 50}
                     y1="0"
@@ -182,12 +203,12 @@ const WordTrack = ({ item }) => {
                     stroke="black"
                     strokeWidth="1"
                     vectorEffect="non-scaling-stroke"
-                  />
-                  {index > 0 && (
+                  />)}
+                  { (
                     <line
-                      x1={100 * index}
+                      x1={ch.tranX}
                       y1="0"
-                      x2={100 * index}
+                      x2={ch.tranX}
                       y2="100%"
                       stroke="black"
                       strokeWidth="1"
@@ -204,8 +225,8 @@ const WordTrack = ({ item }) => {
                 <path
                   key={index}
                   d={stroke.d}
-                  stroke="#000000"
-                  strokeWidth="0"
+                  stroke="#FFF"
+                  strokeWidth="1"
                   fill={stroke.nf ? "none" : "#FFF"}
                   strokeLinejoin="round"
                 />
@@ -256,14 +277,29 @@ const WordTrack = ({ item }) => {
                   key={index}
                   cx={point.x}
                   cy={point.y}
-                  r={8}
+                  r={point.r}
                   fill="#000000"
                 />
               ))}
             </g>
           </g>
         </svg>
+        <div style={{display:'flex'}}>
+        {word.chs &&
+              word.chs.map((ch, index) => (
+                <div key={index} style={{flexGrow:ch.w}}>
+                  <div style={{display:'flex',justifyContent:'space-between'}}>
+                  <span>{ch.ch}</span>
+                 <FontAwesomeIcon icon={faPlay} size="sx" color={"#aaa"}   />
+                  </div>
+
+                </div>
+              ))}
+        </div>
+        </div>
       )}
+   
+
     </>
   );
 };
