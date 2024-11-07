@@ -17,6 +17,7 @@ import UnitList from "./UnitList";
 import Settings from "./Settings";
 import { useSelector, useDispatch } from "react-redux";
 import SvgEditorWrap from "./SvgEditorWrap";
+import SearchDropdown from './SearchDropdown';
 
 import { parseSVGPath } from "./SVGUtils";
 
@@ -395,13 +396,8 @@ const Draw = () => {
         <Settings onClose={toggleSettings} settings={settings} />
       )}
       {settings.showTopNav && (
-        <div id="top" style={{ height: "43px", userSelect: "none" }}>
-          <PlayList
-            setItem={setItem}
-            isShowUnitList={isShowUnitList}
-            setIsShowUnitList={setIsShowUnitList}
-            activeCategory={activeCategory}
-          />
+        <div id="top" style={{ height: "43px", userSelect: "none",zIndex:10000 }}>
+          <SearchDropdown/>
         </div>
       )}
       <div

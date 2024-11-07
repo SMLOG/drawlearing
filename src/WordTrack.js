@@ -4,6 +4,9 @@ import {
   pointsSmooth,
   scaleStroke,
 } from "./SVGUtils";
+import { useSelector, useDispatch } from 'react-redux';
+
+import { updateSettings } from './features/settingsSlice';
 import { createStrokeJSON } from "./SvgEdit2/SVGUtils";
 import { svgPathProperties } from "svg-path-properties";
 import {playSound} from './sound';
@@ -42,12 +45,16 @@ function getPointsOnPath(svgPath, minRadius,scaleFactor) {
 
   return points;
 }
-const WordTrack = ({ item }) => {
+const WordTrack = ({  }) => {
   const [word, setWord] = useState(null);
   const [playedIndex, setPlayedIndex] = useState(-1);
   const [points, setPoints] = useState([]);
   const wordRef = useRef(null);
   const playingRef = useRef(false);
+
+  const settings = useSelector((state) => state.settings);
+  const dispatch = useDispatch();
+
 
   const playStokes = async () => {
     const word = wordRef.current;
@@ -87,7 +94,7 @@ const WordTrack = ({ item }) => {
       try {
 
 
-        let str = item.text;
+        let str = settings.item;
 
         let word = { stroke: [], chs: [] };
         let i = 0;
@@ -129,11 +136,11 @@ const WordTrack = ({ item }) => {
     };
 
     (async () => {
-      if (item) {
+      if (settings.item) {
         await fetchPaths();
       }
     })();
-  }, [item]); // Empty dependency array to run once on mount
+  }, [settings.item]); // Empty dependency array to run once on mount
 
   useEffect(() => {
     playStokes();
@@ -162,12 +169,15 @@ const WordTrack = ({ item }) => {
           maxHeight: "80%",
           maxWidth: "80%",
           width:'80%',
+          height:'80%',
           flexDirection:'column'
         }}      >
         <svg
-          width="100%"
           viewBox={`0 0 ${word.viewBoxWidth}  100 `}
-         
+         style={{
+          maxHeight: "100%",
+          maxWidth: "100%",
+         }}
         >
           <g>
             <rect
@@ -290,7 +300,7 @@ const WordTrack = ({ item }) => {
                 <div key={index} style={{flexGrow:ch.w}}>
                   <div style={{display:'flex',justifyContent:'space-between'}}>
                   <span>{ch.ch}</span>
-                 <FontAwesomeIcon icon={faPlay} size="sx" color={"#aaa"}   />
+                 <FontAwesomeIcon icon={faPlay} size="sm" color={"#aaa"}   />
                   </div>
 
                 </div>

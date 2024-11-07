@@ -8,7 +8,8 @@ const settingsSlice = createSlice({
             lineType:3
         },
         showTopNav:true,
-        showSvgEditor:false
+        showSvgEditor:false,
+        item:null
     },
     reducers: {
         updateSettings: (state, action) => {
