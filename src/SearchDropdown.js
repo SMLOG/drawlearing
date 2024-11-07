@@ -161,7 +161,7 @@ const SearchDropdown = () => {
                             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f0f0f0'}
                             onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
                         >
-                            <span onClick={() => selectItem(item)}>{item}</span>
+                            <span style={{flexGrow:1,textAlign:'left'}} onClick={() => selectItem(item)}>{item}</span>
                             <button 
                                 onClick={(e) => {
                                     e.stopPropagation(); // Prevent item selection on delete button click

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#000000" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
@@ -17,7 +17,7 @@
       const currentDomain = window.location.hostname;
 
       if (currentDomain !== allowedDomain&&currentDomain!=='localhost') {
-          window.location.href = "https://www.alearningapp.com"; 
+        //  window.location.href = "https://www.alearningapp.com"; 
       }
   });
 </script>

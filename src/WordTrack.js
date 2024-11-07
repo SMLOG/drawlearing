@@ -74,6 +74,7 @@ const WordTrack = ({  }) => {
           let spoints =stroke.track;// pointsSmooth(stroke.track);
 
           for (let j = 0; j < spoints.length; j++) {
+            console.log(j);
             setPoints((prev) => [...prev, spoints[j]]);
             if(j!=spoints.length-1) await new Promise((resolve) => setTimeout(resolve, 50));
           }
@@ -152,7 +153,7 @@ const WordTrack = ({  }) => {
         onClick={playStokes}
         style={{
           position: "absolute",
-          top: 0,
+          top: '10px',
           right: 0,
           cursor: "pointer",
           background: "#ccc",
