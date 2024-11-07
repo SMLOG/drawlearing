@@ -48,8 +48,8 @@ const SearchDropdown = () => {
         }
     };
 
-    const handleKeyDown = (event) => {
-        if (event.key === 'Enter') {
+    const handleKeyDown = (event,blur) => {
+        if (event.key === 'Enter' || blur) {
             const trimmedQuery = query.trim();
             if (trimmedQuery && !data.some(item => item.toLowerCase() === trimmedQuery.toLowerCase())) {
                 setData([trimmedQuery,...data]);
@@ -101,7 +101,7 @@ const SearchDropdown = () => {
                     transition: 'border-color 0.3s',
                 }}
                 onFocus={(e) => e.target.style.borderColor = '#007bff'}
-                onBlur={(e) => e.target.style.borderColor = '#ccc'}
+                onBlur={(e) => {handleKeyDown(e,1);e.target.style.borderColor = '#ccc'}}
             />
             <button 
                 onClick={showAllItems}
