@@ -5,6 +5,8 @@ import {
   scaleStroke,
   scaleSvgPath,
   getPointsOnPath,
+  getOffset,
+  isPointNear
 } from "./SVGUtils";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -162,6 +164,61 @@ const WordTrack = ({}) => {
     };
   }, []);
 
+  const svgRef = useRef(null);
+  const isDrawingRef = useRef(false);
+  const drawPoints = useRef([])
+
+  const startDrawing = useCallback((e) => {
+    e.preventDefault();
+    isDrawingRef.current = true;
+    const { offsetX, offsetY } = getOffset(svgRef.current,e);
+    drawPoints.current = [
+    ];
+    setPoints([]);
+  }, []);
+
+
+  const [penPoint,setPenPoint] = useState({x:0,y:0});
+  const moveDraw =(e) => {
+    if (!isDrawingRef.current) return;
+
+    const { offsetX, offsetY } = getOffset(svgRef.current,e);
+
+    const newPoint = { x: offsetX, y: offsetY };
+
+  
+      if(playedIndex+1>=word.stroke.length)return;
+      let nextStrok = word.stroke[playedIndex+1]
+      let spoints = nextStrok.track;
+      setPenPoint(newPoint);
+      if(drawPoints.current.length < spoints.length 
+        && isPointNear(newPoint,spoints[drawPoints.current.length],8)){
+          let point = spoints[drawPoints.current.length];
+        if(point){
+          setPoints((prev) => [...prev, point]);
+        }
+        drawPoints.current.push(newPoint);
+      }
+
+    
+  
+  };
+
+  const stopDrawing = () => {
+    if (!isDrawingRef.current) return;
+    isDrawingRef.current = false;
+    console.log(drawPoints.current);
+    if(playedIndex+1>=word.stroke.length)return;
+    let nextStrok = word.stroke[playedIndex+1];
+    let spoints = nextStrok.track;
+    if(drawPoints.current.length==spoints.length){
+      setPlayedIndex(playedIndex+1);
+    }else{
+    }
+    setPoints([]);
+    drawPoints.length=0;
+  };
+
   return (
     <>
       {word && (
@@ -196,6 +253,10 @@ const WordTrack = ({}) => {
               maxHeight: "100%",
               maxWidth: "100%",
             }}
+            ref={svgRef}
+            onMouseDown={startDrawing}
+            onMouseMove={moveDraw}
+            onMouseUp={stopDrawing}
           >
             <g>
               <rect
@@ -311,6 +372,14 @@ const WordTrack = ({}) => {
                   />
                 ))}
               </g>
+            </g>
+            <g>
+            <circle
+                    cx={penPoint.x}
+                    cy={penPoint.y}
+                    r={8}
+                    fill="red"
+                  />
             </g>
           </svg>
           <div style={{ display: "flex" }}>

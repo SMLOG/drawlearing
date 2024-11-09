@@ -131,3 +131,47 @@ export function getPointsOnPath(svgPath, minRadius,scaleFactor) {
 
   return points;
 }
+
+export  function getOffset(svg, e) {
+  const rect = svg.getBoundingClientRect();
+  const scaleX = svg.clientWidth / rect.width;
+  const scaleY = svg.clientHeight / rect.height;
+
+  // Get the viewBox attribute, if it exists
+  const viewBox = svg.getAttribute('viewBox');
+  let vbX = 0, vbY = 0, vbWidth = 0, vbHeight = 0;
+
+  if (viewBox) {
+    const vbParts = viewBox.split(/\s+/).map(Number);
+    vbX = vbParts[0];
+    vbY = vbParts[1];
+    vbWidth = vbParts[2];
+    vbHeight = vbParts[3];
+  } else {
+    // Default viewBox if none is set
+    vbWidth = svg.clientWidth;
+    vbHeight = svg.clientHeight;
+  }
+
+  let x, y;
+
+  if (e.touches) {
+    const touch = e.touches[0];
+    x = (touch.clientX - rect.left);
+    y = (touch.clientY - rect.top);
+  } else {
+    x = (e.clientX - rect.left);
+    y = (e.clientY - rect.top);
+  }
+
+  // Apply scaling and viewBox adjustments
+  const adjustedX = (x * vbWidth / svg.clientWidth) + vbX;
+  const adjustedY = (y * vbHeight / svg.clientHeight) + vbY;
+
+  return { offsetX: adjustedX, offsetY: adjustedY };
+}
+
+export function isPointNear(point1, point2, radius) {
+  const distance = Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2));
+  return distance <= radius;
+}

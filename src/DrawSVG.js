@@ -19,7 +19,8 @@ import { useSelector, useDispatch } from "react-redux";
 import SvgEditorWrap from "./SvgEditorWrap";
 import SearchDropdown from './SearchDropdown';
 
-import { parseSVGPath } from "./SVGUtils";
+
+import { getOffset } from "./SVGUtils";
 
 const Draw = () => {
   const svgRef = useRef(null);
@@ -61,7 +62,7 @@ const Draw = () => {
   const startDrawing = useCallback((e) => {
     e.preventDefault();
     isDrawingRef.current = true;
-    const { offsetX, offsetY } = getOffset(e);
+    const { offsetX, offsetY } = getOffset(svgRef.current,e);
     settingRef.current.points = [
       { x: parseInt(offsetX), y: parseInt(offsetY) },
     ];
@@ -90,7 +91,7 @@ const Draw = () => {
   }
 
   const moveDraw = useCallback((e) => {
-    const { offsetX, offsetY } = getOffset(e);
+    const { offsetX, offsetY } = getOffset(svgRef.current,e);
 
     cursorRef.current.style.left = `${offsetX}px`;
     cursorRef.current.style.top = `${offsetY}px`;
@@ -135,21 +136,7 @@ const Draw = () => {
   const mouseLeave = () => {
     cursorRef.current.style.display = "none";
   };
-  const getOffset = (e) => {
-    const rect = svgRef.current.getBoundingClientRect();
-    const scaleX = svgRef.current.clientWidth / rect.width;
-    const scaleY = svgRef.current.clientHeight / rect.height;
-    let x, y;
-    if (e.touches) {
-      const touch = e.touches[0];
-      x = (touch.clientX - rect.left) * scaleX;
-      y = (touch.clientY - rect.top) * scaleY;
-    } else {
-      x = (e.clientX - rect.left) * scaleX;
-      y = (e.clientY - rect.top) * scaleY;
-    }
-    return { offsetX: x, offsetY: y };
-  };
+
 
   const saveAction = (newAction) => {
     actions.current.splice(currentIndexRef.current + 1);
