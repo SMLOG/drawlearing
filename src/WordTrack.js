@@ -63,11 +63,17 @@ const WordTrack = ({}) => {
       }
     }
 
-    playingRef.current = false;
+    playingRef.current = 0;
   };
   const resetStrokes = () => {
     setPlayedIndex(-1);
   };
+  const tipsNextStroke = async()=>{
+
+    setPoints([]);
+    let stroke = word.stroke[playedIndex+1]
+    await playStroke(null,stroke, playingRef.current);
+  }
   const loadDatas = async () => {
     try {
       let str = settings.item;
@@ -173,7 +179,7 @@ const WordTrack = ({}) => {
           }}
         >
           <div style={{ display: "flex", justifyContent: "center" }}>
-            <div>Next Tip</div>
+            <div onClick={tipsNextStroke}>Next Tip</div>
             <div>Auto Tips</div>
             <div>
               <FontAwesomeIcon
