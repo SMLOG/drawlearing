@@ -12,6 +12,8 @@ import { svgPathProperties } from "svg-path-properties";
 import {playSound} from './sound';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
+import EventBus from 'just-event-bus'
+
 function scaleSvgPath(path, scaleFactor) {
   return path.replace(/([MLZCQUHSVA])([^MLZCQUHSVA]*)/g, (match, command, coords) => {
       const scaledCoords = coords.trim().split(/[\s,]+/).map(num => {
@@ -147,20 +149,19 @@ const WordTrack = ({  }) => {
     playStokes();
   }, [word]);
 
+  useEffect(()=>{
+    let contextButton = {name:"Replay"};
+    dispatch(updateSettings({contextButtons:[...settings.contextButtons,contextButton]}));
+    EventBus.on(["Replay" ], [playStokes]);
+    return ()=>{
+      dispatch(updateSettings({contextButtons:settings.contextButtons.filter(item => item !== contextButton)}));
+      EventBus.off(["Replay" ], [playStokes]);
+
+    }
+  },[]);
+
   return (
     <>
-      <div
-        onClick={playStokes}
-        style={{
-          position: "absolute",
-          top: '10px',
-          right: 0,
-          cursor: "pointer",
-          background: "#ccc",
-        }}
-      >
-        Replay
-      </div>
       {word && (
         <div     style={{
           position: "absolute",

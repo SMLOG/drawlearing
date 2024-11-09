@@ -9,10 +9,12 @@ const settingsSlice = createSlice({
         },
         showTopNav:true,
         showSvgEditor:false,
-        item:null
+        item:null,
+        contextButtons:[]
     },
     reducers: {
         updateSettings: (state, action) => {
+            console.log(state,action)
             Object.assign(state,action.payload)
         },
     },
