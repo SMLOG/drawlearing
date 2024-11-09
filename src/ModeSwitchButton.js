@@ -58,7 +58,7 @@ const ModeSwitchButton = ({ settings, toggleSettings }) => {
 }, []);
   return (
     <div style={styles.container}>
-      <div style={{ margin: "0 5px" }}>
+      <div style={{ margin: "0 5px" ,display:'flex'}}>
         {settings.contextButtons.map((contextButton, index) => 
           (<button
             key={index}

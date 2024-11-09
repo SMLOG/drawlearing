@@ -14,7 +14,6 @@ const settingsSlice = createSlice({
     },
     reducers: {
         updateSettings: (state, action) => {
-            console.log(state,action)
             Object.assign(state,action.payload)
         },
     },

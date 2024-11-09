@@ -163,7 +163,6 @@ const Draw = () => {
 
   const restoreCanvas = async (isReplay = false) => {
     setSvgElements([]);
-    console.log('restoreCanvas')
     let paths=[];
     cursorRef.current.style.display = "";
 
@@ -334,7 +333,6 @@ const Draw = () => {
     return pathData.trim(); // Return the path data string
   }
   const drawElements = () => {
-    console.log(svgElements);
     return svgElements.map((element, index) => {
       return (
         <path

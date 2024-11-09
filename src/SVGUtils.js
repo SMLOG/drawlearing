@@ -1,3 +1,5 @@
+import { svgPathProperties } from "svg-path-properties";
+
 export function parseSVGPath(path) {
     const commands = path.match(/[a-zA-Z][^a-zA-Z]*/g);
     const points = [];
@@ -95,3 +97,37 @@ export  function pointsSmooth  (list) {
 //const svgPath = "M 88 83 L 79 85 Q 73 86.5 67 88 Q 61 89 55 90";
 //const jsonData = parseSVGPath(svgPath);
 //console.log(JSON.stringify(jsonData, null, 2));
+
+export function scaleSvgPath(path, scaleFactor) {
+  return path.replace(/([MLZCQUHSVA])([^MLZCQUHSVA]*)/g, (match, command, coords) => {
+      const scaledCoords = coords.trim().split(/[\s,]+/).map(num => {
+          return (parseFloat(num) * scaleFactor).toFixed(6); // Scale and format to 6 decimal places
+      }).join(' ');
+      return command + ' ' + scaledCoords;
+  });
+}
+
+export function getPointsOnPath(svgPath, minRadius,scaleFactor) {
+  const path = scaleSvgPath(svgPath,scaleFactor);
+  const pathProperties = new svgPathProperties(path);
+  const length = pathProperties.getTotalLength();
+  const points = [];
+  
+  // Start from the beginning of the path
+  let currentLength = 0;
+
+  while (currentLength <= length) {
+    const point = pathProperties.getPointAtLength(currentLength);
+    points.push({ x: point.x, y: point.y,r:minRadius });
+    // Move to the next point based on minRadius
+    currentLength += minRadius;
+  }
+
+  // Handle the case where the last point might be added beyond the path length
+  if (currentLength - minRadius < length) {
+    const point = pathProperties.getPointAtLength(length);
+    points.push({ x: point.x, y: point.y,r:minRadius });
+  }
+
+  return points;
+}
