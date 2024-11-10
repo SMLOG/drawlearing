@@ -14,7 +14,7 @@ import { updateSettings } from "./features/settingsSlice";
 import { createStrokeJSON } from "./SvgEdit2/SVGUtils";
 import { playSound } from "./sound";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlay, faRedo } from "@fortawesome/free-solid-svg-icons";
+import { faPlay, faRedo,faLightbulb  } from "@fortawesome/free-solid-svg-icons";
 import EventBus from "just-event-bus";
 
 const WordTrack = ({}) => {
@@ -237,14 +237,27 @@ const WordTrack = ({}) => {
         >
           <div style={{ display: "flex", justifyContent: "center" }}>
             <div onClick={tipsNextStroke}>Next Tip</div>
-            <div>Auto Tips</div>
+            <div>Auto Tips
+
+             
+            <FontAwesomeIcon
+                icon={faLightbulb}
+                size="sm"
+                color={"red"}
+                onClick={resetStrokes}
+              />
+               <span>Auto Tips</span>
+
+            </div>
             <div>
+              
               <FontAwesomeIcon
                 icon={faRedo}
                 size="sm"
                 color={"red"}
                 onClick={resetStrokes}
               />
+              <span>Reset</span>
             </div>
           </div>
           <svg
@@ -257,6 +270,10 @@ const WordTrack = ({}) => {
             onMouseDown={startDrawing}
             onMouseMove={moveDraw}
             onMouseUp={stopDrawing}
+            onTouchStart={startDrawing}
+            onTouchMove={moveDraw}
+            onTouchEnd={stopDrawing}
+
           >
             <g>
               <rect
