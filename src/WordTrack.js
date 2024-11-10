@@ -6,7 +6,7 @@ import {
   scaleSvgPath,
   getPointsOnPath,
   getOffset,
-  isPointNear
+  isPointNear,
 } from "./SVGUtils";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -14,7 +14,7 @@ import { updateSettings } from "./features/settingsSlice";
 import { createStrokeJSON } from "./SvgEdit2/SVGUtils";
 import { playSound } from "./sound";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlay, faRedo,faLightbulb  } from "@fortawesome/free-solid-svg-icons";
+import { faPlay, faRedo, faLightbulb } from "@fortawesome/free-solid-svg-icons";
 import EventBus from "just-event-bus";
 
 const WordTrack = ({}) => {
@@ -27,7 +27,7 @@ const WordTrack = ({}) => {
   const settings = useSelector((state) => state.settings);
   const dispatch = useDispatch();
 
-  const playStroke = async (w,stroke, curTime) => {
+  const playStroke = async (w, stroke, curTime) => {
     await new Promise((resolve) => setTimeout(resolve, 50));
     if (curTime !== playingRef.current) return;
     let spoints = stroke.track;
@@ -55,7 +55,7 @@ const WordTrack = ({}) => {
           setPoints([]);
 
           let stroke = word.stroke[i];
-          await playStroke(w,stroke, curTime);
+          await playStroke(w, stroke, curTime);
           if (curTime !== playingRef.current) return;
           setPlayedIndex(i);
         }
@@ -70,12 +70,15 @@ const WordTrack = ({}) => {
   const resetStrokes = () => {
     setPlayedIndex(-1);
   };
-  const tipsNextStroke = async()=>{
-
+  const tipsNextStroke = async () => {
+    let nextIndex = playedIndex + 1;
     setPoints([]);
-    let stroke = word.stroke[playedIndex+1]
-    await playStroke(null,stroke, playingRef.current);
-  }
+    if (nextIndex >= word.stroke.length) nextIndex = 0;
+
+    let stroke = word.stroke[nextIndex];
+    setPlayedIndex(nextIndex - 1);
+    await playStroke(null, stroke, playingRef.current);
+  };
   const loadDatas = async () => {
     try {
       let str = settings.item;
@@ -108,7 +111,7 @@ const WordTrack = ({}) => {
             begin: word.stroke.length,
             tranX: tranX,
             w: cdata.w || 100,
-            strokeIndex:-1
+            strokeIndex: -1,
           };
 
           word.stroke.push(...cdata.stroke);
@@ -166,58 +169,76 @@ const WordTrack = ({}) => {
 
   const svgRef = useRef(null);
   const isDrawingRef = useRef(false);
-  const drawPoints = useRef([])
+  const drawPoints = useRef([]);
 
   const startDrawing = useCallback((e) => {
     e.preventDefault();
     isDrawingRef.current = true;
-    const { offsetX, offsetY } = getOffset(svgRef.current,e);
-    drawPoints.current = [
-    ];
+    const { offsetX, offsetY } = getOffset(svgRef.current, e);
+    drawPoints.current = [];
     setPoints([]);
   }, []);
 
-
-  const [penPoint,setPenPoint] = useState({x:0,y:0});
-  const moveDraw =(e) => {
+  const [penPoint, setPenPoint] = useState({ x: 0, y: 0 });
+  const playedIndexRef = useRef(-1);
+  useEffect(() => {
+    playedIndexRef.current = playedIndex;
+  }, [playedIndex]);
+  const moveDraw = (e) => {
     if (!isDrawingRef.current) return;
 
-    const { offsetX, offsetY } = getOffset(svgRef.current,e);
+    const { offsetX, offsetY } = getOffset(svgRef.current, e);
 
     const newPoint = { x: offsetX, y: offsetY };
 
-  
-      if(playedIndex+1>=word.stroke.length)return;
-      let nextStrok = word.stroke[playedIndex+1]
-      let spoints = nextStrok.track;
-      setPenPoint(newPoint);
-      if(drawPoints.current.length < spoints.length 
-        && isPointNear(newPoint,spoints[drawPoints.current.length],8)){
-          let point = spoints[drawPoints.current.length];
-        if(point){
-          setPoints((prev) => [...prev, point]);
-        }
-        drawPoints.current.push(newPoint);
+    if (playedIndexRef.current + 1 >= word.stroke.length) return;
+    let nextStrok = word.stroke[playedIndexRef.current + 1];
+    let spoints = nextStrok.track;
+    setPenPoint(newPoint);
+    if (
+      drawPoints.current.length < spoints.length &&
+      isPointNear(newPoint, spoints[drawPoints.current.length], 8)
+    ) {
+      let point = spoints[drawPoints.current.length];
+      if (point) {
+        setPoints((prev) => [...prev, point]);
       }
-
-    
-  
+      drawPoints.current.push(newPoint);
+    }
   };
 
   const stopDrawing = () => {
     if (!isDrawingRef.current) return;
     isDrawingRef.current = false;
     console.log(drawPoints.current);
-    if(playedIndex+1>=word.stroke.length)return;
-    let nextStrok = word.stroke[playedIndex+1];
+    if (playedIndexRef.current + 1 >= word.stroke.length) return;
+    let nextStrok = word.stroke[playedIndexRef.current + 1];
     let spoints = nextStrok.track;
-    if(drawPoints.current.length==spoints.length){
-      setPlayedIndex(playedIndex+1);
-    }else{
+    if (drawPoints.current.length == spoints.length) {
+      setPlayedIndex(playedIndexRef.current + 1);
+    } else {
     }
     setPoints([]);
-    drawPoints.length=0;
+    drawPoints.length = 0;
   };
+
+  useEffect(() => {
+    const divElement = svgRef.current;
+    console.log(divElement);
+    if (divElement) {
+      divElement.addEventListener("touchstart", startDrawing, {
+        passive: false,
+      });
+      divElement.addEventListener("touchmove", moveDraw, { passive: true });
+      divElement.addEventListener("touchend", stopDrawing, { passive: false });
+
+      return () => {
+        divElement.removeEventListener("touchstart", startDrawing);
+        divElement.removeEventListener("touchmove", moveDraw);
+        divElement.removeEventListener("touchend", stopDrawing);
+      };
+    }
+  }, [word]);
 
   return (
     <>
@@ -237,20 +258,17 @@ const WordTrack = ({}) => {
         >
           <div style={{ display: "flex", justifyContent: "center" }}>
             <div onClick={tipsNextStroke}>Next Tip</div>
-            <div>Auto Tips
-
-             
-            <FontAwesomeIcon
+            <div>
+              Auto Tips
+              <FontAwesomeIcon
                 icon={faLightbulb}
                 size="sm"
                 color={"red"}
                 onClick={resetStrokes}
               />
-               <span>Auto Tips</span>
-
+              <span>Auto Tips</span>
             </div>
             <div>
-              
               <FontAwesomeIcon
                 icon={faRedo}
                 size="sm"
@@ -270,10 +288,6 @@ const WordTrack = ({}) => {
             onMouseDown={startDrawing}
             onMouseMove={moveDraw}
             onMouseUp={stopDrawing}
-            onTouchStart={startDrawing}
-            onTouchMove={moveDraw}
-            onTouchEnd={stopDrawing}
-
           >
             <g>
               <rect
@@ -391,12 +405,7 @@ const WordTrack = ({}) => {
               </g>
             </g>
             <g>
-            <circle
-                    cx={penPoint.x}
-                    cy={penPoint.y}
-                    r={8}
-                    fill="red"
-                  />
+              <circle cx={penPoint.x} cy={penPoint.y} r={8} fill="red" />
             </g>
           </svg>
           <div style={{ display: "flex" }}>
