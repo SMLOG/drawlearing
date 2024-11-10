@@ -114,20 +114,27 @@ export function getPointsOnPath(svgPath, minRadius,scaleFactor) {
   const points = [];
   
   // Start from the beginning of the path
-  let currentLength = 0;
+  let currentLength = 1;
 
+  let lastPoint = pathProperties.getPointAtLength(0);
+  points.push({ x: lastPoint.x, y: lastPoint.y,r:minRadius });
   while (currentLength <= length) {
     const point = pathProperties.getPointAtLength(currentLength);
-    points.push({ x: point.x, y: point.y,r:minRadius });
-    // Move to the next point based on minRadius
-    currentLength += minRadius;
+
+    if(  PointsDistance(point,lastPoint)>=minRadius){
+
+      lastPoint={ x: point.x, y: point.y,r:minRadius };
+      points.push(lastPoint);
+
+    }
+    currentLength += 1;
   }
 
   // Handle the case where the last point might be added beyond the path length
-  if (currentLength - minRadius < length) {
-    const point = pathProperties.getPointAtLength(length);
-    points.push({ x: point.x, y: point.y,r:minRadius });
-  }
+ /* let endPoint = pathProperties.getPointAtLength(length);
+  if (PointsDistance(lastPoint,endPoint) >= minRadius*2/3) {
+    points.push({ x: endPoint.x, y: endPoint.y,r:minRadius });
+  }*/
 
   return points;
 }
@@ -171,7 +178,7 @@ export  function getOffset(svg, e) {
   return { offsetX: adjustedX, offsetY: adjustedY };
 }
 
-export function isPointNear(point1, point2, radius) {
+export function PointsDistance(point1, point2) {
   const distance = Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2));
-  return distance <= radius;
+  return distance ;
 }

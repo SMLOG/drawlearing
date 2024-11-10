@@ -6,7 +6,7 @@ import {
   scaleSvgPath,
   getPointsOnPath,
   getOffset,
-  isPointNear,
+  PointsDistance,
 } from "./SVGUtils";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -167,20 +167,28 @@ const WordTrack = ({}) => {
     const { offsetX, offsetY } = getOffset(svgRef.current, e);
 
     const newPoint = { x: offsetX, y: offsetY };
+    console.log(newPoint)
 
     if (playedIndexRef.current + 1 >= word.stroke.length) return;
     let nextStrok = word.stroke[playedIndexRef.current + 1];
     let spoints = nextStrok.track;
+    setTrackPoints(spoints);
     setPenPoint(newPoint);
-    if (
-      drawPoints.current.length < spoints.length &&
-      isPointNear(newPoint, spoints[drawPoints.current.length], 8)
-    ) {
-      let point = spoints[drawPoints.current.length];
-      if (point) {
-        setPoints((prev) => [...prev, point]);
+    if (drawPoints.current.length < spoints.length) {
+      let i = drawPoints.current.length;
+      let nextPoint = spoints[i];
+     let distance =  PointsDistance(newPoint, nextPoint);
+     console.log(i,spoints.length,newPoint,nextPoint,distance)
+      if (
+        distance <=
+        spoints[drawPoints.current.length].r
+      ) {
+        let point = spoints[drawPoints.current.length];
+        if (point) {
+          setPoints((prev) => [...prev, point]);
+        }
+        drawPoints.current.push(newPoint);
       }
-      drawPoints.current.push(newPoint);
     }
   };
 
@@ -256,6 +264,7 @@ const WordTrack = ({}) => {
     { icon: faVolumeUp, label: "Play Sound", onClick: playSound },
   ];
 
+  const [trackPoints,setTrackPoints] = useState([]);
   return (
     <>
       {word && (
@@ -450,7 +459,16 @@ const WordTrack = ({}) => {
               </g>
             </g>
             <g>
-              <circle cx={penPoint.x} cy={penPoint.y} r={8} fill="red" />
+              <circle cx={penPoint.x} cy={penPoint.y} r={4} fill="red" />
+              {trackPoints.map((point, index) => (
+                  <circle
+                    key={index}
+                    cx={point.x}
+                    cy={point.y}
+                    r={1}
+                    fill="yellow"
+                  />
+                ))}
             </g>
           </svg>
           <div style={{ display: "flex" }}>
