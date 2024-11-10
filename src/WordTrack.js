@@ -131,8 +131,10 @@ const WordTrack = ({}) => {
   };
 
   useEffect(() => {
+    
     wordRef.current = null;
     (async () => {
+
       if (settings.item) {
         await loadDatas();
       }
@@ -167,7 +169,6 @@ const WordTrack = ({}) => {
     const { offsetX, offsetY } = getOffset(svgRef.current, e);
 
     const newPoint = { x: offsetX, y: offsetY };
-    console.log(newPoint)
 
     if (playedIndexRef.current + 1 >= word.stroke.length) return;
     let nextStrok = word.stroke[playedIndexRef.current + 1];
@@ -178,7 +179,6 @@ const WordTrack = ({}) => {
       let i = drawPoints.current.length;
       let nextPoint = spoints[i];
      let distance =  PointsDistance(newPoint, nextPoint);
-     console.log(i,spoints.length,newPoint,nextPoint,distance)
       if (
         distance <=
         spoints[drawPoints.current.length].r
@@ -224,8 +224,13 @@ const WordTrack = ({}) => {
     }
   }, [word]);
 
-  const playSound = () => {
+  const playSounds = async () => {
     console.log("Sound played");
+    for(let w of word.chs){
+      playSound(`/sound/tc/${encodeURIComponent(w.ch)}.mp3`);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+
   };
 
   const [tipIndex, setTipIndex] = useState(-1);
@@ -261,7 +266,7 @@ const WordTrack = ({}) => {
     },
     { icon: faRedo, label: "Reset", onClick: resetStrokes },
     { icon: faPlay, label: "Play", onClick: playStokes },
-    { icon: faVolumeUp, label: "Play Sound", onClick: playSound },
+    { icon: faVolumeUp, label: "Play Sound", onClick: playSounds },
   ];
 
   const [trackPoints,setTrackPoints] = useState([]);
@@ -474,14 +479,7 @@ const WordTrack = ({}) => {
           <div style={{ display: "flex" }}>
             {word.chs &&
               word.chs.map((ch, index) => (
-                <div key={index} style={{ flexGrow: ch.w }}>
-                  <div
-                    style={{ display: "flex", justifyContent: "space-between" }}
-                  >
-                    <span>{ch.ch}</span>
-                    <FontAwesomeIcon icon={faPlay} size="sm" color={"#aaa"} />
-                  </div>
-                </div>
+                  <span key={index}>{ch.ch}</span>
               ))}
           </div>
         </div>
