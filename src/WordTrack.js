@@ -14,7 +14,13 @@ import { updateSettings } from "./features/settingsSlice";
 import { createStrokeJSON } from "./SvgEdit2/SVGUtils";
 import { playSound } from "./sound";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlay, faRedo, faLightbulb } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPlay,
+  faRedo,
+  faLightbulb,
+  faArrowRight,
+  faVolumeUp 
+} from "@fortawesome/free-solid-svg-icons";
 import EventBus from "just-event-bus";
 
 const WordTrack = ({}) => {
@@ -68,6 +74,7 @@ const WordTrack = ({}) => {
     playingRef.current = 0;
   };
   const resetStrokes = () => {
+    setPoints([]);
     setPlayedIndex(-1);
   };
   const tipsNextStroke = async () => {
@@ -144,28 +151,6 @@ const WordTrack = ({}) => {
     // playStokes();
     setPlayedIndex(-1);
   }, [word]);
-  useEffect(() => {
-    let contextButton = { name: "Replay" };
-    dispatch(
-      updateSettings({
-        contextButtons: [...settings.contextButtons, contextButton],
-      })
-    );
-
-    EventBus.on(["Replay"], [playStokes]);
-    return () => {
-      let updateButtons = settings.contextButtons.filter(
-        (item) => item.name != contextButton.name
-      );
-      dispatch(
-        updateSettings({
-          contextButtons: updateButtons,
-        })
-      );
-
-      EventBus.off(["Replay"], [playStokes]);
-    };
-  }, []);
 
   const svgRef = useRef(null);
   const isDrawingRef = useRef(false);
@@ -240,6 +225,19 @@ const WordTrack = ({}) => {
     }
   }, [word]);
 
+  const playSound = () => {
+    console.log("Sound played");
+};
+
+  const [autoTips,setAutoTips] = useState(false);
+  const buttons = [
+    { icon: faArrowRight, label: "Next Tip", onClick: tipsNextStroke },
+    { icon: faLightbulb, label: "Auto Tips", onClick: ()=>{setAutoTips(!autoTips)},selected:autoTips },
+    { icon: faRedo, label: "Reset", onClick: resetStrokes },
+    { icon: faPlay, label: "Play", onClick: playStokes },
+    { icon: faVolumeUp, label: "Play Sound", onClick: playSound },
+  ];
+
   return (
     <>
       {word && (
@@ -256,27 +254,33 @@ const WordTrack = ({}) => {
             flexDirection: "column",
           }}
         >
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <div onClick={tipsNextStroke}>Next Tip</div>
-            <div>
-              Auto Tips
-              <FontAwesomeIcon
-                icon={faLightbulb}
-                size="sm"
-                color={"red"}
-                onClick={resetStrokes}
-              />
-              <span>Auto Tips</span>
-            </div>
-            <div>
-              <FontAwesomeIcon
-                icon={faRedo}
-                size="sm"
-                color={"red"}
-                onClick={resetStrokes}
-              />
-              <span>Reset</span>
-            </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              margin: "5px 0",
+            }}
+          >
+            <ul
+              style={{
+                listStyle: "none",
+                padding: 0,
+                margin: 0,
+                display: "flex",
+              }}
+            >
+              {buttons.map((button, index) => (
+                <li
+                  key={index}
+                  onClick={button.onClick}
+                  style={{ margin: "0 10px", cursor: "pointer",color: button.selected ? 'red' : 'black', }}
+                >
+                  <FontAwesomeIcon icon={button.icon} size="sm" color={"red"} />
+                  <span style={{ marginLeft: "5px" }}>{button.label}</span>
+                </li>
+              ))}
+            </ul>
           </div>
           <svg
             viewBox={`0 0 ${word.viewBoxWidth}  100 `}
@@ -339,7 +343,7 @@ const WordTrack = ({}) => {
                   </g>
                 ))}
             </g>
-
+            {/** white stroke */}
             <g>
               {word.stroke &&
                 word.stroke.map((stroke, index) => (
@@ -353,7 +357,7 @@ const WordTrack = ({}) => {
                   />
                 ))}
             </g>
-
+            {/** played strokes */}
             <g>
               {word.stroke &&
                 word.stroke.map(
@@ -369,6 +373,25 @@ const WordTrack = ({}) => {
                       />
                     )
                 )}
+            </g>
+
+            {/* next tips stroke */}
+            <g>
+              <g>
+                {word.stroke &&
+                  word.stroke.map(
+                    (stroke, index) =>
+                      playedIndex + 1 == index && (
+                        <path
+                          key={index}
+                          d={stroke.d}
+                          stroke="#F00"
+                          strokeWidth="2"
+                          fill={stroke.nf ? "none" : "#F00"}
+                        />
+                      )
+                  )}
+              </g>
             </g>
 
             <g>
