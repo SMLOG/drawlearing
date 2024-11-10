@@ -19,7 +19,7 @@ import {
   faRedo,
   faLightbulb,
   faArrowRight,
-  faVolumeUp 
+  faVolumeUp,
 } from "@fortawesome/free-solid-svg-icons";
 import EventBus from "just-event-bus";
 
@@ -77,15 +77,7 @@ const WordTrack = ({}) => {
     setPoints([]);
     setPlayedIndex(-1);
   };
-  const tipsNextStroke = async () => {
-    let nextIndex = playedIndex + 1;
-    setPoints([]);
-    if (nextIndex >= word.stroke.length) nextIndex = 0;
 
-    let stroke = word.stroke[nextIndex];
-    setPlayedIndex(nextIndex - 1);
-    await playStroke(null, stroke, playingRef.current);
-  };
   const loadDatas = async () => {
     try {
       let str = settings.item;
@@ -195,7 +187,6 @@ const WordTrack = ({}) => {
   const stopDrawing = () => {
     if (!isDrawingRef.current) return;
     isDrawingRef.current = false;
-    console.log(drawPoints.current);
     if (playedIndexRef.current + 1 >= word.stroke.length) return;
     let nextStrok = word.stroke[playedIndexRef.current + 1];
     let spoints = nextStrok.track;
@@ -227,12 +218,39 @@ const WordTrack = ({}) => {
 
   const playSound = () => {
     console.log("Sound played");
-};
+  };
 
-  const [autoTips,setAutoTips] = useState(false);
+  const [tipIndex, setTipIndex] = useState(-1);
+  const [autoTips, setAutoTips] = useState(false);
+
+  const tipsNextStroke = async () => {
+    let nextIndex = playedIndex + 1;
+    if (nextIndex >= word.stroke.length) nextIndex = 0;
+    setTipIndex(nextIndex);
+  };
+
+  useEffect(() => {
+    let nextIndex = playedIndex + 1;
+
+    if (autoTips) {
+      let nextIndex = playedIndex + 1;
+      if (nextIndex >= word.stroke.length) nextIndex = 0;
+    } else {
+      nextIndex = -1;
+    }
+    setTipIndex(nextIndex);
+  }, [word, playedIndex, autoTips]);
+
   const buttons = [
     { icon: faArrowRight, label: "Next Tip", onClick: tipsNextStroke },
-    { icon: faLightbulb, label: "Auto Tips", onClick: ()=>{setAutoTips(!autoTips)},selected:autoTips },
+    {
+      icon: faLightbulb,
+      label: "Auto Tips",
+      onClick: () => {
+        setAutoTips(!autoTips);
+      },
+      selected: autoTips,
+    },
     { icon: faRedo, label: "Reset", onClick: resetStrokes },
     { icon: faPlay, label: "Play", onClick: playStokes },
     { icon: faVolumeUp, label: "Play Sound", onClick: playSound },
@@ -274,7 +292,11 @@ const WordTrack = ({}) => {
                 <li
                   key={index}
                   onClick={button.onClick}
-                  style={{ margin: "0 10px", cursor: "pointer",color: button.selected ? 'red' : 'black', }}
+                  style={{
+                    margin: "0 10px",
+                    cursor: "pointer",
+                    color: button.selected ? "red" : "black",
+                  }}
                 >
                   <FontAwesomeIcon icon={button.icon} size="sm" color={"red"} />
                   <span style={{ marginLeft: "5px" }}>{button.label}</span>
@@ -381,7 +403,7 @@ const WordTrack = ({}) => {
                 {word.stroke &&
                   word.stroke.map(
                     (stroke, index) =>
-                      playedIndex + 1 == index && (
+                      tipIndex == index && (
                         <path
                           key={index}
                           d={stroke.d}
