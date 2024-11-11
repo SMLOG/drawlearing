@@ -17,7 +17,7 @@ import UnitList from "./UnitList";
 import Settings from "./Settings";
 import { useSelector, useDispatch } from "react-redux";
 import SvgEditorWrap from "./SvgEditorWrap";
-import SearchDropdown from './SearchDropdown';
+import TopNav from './TopNav';
 
 
 import { getOffset } from "./SVGUtils";
@@ -66,7 +66,6 @@ const Draw = () => {
     settingRef.current.points = [
       { x: parseInt(offsetX), y: parseInt(offsetY) },
     ];
-    console.log('startDrawing');
     setSvgElements((prev) => {
       let ret = [
         ...prev,
@@ -110,14 +109,12 @@ const Draw = () => {
         const lastElement = prev[prev.length - 1];
         lastElement.points.length = 0;
         lastElement.points.push(...points);
-        console.log(prev.length)
         return [...prev];
       });
     }
   }, []);
 
   const stopDrawing = () => {
-    console.log('stopDrawing')
     if (!isDrawingRef.current) return;
     isDrawingRef.current = false;
     const newAction = {
@@ -279,7 +276,6 @@ const Draw = () => {
     if (points.length < 2) return "";
 
     let pathData = `M ${points[0].x} ${points[0].y} `; // Move to the first point
-    console.log('hello')
     for (let i = 0; i < points.length - 1; i++) {
       const p1 = points[i];
       const p2 = points[i + 1];
@@ -372,6 +368,24 @@ const Draw = () => {
     restoreCanvas(true); // Trigger replay mode
   };
 
+
+  useEffect(() => {
+    const divElement = svgRef.current;
+    if (divElement) {
+      divElement.addEventListener("touchstart", startDrawing, {
+        passive: false,
+      });
+      divElement.addEventListener("touchmove", moveDraw, { passive: true });
+      divElement.addEventListener("touchend", stopDrawing, { passive: false });
+
+      return () => {
+        divElement.removeEventListener("touchstart", startDrawing);
+        divElement.removeEventListener("touchmove", moveDraw);
+        divElement.removeEventListener("touchend", stopDrawing);
+      };
+    }
+  }, []);
+
   return (
     <div
       className="container"
@@ -382,7 +396,7 @@ const Draw = () => {
       )}
       {settings.showTopNav && (
         <div id="top" style={{ height: "43px", userSelect: "none",zIndex:10000 }}>
-          <SearchDropdown/>
+          <TopNav/>
         </div>
       )}
       <div
@@ -442,9 +456,6 @@ const Draw = () => {
               onMouseDown={startDrawing}
               onMouseMove={moveDraw}
               onMouseUp={stopDrawing}
-              onTouchStart={startDrawing}
-              onTouchMove={moveDraw}
-              onTouchEnd={stopDrawing}
               onMouseEnter={mouseEnter}
               onMouseLeave={mouseLeave}
               width="100%"

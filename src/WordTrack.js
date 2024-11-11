@@ -208,7 +208,6 @@ const WordTrack = ({}) => {
 
   useEffect(() => {
     const divElement = svgRef.current;
-    console.log(divElement);
     if (divElement) {
       divElement.addEventListener("touchstart", startDrawing, {
         passive: false,
