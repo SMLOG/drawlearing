@@ -14,6 +14,7 @@ import { updateSettings } from "./features/settingsSlice";
 import { createStrokeJSON } from "./SvgEdit2/SVGUtils";
 import { playSound } from "./sound";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import CollapsibleItemsContainer from './CollapsibleItemsContainer';
 import {
   faPlay,
   faRedo,
@@ -293,16 +294,10 @@ const WordTrack = ({}) => {
               margin: "5px 0",
             }}
           >
-            <ul
-              style={{
-                listStyle: "none",
-                padding: 0,
-                margin: 0,
-                display: "flex",
-              }}
-            >
+            <div style={{flexGrow:1}}>
+            <CollapsibleItemsContainer >
               {buttons.map((button, index) => (
-                <li
+                <div
                   key={index}
                   onClick={button.onClick}
                   style={{
@@ -313,9 +308,10 @@ const WordTrack = ({}) => {
                 >
                   <FontAwesomeIcon icon={button.icon} size="sm" color={"red"} />
                   <span style={{ marginLeft: "5px" }}>{button.label}</span>
-                </li>
+                </div>
               ))}
-            </ul>
+            </CollapsibleItemsContainer>
+            </div>
           </div>
           <svg
             viewBox={`0 0 ${word.viewBoxWidth}  100 `}
