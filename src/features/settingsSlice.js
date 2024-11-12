@@ -9,6 +9,7 @@ const settingsSlice = createSlice({
         },
         showTopNav:true,
         showSvgEditor:false,
+        showBooks:false,
         item:null,
         contextButtons:[]
     },

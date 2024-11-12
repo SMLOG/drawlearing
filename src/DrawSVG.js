@@ -18,6 +18,7 @@ import Settings from "./Settings";
 import { useSelector, useDispatch } from "react-redux";
 import SvgEditorWrap from "./SvgEditorWrap";
 import TopNav from './TopNav';
+import Books from './Books';
 
 
 import { getOffset } from "./SVGUtils";
@@ -449,7 +450,7 @@ const Draw = () => {
             {settings.currentMode == "Video" && <YoutubePlayer item={item} />}
             {settings.showSvgEditor && <SvgEditorWrap />}
             {settings.currentMode == "Track" && <WordTrack item={item} />}
-
+            {settings.showBooks&& <Books/>}
             <svg
               ref={svgRef}
               className="svg"
