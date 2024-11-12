@@ -74,7 +74,7 @@ const CollapsibleItemsContainer = ({ children }) => {
   };
 
   return (
-    <div>
+    <div style={{    position: "relative"}}>
       <div ref={containerRef} style={{ display: 'flex', overflow: 'hidden',justifyContent:'center ' }}>
         {visibleItems.map((item, index) => (
           <div key={index} style={{ margin: '5px' }}>{item}</div>
@@ -86,12 +86,12 @@ const CollapsibleItemsContainer = ({ children }) => {
       )}
       </div>
       {isPopupOpen && (
-        <div className="popup">
-          <ul>
+        <div className="popup" style={{position:'absolute',bottom:'100%',right:0,background:'#eee'}}>
+          <div>
             {overflowItems.map((item, index) => (
-              <li key={index}>{item}</li>
+              <div key={index}>{item}</div>
             ))}
-          </ul>
+          </div>
           <button onClick={togglePopup}>Close</button>
         </div>
       )}
