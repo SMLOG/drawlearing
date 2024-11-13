@@ -20,7 +20,7 @@ import {
   faRedo,
   faLightbulb,
   faArrowRight,
-  faVolumeUp,
+  faVolumeUp,faQuestionCircle 
 } from "@fortawesome/free-solid-svg-icons";
 import EventBus from "just-event-bus";
 
@@ -163,7 +163,11 @@ const WordTrack = ({}) => {
   const playedIndexRef = useRef(-1);
   useEffect(() => {
     playedIndexRef.current = playedIndex;
-  }, [playedIndex]);
+    if(word.chs.filter(c=>c.end==playedIndex+1).length>0){
+        setTrackPoints([]);
+    }
+    
+  }, [playedIndex,word]);
   const moveDraw = (e) => {
     if (!isDrawingRef.current) return;
 
@@ -255,7 +259,7 @@ const WordTrack = ({}) => {
   }, [word, playedIndex, autoTips]);
 
   const buttons = [
-    { icon: faArrowRight, label: "Next Tip", onClick: tipsNextStroke },
+    { icon: faQuestionCircle , label: "Next Tip", onClick: tipsNextStroke },
     {
       icon: faLightbulb,
       label: "Auto Tips",
@@ -459,7 +463,7 @@ const WordTrack = ({}) => {
               </g>
             </g>
             <g>
-              <circle cx={penPoint.x} cy={penPoint.y} r={4} fill="red" />
+            {false&& <circle cx={penPoint.x} cy={penPoint.y} r={4} fill="red" />}
               {trackPoints.map((point, index) => (
                   <circle
                     key={index}
