@@ -90,7 +90,7 @@ const SearchDropdown = () => {
                 placeholder="Type to search..."
                 autoComplete="off"
                 style={{
-                    width: 'calc(100% - 10px)', // Set to 100% - 10px for spacing
+                    width: '100%', // Set to 100% - 10px for spacing
                     padding: '10px',
                     paddingRight: '40px',
                     margin: '0 2px',

@@ -19,7 +19,8 @@ import { useSelector, useDispatch } from "react-redux";
 import SvgEditorWrap from "./SvgEditorWrap";
 import TopNav from './TopNav';
 import Books from './Books';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBook,faBars  } from '@fortawesome/free-solid-svg-icons';
 
 import { getOffset } from "./SVGUtils";
 
@@ -395,15 +396,15 @@ const Draw = () => {
       {isSettingsVisible && (
         <Settings onClose={toggleSettings} settings={settings} />
       )}
-      {settings.showTopNav && (
-        <div id="top" style={{ height: "43px", userSelect: "none",zIndex:10000 }}>
-          <TopNav/>
-        </div>
-      )}
+ 
       <div
         id="middle"
         style={{ display: "flex", flexGrow: 1, position: "relative" }}
       >
+        {/* left */}
+        <div style={{display:'flex',flexDirection:'column'}}> 
+        <div style={{minWidth:'30px',margin:'5px 0'}}><FontAwesomeIcon icon={faBars}  size="1x" onClick={toggleSettings} /></div>
+        <div style={{position:'relative',flexGrow:1}}>
         <div
           id="leftbar"
           style={{
@@ -415,6 +416,7 @@ const Draw = () => {
 
           }}
         >
+
           <ColorPicker
             selectedColor={selectedColor}
             setSelectedColor={setSelectedColor}
@@ -426,15 +428,23 @@ const Draw = () => {
             setPenType={setPenType}
           />
         </div>
+        </div>
+        </div>
         <div
           id="right"
           style={{
             flexGrow: 1,
             display: "flex",
-            marginLeft: "30px",
             position: "relative",
+            flexDirection:'column'
           }}
         >
+              {settings.showTopNav && (
+        <div id="top" style={{ height: "43px", userSelect: "none",zIndex:10000,marginTop:'5px' }}>
+          <TopNav toggleSettings={toggleSettings}/>
+        </div>
+      )} 
+      <div style={{flexGrow:1,position:'relative'}}>
           <div
             className="svg-wrapper"
             style={{
@@ -494,6 +504,8 @@ const Draw = () => {
             setActiveCategory={setActiveCategory}
           />
         </div>
+          </div>
+
       </div>
       <div id="bottom">
         <ButtonContainer

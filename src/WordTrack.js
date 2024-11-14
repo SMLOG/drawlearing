@@ -162,6 +162,7 @@ const WordTrack = ({}) => {
   const [penPoint, setPenPoint] = useState({ x: 0, y: 0 });
   const playedIndexRef = useRef(-1);
   useEffect(() => {
+    if(!word)return;
     playedIndexRef.current = playedIndex;
     if(word.chs.filter(c=>c.end==playedIndex+1).length>0){
         setTrackPoints([]);
