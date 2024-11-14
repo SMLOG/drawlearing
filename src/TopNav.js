@@ -16,7 +16,7 @@ const TopNave = ({toggleSettings}) => {
     return (
         <div style={{ position: 'relative',display:'flex',justifyContent: "space-between",margin:'0' }}>
             <div style={{flexGrow:1}}><SearchDropdown/></div>
-            <div style={{minWidth:'20px'}}> <FontAwesomeIcon icon={faBook} size="1x" onClick={toggleBooks} /></div>
+            <div style={{minWidth:'20px',margin:'5px'}}> <FontAwesomeIcon icon={faBook} size="1x" onClick={toggleBooks} /></div>
         </div>
     );
 };

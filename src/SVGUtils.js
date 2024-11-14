@@ -182,3 +182,31 @@ export function PointsDistance(point1, point2) {
   const distance = Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2));
   return distance ;
 }
+
+export const downloadSvgPng = (svg) => {
+  const serializer = new XMLSerializer();
+  const svgStr = serializer.serializeToString(svg);
+  const base64 = window.btoa(unescape(encodeURIComponent(svgStr)));
+  const imgSrc = 'data:image/svg+xml;base64,' + base64;
+
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+
+  const img = new Image();
+  img.onload = () => {
+      canvas.width = svg.width.baseVal.value;
+      canvas.height = svg.height.baseVal.value;
+      ctx.drawImage(img, 0, 0);
+      canvas.toBlob((blob) => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'image.png';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+      }, 'image/png');
+  };
+
+  img.src = imgSrc;
+};

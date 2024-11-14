@@ -10,7 +10,7 @@ import {
   faTrashAlt,
   faSave,
 } from "@fortawesome/free-solid-svg-icons";
-const CollapsibleItemsContainer = ({ children }) => {
+const CollapsibleItemsContainer = ({ children,direction }) => {
   const containerRef = useRef(null);
   const buttonRef = useRef(null);
   const [visibleItems, setVisibleItems] = useState([]);
@@ -86,7 +86,7 @@ const CollapsibleItemsContainer = ({ children }) => {
       )}
       </div>
       {isPopupOpen && (
-        <div className="popup" style={{position:'absolute',bottom:'100%',right:0,background:'#eee'}}>
+        <div className="popup" style={{position:'absolute',[direction=='w'?'top':'bottom']:'100%',right:0,background:'#eee'}}>
           <div>
             {overflowItems.map((item, index) => (
               <div key={index}>{item}</div>

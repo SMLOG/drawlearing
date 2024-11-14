@@ -11,6 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "./ButtonContainer.css"; // Updated CSS file import
 import CollapsibleItemsContainer  from "./CollapsibleItemsContainer";
+import { downloadSvgPng } from "./SVGUtils";
 const ButtonContainer = ({
   undo,
   redo,
@@ -20,6 +21,7 @@ const ButtonContainer = ({
   currentIndex,
   isReplaying,
   loopReplay,
+  svg
 }) => {
   const [isMoreOpen, setIsMoreOpen] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
@@ -57,7 +59,7 @@ const ButtonContainer = ({
     }
   };
   const handleSave = () => {
-    setIsMoreOpen(false);
+    downloadSvgPng(svg);
   };
 
   return (

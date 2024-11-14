@@ -516,6 +516,7 @@ const Draw = () => {
           isReplaying={isReplaying}
           actionsLen={actionsLen}
           currentIndex={currentIndex}
+          svg={svgRef.current}
         />
       </div>
     </div>

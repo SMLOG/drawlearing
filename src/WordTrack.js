@@ -282,12 +282,7 @@ const WordTrack = ({}) => {
           style={{
             position: "absolute",
             left: "50%",
-            top: "50%",
-            transform: "translate(-50%, -50%)",
-            maxHeight: "80%",
-            maxWidth: "80%",
-            width: "80%",
-            height: "80%",
+            transform: "translate(-50%, 0%)",
             flexDirection: "column",
           }}
         >
@@ -300,7 +295,7 @@ const WordTrack = ({}) => {
             }}
           >
             <div style={{flexGrow:1}}>
-            <CollapsibleItemsContainer >
+            <CollapsibleItemsContainer direction={"w"}>
               {buttons.map((button, index) => (
                 <div
                   key={index}
