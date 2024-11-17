@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
-
-import Draw from './DrawSVG';
+import { Routes, Route } from 'react-router-dom';
+import DrawSVG from './DrawSVG';
 import './App.css';
+import SvgEditorWrap from "./SvgEditorWrap";
 
 const App = () => {
   const preventScroll = (e) => {
@@ -17,9 +18,14 @@ useEffect(() => {
         document.body.removeEventListener('touchmove', preventScroll);
     };
 }, []);
-  return (
+  return ( 
+    
     <div className="App">
-      <Draw />
+   <Routes>
+      <Route path="/" element={<DrawSVG />} />
+      <Route path="/e" element={<SvgEditorWrap />} />
+      <Route path="*" element={<DrawSVG />} />
+    </Routes>
     </div>
   );
 };

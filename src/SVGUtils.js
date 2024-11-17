@@ -107,8 +107,7 @@ export function scaleSvgPath(path, scaleFactor) {
   });
 }
 
-export function getPointsOnPath(svgPath, minRadius,scaleFactor) {
-  const path = scaleSvgPath(svgPath,scaleFactor);
+export function getPointsOnPath(path, minRadius) {
   const pathProperties = new svgPathProperties(path);
   const length = pathProperties.getTotalLength();
   const points = [];
@@ -121,7 +120,7 @@ export function getPointsOnPath(svgPath, minRadius,scaleFactor) {
   while (currentLength <= length) {
     const point = pathProperties.getPointAtLength(currentLength);
 
-    if(  PointsDistance(point,lastPoint)>=minRadius){
+    if(  PointsDistance(point,lastPoint)>=minRadius/2){
 
       lastPoint={ x: point.x, y: point.y,r:minRadius };
       points.push(lastPoint);

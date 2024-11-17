@@ -96,13 +96,15 @@ const WordTrack = ({}) => {
             let scale = 100 / (cdata.h || 100);
             cdata.scale = scale;
             s.d = translateAndScaleSvgPath(s.d, tranX, 0, scale, scale);
-
+            let r  = scale*(s.r||cdata.r);
+            const path = scaleSvgPath(s.t || s.d,scale);
             s.track = getPointsOnPath(
-              s.t || s.d,
-              s.r || cdata.r || 8,
+              path,
+              r ,
               s.t ? scale : 1
             );
             s.track.map((t) => (t.x = (s.t ? tranX : 0) + t.x));
+            console.log(s)
           });
           tranX += cdata.scale * (cdata.w || 100);
 
@@ -208,7 +210,7 @@ const WordTrack = ({}) => {
       setPlayedIndex(playedIndexRef.current + 1);
     } else {
     }
-    setPoints([]);
+    //setPoints([]);
     drawPoints.length = 0;
   };
 
@@ -459,14 +461,14 @@ const WordTrack = ({}) => {
               </g>
             </g>
             <g>
-            {false&& <circle cx={penPoint.x} cy={penPoint.y} r={4} fill="red" />}
+            {false&&<circle cx={penPoint.x} cy={penPoint.y} r={4} fill="red" />}
               {trackPoints.map((point, index) => (
                   <circle
                     key={index}
                     cx={point.x}
                     cy={point.y}
                     r={1}
-                    fill="yellow"
+                    fill={index <= points.length-1?"green":'yellow'}
                   />
                 ))}
             </g>
