@@ -40,17 +40,27 @@ export function parseSVGPath(path) {
 }
 
 export function translateAndScaleSvgPath(pathData, dx, dy, scaleX, scaleY) {
-    return pathData.replace(/([MLHVCSQTAZ])([^MLHVCSQTAZ]*)/g, (match, command, coords) => {
-        const transformedCoords = coords.trim().split(/[\s,]+/).map((num, index) => {
-            num = parseFloat(num);
-            if (index % 2 === 0) { // x-coordinate
-                return (num * scaleX) + dx;
-            } else { // y-coordinate
-                return (num * scaleY) + dy;
-            }
-        });
-        return command + transformedCoords.join(' ');
-    });
+  return pathData.replace(/([MLHVCSQTAZ])([^MLHVCSQTAZ]*)/g, (match, command, coords) => {
+      // Handle the Z command separately
+      if (command.toUpperCase() === 'Z') {
+          return command;
+          // Just return 'Z' or 'z' without changes
+      }
+
+      const transformedCoords = coords.trim().split(/[\s,]+/).map( (num, index) => {
+          num = parseFloat(num);
+          if (index % 2 === 0) {
+              // x-coordinate
+              return (num * scaleX) + dx;
+          } else {
+              // y-coordinate
+              return (num * scaleY) + dy;
+          }
+      }
+      );
+      return command + transformedCoords.join(' ');
+  }
+  );
 }
 
 export function scaleStroke(stroke,scaleFactor,pointFactor)  {
