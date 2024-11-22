@@ -13,7 +13,6 @@ import { useParams, useLocation } from "react-router-dom";
 
 import { updateSettings } from "./features/settingsSlice";
 import { createStrokeJSON } from "./SvgEdit2/SVGUtils";
-import { playSound } from "./sound";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CollapsibleItemsContainer from "./CollapsibleItemsContainer";
 import {
@@ -234,6 +233,18 @@ const WordTrack2 = ({}) => {
     }
   }, [word]);
 
+  const audioRef = useRef(null);
+  const [errorMsg,setErrorMsg] = useState('');
+  const playSound = (url) => {
+    if (audioRef.current) {
+      audioRef.current.src = url;
+      audioRef.current.play().catch((error) => {
+        console.error("Error playing sound:", error);
+        errorMsg = error;
+      });
+    }
+  };
+
   const playSounds = async () => {
     console.log("Sound played");
     for (let w of word.chs) {
@@ -279,6 +290,23 @@ const WordTrack2 = ({}) => {
   ];
 
   const [trackPoints, setTrackPoints] = useState([]);
+
+  useEffect(() => {
+    const handleClick = () => {
+      playSound('/sound/3s.mp3');
+      // Remove event listener after the first click
+      document.body.removeEventListener('click', handleClick);
+    };
+
+    // Add event listener to the body
+    document.body.addEventListener('click', handleClick);
+
+    // Cleanup function to remove the event listener
+    return () => {
+      document.body.removeEventListener('click', handleClick);
+    };
+  }, []);
+
   return (
     <>
       {word && (
@@ -504,6 +532,8 @@ const WordTrack2 = ({}) => {
                 </span>
               ))}
           </div>
+          <audio ref={audioRef} controls src={`/sound/3s.mp3`} style={{display:errorMsg?'':'none'}}></audio>
+          {errorMsg&&<div>{errorMsg}</div>}
         </div>
       )}
     </>
