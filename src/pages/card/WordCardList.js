@@ -1,25 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import WordCard from './WordCard';
 
 const WordCardList = () => {
-  const words = [
-    {
-      word: "Apple",
-      imageUrl: "/svg/apple.svg",
-      audioUrl: "/audio/apple.mp3"
-    },
-    {
-      word: "Banana",
-      imageUrl: "/svg/banana.svg",
-      audioUrl: "/audio/banana.mp3"
-    },
-    {
-      word: "Cherry",
-      imageUrl: "/svg/cherry.svg",
-      audioUrl: "/audio/cherry.mp3"
-    },
-    // Add more word objects as needed
-  ];
+  const [words, setWords] = useState([]);
+
+  useEffect(() => {
+    const fetchWords = async () => {
+      try {
+        const response = await fetch('/api/types/Fruits.json');
+        const data = await response.json();
+        // Assuming data is an array of objects with properties w and icon
+        const formattedWords = data.map(item => ({
+          word: item.w, // Maps to word
+          imageUrl: item.icon, // Maps to imageUrl
+          audioUrl: `/audio/${item.w.toLowerCase()}.mp3` // Assuming audio file naming convention
+        }));
+        setWords(formattedWords);
+      } catch (error) {
+        console.error('Error fetching words:', error);
+      }
+    };
+
+    fetchWords();
+  }, []);
 
   return (
     <div style={styles.container}>
