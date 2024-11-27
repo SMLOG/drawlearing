@@ -5,6 +5,7 @@ import './App.css';
 import SvgEditorWrap from "./SvgEditorWrap";
 import PrintOut from "./PrintOut";
 import WorkTrack2 from "./WorkTrack2";
+import WordCardList from "./pages/card/WordCardList";
 
 const App = () => {
   const preventScroll = (e) => {
@@ -28,6 +29,8 @@ const App = () => {
         <Route path="/e" element={<SvgEditorWrap />} />
         <Route path="/p" element={<PrintOut />} />
         <Route path="/s" element={<WorkTrack2 />} />
+        <Route path="/w" element={<WordCardList />} />
+        
         <Route path="*" element={<DrawSVG />} />
       </Routes>
     </div>
