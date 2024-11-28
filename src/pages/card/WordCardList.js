@@ -5,6 +5,7 @@ const WordCardList = () => {
   const [words, setWords] = useState([]);
   const [types, setTypes] = useState([]);
   const [selectedType, setSelectedType] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true); // State to control sidebar visibility
 
   // Fetch types from types.json
   useEffect(() => {
@@ -19,6 +20,16 @@ const WordCardList = () => {
     };
 
     fetchTypes();
+  }, []);
+
+  // Set default type from URL query parameter
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const typeFromUrl = params.get('type');
+    
+    if (typeFromUrl) {
+      setSelectedType(typeFromUrl);
+    }
   }, []);
 
   // Fetch words based on the selected type
@@ -43,11 +54,15 @@ const WordCardList = () => {
     fetchWords();
   }, [selectedType]);
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(prev => !prev);
+  };
+
   return (
     <div style={styles.container}>
-      <div style={styles.sidebar}>
-        <h3>Select Type</h3>
-        {types.map((type) => (
+      <div style={{ ...styles.sidebar, width: isSidebarOpen ? '200px' : '0px' }} className="no-print">
+        <h3 style={{ display: isSidebarOpen ? 'block' : 'none' }}>Select Type</h3>
+        {isSidebarOpen && types.map((type) => (
           <button 
             key={type.type} // Use "type" as the unique key
             style={styles.button}
@@ -57,16 +72,22 @@ const WordCardList = () => {
           </button>
         ))}
       </div>
-      <div style={styles.wordList}>
-        {words.map((item, index) => (
-          <WordCard 
-            key={index} 
-            index={index + 1} 
-            word={item.word} 
-            imageUrl={item.imageUrl} 
-            audioUrl={item.audioUrl} 
-          />
-        ))}
+      <div style={styles.toggleButton} onClick={toggleSidebar} className="no-print">
+        {isSidebarOpen ? '→' : '←'} {/* Right arrow when open, left when closed */}
+      </div>
+      <div style={styles.wordListContainer}>
+        {selectedType && <h2 style={styles.title}>{selectedType}</h2>} {/* Title for selected type */}
+        <div style={styles.wordList}>
+          {words.map((item, index) => (
+            <WordCard 
+              key={index} 
+              index={index + 1} 
+              word={item.word} 
+              imageUrl={item.imageUrl} 
+              audioUrl={item.audioUrl} 
+            />
+          ))}
+        </div>
       </div>
       <style>
         {`
@@ -87,16 +108,33 @@ const styles = {
     padding: '20px',
   },
   sidebar: {
-    width: '200px',
-    paddingRight: '20px',
+    transition: 'width 0.3s ease',
+    overflow: 'hidden',
     borderRight: '1px solid #ccc',
+  },
+  toggleButton: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '30px',
+    cursor: 'pointer',
+    fontSize: '24px',
+    marginLeft: '10px',
+  },
+  wordListContainer: {
+    flex: 1,
+    paddingLeft: '20px',
+  },
+  title: {
+    textAlign: 'left', // Align text to the left
+    marginBottom: '20px',
+    fontSize: '24px',
   },
   wordList: {
     display: 'flex',
     flexWrap: 'wrap',
-    justifyContent: 'center',
+    justifyContent: 'flex-start', // Align items to the left
     gap: '16px',
-    flex: 1,
   },
   button: {
     display: 'block',
