@@ -2,13 +2,12 @@ import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import DrawSVG from './DrawSVG';
 import './App.css';
-import SvgEditorWrap from "./SvgEditorWrap";
 import PrintOut from "./PrintOut";
 import WorkTrack2 from "./WorkTrack2";
 import WordCardList from "./pages/card/WordCardList";
 
 const App = () => {
-  const preventScroll = (e) => {
+  /*const preventScroll = (e) => {
     e.preventDefault();
   };
 
@@ -20,13 +19,12 @@ const App = () => {
     return () => {
       document.body.removeEventListener('touchmove', preventScroll);
     };
-  }, []);
+  }, []);*/
 
   return ( 
     <div className="App">
       <Routes>
         <Route path="/" element={<DrawSVG />} />
-        <Route path="/e" element={<SvgEditorWrap />} />
         <Route path="/p" element={<PrintOut />} />
         <Route path="/s" element={<WorkTrack2 />} />
         <Route path="/w" element={<WordCardList />} />
