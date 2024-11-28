@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { QRCodeSVG } from 'qrcode.react'; // Import QRCodeSVG
 import WordCard from './WordCard';
 
@@ -7,6 +7,8 @@ const WordCardList = () => {
   const [types, setTypes] = useState([]);
   const [selectedType, setSelectedType] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State to control sidebar visibility
+  const sidebarRef = useRef(null); // Ref for the sidebar
+  const menuIconRef = useRef(null); // Ref for the menu icon
 
   // Fetch types from types.json
   useEffect(() => {
@@ -59,10 +61,35 @@ const WordCardList = () => {
     setIsSidebarOpen(prev => !prev);
   };
 
+  // Close sidebar when clicking outside
+  const handleClickOutside = (event) => {
+    if (
+      sidebarRef.current && !sidebarRef.current.contains(event.target) && 
+      menuIconRef.current && !menuIconRef.current.contains(event.target) && 
+      isSidebarOpen
+    ) {
+      setIsSidebarOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isSidebarOpen]);
+
   return (
     <div style={styles.container}>
-      <div style={{ ...styles.sidebar, left: isSidebarOpen ? '0' : '-200px' }} className="no-print">
-        <h3 style={{ display: isSidebarOpen ? 'block' : 'none' }}>Select Type</h3>
+      <div 
+        ref={sidebarRef} 
+        style={{
+          ...styles.sidebar,
+          transform: isSidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
+        }} 
+        className="no-print"
+      >
+        <h3>Select Type</h3>
         {isSidebarOpen && types.map((type) => (
           <button 
             key={type.type} 
@@ -73,7 +100,12 @@ const WordCardList = () => {
           </button>
         ))}
       </div>
-      <div style={styles.menuIcon} onClick={toggleSidebar} className="no-print">
+      <div 
+        ref={menuIconRef} 
+        style={styles.menuIcon} 
+        onClick={toggleSidebar} 
+        className="no-print"
+      >
         {/* Menu icon (hamburger icon) */}
         <div style={styles.iconLine}></div>
         <div style={styles.iconLine}></div>
@@ -131,18 +163,18 @@ const styles = {
     position: 'relative', // To position the menu icon absolutely
   },
   sidebar: {
-    transition: 'width 0.3s ease',
-    overflow: 'hidden',
-    borderRight: '1px solid #ccc',
-    background:'white',
-    top:0,
-    bottom:0,
-    position:'fixed',
-    zIndex:999,
-    width:'200px'
+    transition: 'transform 0.3s ease', // Smooth transition for sliding effect
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    height: '100%', // Full height
+    width: '200px', // Width of the sidebar
+    backgroundColor: 'white', // Background color
+    boxShadow: '2px 0 5px rgba(0, 0, 0, 0.5)', // Optional shadow
+    zIndex: 999, // Ensure it is above other content
   },
   menuIcon: {
-    position: 'fixed', // Change to fixed position
+    position: 'fixed', // Keep menu icon fixed
     top: '20px',
     right: '20px',
     cursor: 'pointer',
@@ -166,7 +198,7 @@ const styles = {
     zIndex: 10,
     background: 'white',
     padding: '0',
-    borderBottom:'2px solid'
+    borderBottom: '2px solid',
   },
   title: {
     textAlign: 'left',

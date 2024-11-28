@@ -41,10 +41,9 @@ const WordCard = ({ index, word, imageUrl, audioUrl }) => {
 const styles = {
   card: {
     width: '200px',
-    height: '200px',
     border: '1px solid #ccc',
+    boxSizing:'border-box',
     borderRadius: '8px',
-    padding: '16px',
     textAlign: 'center',
     cursor: 'pointer',
     backgroundColor: '#f9f9f9',
