@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef  } from 'react';
 import { QRCodeSVG } from 'qrcode.react'; // Import QRCodeSVG
 import WordCard from './WordCard';
 import { Link ,useParams,useNavigate  } from 'react-router-dom';
+
 const WordCardList = () => {
   const { type } = useParams(); // Access the route parameter
   const navigate = useNavigate();
@@ -113,7 +114,13 @@ const WordCardList = () => {
     };
 }, []);
 
+const printToSheet = ()=>{
+  localStorage.setItem('printData', JSON.stringify(words));
+  window.open('/#printSheet/', '_blank'); 
+
+}
   return (
+    <>
     <div style={styles.container}>
       <div 
         ref={sidebarRef} 
@@ -136,8 +143,10 @@ const WordCardList = () => {
         ))}
         </div>
         <div>
+        <div><button style={{cursor:'pointer'}} onClick={printToSheet}>Print To Sheet</button></div>
+
         <h3>Other App</h3>
-        <div> <Link to="/draw">Draw</Link></div>
+        <div> <Link to="/draw" target='_blak'>Draw</Link></div>
         </div>
       </div>
       <div 
@@ -181,6 +190,7 @@ const WordCardList = () => {
           }
           
         </div>
+
       </div>
       <style>
         {`
@@ -198,7 +208,10 @@ const WordCardList = () => {
           }
         `}
       </style>
+ 
     </div>
+ 
+     </>
   );
 };
 

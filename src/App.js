@@ -5,6 +5,7 @@ import './App.css';
 import PrintOut from "./PrintOut";
 import WorkTrack2 from "./WorkTrack2";
 import WordCardList from "./pages/card/WordCardList";
+import PrintSheet from './pages/print/PrintSheet';
 
 const App = () => {
   /*const preventScroll = (e) => {
@@ -28,9 +29,10 @@ const App = () => {
         <Route path="/p" element={<PrintOut />} />
         <Route path="/s" element={<WorkTrack2 />} />
         <Route path="/" element={<WordCardList />} />
+        <Route path="/printSheet" element={<PrintSheet />} />
         <Route path="/"  element={<Navigate to="/cards" />} />
         <Route path="/cards/:type?" element={<WordCardList />}  />
-
+        
         <Route path="*" element={<Navigate to="/cards" />} />
       </Routes>
     </div>
