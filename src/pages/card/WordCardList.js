@@ -53,7 +53,7 @@ const WordCardList = () => {
         const data = await response.json();
         const formattedWords = data.map(item => ({
           word: item.w,
-          imageUrl: '/'+item.icon,
+          imageUrl: item.icon?'/'+item.icon:'/square-dashed.svg',
           audioUrl: `/audio/us/${item.w.toLowerCase()}.mp3`
         }));
         setWords(formattedWords.sort((a, b) => a.word.localeCompare(b.word)));
