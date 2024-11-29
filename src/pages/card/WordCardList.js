@@ -1,11 +1,13 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef  } from 'react';
 import { QRCodeSVG } from 'qrcode.react'; // Import QRCodeSVG
 import WordCard from './WordCard';
-
+import { Link ,useParams,useNavigate  } from 'react-router-dom';
 const WordCardList = () => {
+  const { type } = useParams(); // Access the route parameter
+  const navigate = useNavigate();
   const [words, setWords] = useState([]);
   const [types, setTypes] = useState([]);
-  const [selectedType, setSelectedType] = useState('');
+  const [selectedType, setSelectedType] = useState(type);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State to control sidebar visibility
   const sidebarRef = useRef(null); // Ref for the sidebar
   const menuIconRef = useRef(null); // Ref for the menu icon
@@ -16,7 +18,10 @@ const WordCardList = () => {
       try {
         const response = await fetch('/api/types.json');
         const data = await response.json();
-        setTypes(data);
+        setTypes(data.sort((a, b) => a.type.localeCompare(b.type)));
+        if(!selectedType){
+          setSelectedType( data[0].type);
+        }
       } catch (error) {
         console.error('Error fetching types:', error);
       }
@@ -35,6 +40,9 @@ const WordCardList = () => {
     }
   }, []);
 
+  useEffect(()=>{
+    navigate(`/cards/${selectedType}`, { replace: true });
+  },[selectedType]);
   // Fetch words based on the selected type
   useEffect(() => {
     const fetchWords = async () => {
@@ -45,10 +53,10 @@ const WordCardList = () => {
         const data = await response.json();
         const formattedWords = data.map(item => ({
           word: item.w,
-          imageUrl: item.icon,
-          audioUrl: `/audio/${item.w.toLowerCase()}.mp3`
+          imageUrl: '/'+item.icon,
+          audioUrl: `/audio/us/${item.w.toLowerCase()}.mp3`
         }));
-        setWords(formattedWords);
+        setWords(formattedWords.sort((a, b) => a.word.localeCompare(b.word)));
       } catch (error) {
         console.error('Error fetching words:', error);
       }
@@ -79,6 +87,32 @@ const WordCardList = () => {
     };
   }, [isSidebarOpen]);
 
+
+  const [itemsPerRow,setItemsPerRow] = useState(4);
+  useEffect(() => {
+    const handleResize = () => {
+        const containerWidth = window.innerWidth;
+        let newItemsPerRow = 2; // Default
+
+            if (containerWidth >= 600 && containerWidth < 900) {
+                newItemsPerRow = 4; // 4 items per row
+            } else if (containerWidth >= 900 && containerWidth < 1200) {
+                newItemsPerRow = 6; // 6 items per row
+            } else if (containerWidth >= 1200) {
+                newItemsPerRow = 8; // 8 items per row
+            }
+
+        setItemsPerRow(newItemsPerRow);
+    };
+
+    handleResize(); // Initial call
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+        window.removeEventListener('resize', handleResize);
+    };
+}, []);
+
   return (
     <div style={styles.container}>
       <div 
@@ -89,6 +123,7 @@ const WordCardList = () => {
         }} 
         className="no-print"
       >
+        <div>
         <h3>Select Type</h3>
         {isSidebarOpen && types.map((type) => (
           <button 
@@ -99,6 +134,11 @@ const WordCardList = () => {
             {type.type}
           </button>
         ))}
+        </div>
+        <div>
+        <h3>Other App</h3>
+        <div> <Link to="/draw">Draw</Link></div>
+        </div>
       </div>
       <div 
         ref={menuIconRef} 
@@ -134,6 +174,12 @@ const WordCardList = () => {
               audioUrl={item.audioUrl} 
             />
           ))}
+          {
+            Array.from({ length: itemsPerRow - words.length%itemsPerRow }, (_, index) => index + 1).map((item,index)=>(
+              <div className='item' key={index}></div>
+            ))
+          }
+          
         </div>
       </div>
       <style>
@@ -160,6 +206,7 @@ const styles = {
   container: {
     display: 'flex',
     padding: '20px',
+    paddingTop:'0',
     position: 'relative', // To position the menu icon absolutely
   },
   sidebar: {
@@ -212,7 +259,7 @@ const styles = {
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'flex-start',
-    gap: '16px',
+    gap: '8px',
   },
   button: {
     display: 'block',

@@ -1,0 +1,26 @@
+.item {
+    flex: 1 1 calc(50% - 16px); /* Default to 2 items per row */
+    box-sizing: border-box; /* Include padding and border in total width */
+    text-align: center; /* Center text inside items */
+}
+
+/* Medium screens: 4 items per row */
+@media (min-width: 600px) {
+    .item {
+        flex: 1 1 calc(25% - 12px); /* Adjust for 4 items with gap */
+    }
+}
+
+/* Large screens: 6 items per row */
+@media (min-width: 900px) {
+    .item {
+        flex: 1 1 calc(16.66% - 10.66px); /* Adjust for 6 items with gap */
+    }
+}
+
+/* Extra large screens: 8 items per row */
+@media (min-width: 1200px) {
+    .item {
+        flex: 1 1 calc(12.5% - 8px); /* Adjust for 8 items with gap */
+    }
+}

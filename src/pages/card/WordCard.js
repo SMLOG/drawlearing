@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faVolumeUp, faVolumeMute } from '@fortawesome/free-solid-svg-icons';
+import './card.css';
 
 const WordCard = ({ index, word, imageUrl, audioUrl }) => {
   const audioRef = useRef(null);
@@ -18,7 +19,7 @@ const WordCard = ({ index, word, imageUrl, audioUrl }) => {
   };
 
   return (
-    <div style={{ ...styles.card, position: 'relative' }}>
+    <div className="item" style={{ ...styles.card, position: 'relative' }}>
       <span style={styles.index}>{index}</span>
       <img 
         src={imageUrl} 
@@ -40,7 +41,6 @@ const WordCard = ({ index, word, imageUrl, audioUrl }) => {
 
 const styles = {
   card: {
-    width: '200px',
     border: '1px solid #ccc',
     boxSizing:'border-box',
     borderRadius: '8px',
@@ -54,6 +54,8 @@ const styles = {
     alignItems: 'center',
     overflow: 'hidden',
   },
+
+  
   index: {
     fontSize: '16px',
     fontWeight: 'bold',

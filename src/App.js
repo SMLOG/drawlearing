@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route,Navigate    } from 'react-router-dom';
 import DrawSVG from './DrawSVG';
 import './App.css';
 import PrintOut from "./PrintOut";
@@ -24,12 +24,14 @@ const App = () => {
   return ( 
     <div className="App">
       <Routes>
-        <Route path="/" element={<DrawSVG />} />
+        <Route path="/draw" element={<DrawSVG />} />
         <Route path="/p" element={<PrintOut />} />
         <Route path="/s" element={<WorkTrack2 />} />
-        <Route path="/w" element={<WordCardList />} />
-        
-        <Route path="*" element={<DrawSVG />} />
+        <Route path="/" element={<WordCardList />} />
+        <Route path="/"  element={<Navigate to="/cards" />} />
+        <Route path="/cards/:type?" element={<WordCardList />}  />
+
+        <Route path="*" element={<Navigate to="/cards" />} />
       </Routes>
     </div>
   );
