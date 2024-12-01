@@ -162,6 +162,7 @@ const WordCardList = () => {
 
         <div style={styles.wordListContainer}>
           <div style={styles.titleContainer}>
+            <div style={{display:'flex'}}>
             {selectedType && (
               <>
                 <QRCodeSVG
@@ -172,6 +173,7 @@ const WordCardList = () => {
                 <h2 style={styles.title}>{selectedType}</h2>
               </>
             )}
+            </div>
                     <div
           ref={menuIconRef}
           style={styles.menuIcon}
@@ -240,8 +242,6 @@ const styles = {
     zIndex: 999, // Ensure it is above other content
   },
   menuIcon: {
-    position: "fixed", // Keep menu icon fixed
-    right: "20px",
     cursor: "pointer",
   },
   iconLine: {
@@ -263,6 +263,7 @@ const styles = {
     background: "white",
     padding: "0",
     borderBottom: "2px solid",
+    justifyContent:'space-between'
   },
   title: {
     textAlign: "left",
