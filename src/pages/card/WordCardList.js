@@ -162,7 +162,7 @@ const WordCardList = () => {
 
         <div style={styles.wordListContainer}>
           <div style={styles.titleContainer}>
-            <div style={{display:'flex'}}>
+            <div style={{display:'flex',alignItems:'center'}}>
             {selectedType && (
               <>
                 <QRCodeSVG
