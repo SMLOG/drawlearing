@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlay,faTrash } from '@fortawesome/free-solid-svg-icons';
 
 // Styled Components
 const Container = styled.div`
@@ -10,12 +12,19 @@ const Container = styled.div`
     background-color: #f9f9f9;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    position: relative; /* Helps position the button */
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    overflow: auto;
+    left: 0;
+    right: 0;
 `;
 
 const Heading = styled.h1`
     text-align: center;
     color: #333;
+    font-size: 2em;
+    margin-bottom: 20px;
 `;
 
 const List = styled.ul`
@@ -26,26 +35,25 @@ const List = styled.ul`
 const ListItem = styled.li`
     background-color: #fff;
     margin: 10px 0;
-    padding: 15px;
+    padding: 20px;
     border-radius: 5px;
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
 `;
 
-const Title = styled.h3`
+const Line = styled.p`
     margin: 0;
-    color: #333;
-    text-align: left; /* Align text to the left */
-`;
-
-const Content = styled.p`
-    margin: 10px 0;
     color: #444;
-    text-align: left; /* Align text to the left */
+    font-size: 1.1em;
+    line-height: 1.6;
+    ${(props) => props.isActive && `
+        background-color: #e0f7fa; /* Highlight color */
+    `}
 `;
 
 const ButtonGroup = styled.div`
     display: flex;
     justify-content: space-between;
+    margin-top: 15px;
 `;
 
 const Button = styled.button`
@@ -54,6 +62,15 @@ const Button = styled.button`
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
+    font-size: 1em; /* Increased font size for buttons */
+`;
+
+const PlayButton = styled(Button)`
+    background-color: #008cba;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;
 
 const EditButton = styled(Button)`
@@ -93,6 +110,7 @@ const Input = styled.input`
     margin: 10px 0;
     border-radius: 5px;
     border: 1px solid #ccc;
+    font-size: 1em; /* Increased font size for input */
 `;
 
 const Textarea = styled.textarea`
@@ -101,6 +119,7 @@ const Textarea = styled.textarea`
     margin: 10px 0;
     border-radius: 5px;
     border: 1px solid #ccc;
+    font-size: 1em; /* Increased font size for textarea */
 `;
 
 const SubmitButton = styled(Button)`
@@ -130,6 +149,8 @@ const Books = () => {
     const [currentBook, setCurrentBook] = useState({ id: null, title: '', content: '' });
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [currentLineIndex, setCurrentLineIndex] = useState(-1); // Track the currently playing line
+    const audioRef = useRef();
 
     // Fetch books from the API on component mount
     useEffect(() => {
@@ -140,14 +161,14 @@ const Books = () => {
                     throw new Error('Network response was not ok');
                 }
                 const data = await response.json();
-                setBooks(data); // Assuming the API returns an array of books
+                setBooks(data);
             } catch (error) {
                 console.error('Error fetching books:', error);
             }
         };
 
         fetchBooks();
-    }, []); // Empty dependency array means this runs once on mount
+    }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -160,7 +181,7 @@ const Books = () => {
         const newBook = { ...currentBook, id: Date.now() };
         setBooks([...books, newBook]);
         resetForm();
-        saveBooks([...books, newBook]); // Save the updated books after adding
+        saveBooks([...books, newBook]);
     };
 
     const editBook = (book) => {
@@ -173,13 +194,13 @@ const Books = () => {
         const updatedBooks = books.map((book) => (book.id === currentBook.id ? currentBook : book));
         setBooks(updatedBooks);
         resetForm();
-        saveBooks(updatedBooks); // Save the updated books after editing
+        saveBooks(updatedBooks);
     };
 
     const deleteBook = (id) => {
         const updatedBooks = books.filter((book) => book.id !== id);
         setBooks(updatedBooks);
-        saveBooks(updatedBooks); // Save the updated books after deletion
+       // saveBooks(updatedBooks);
     };
 
     const resetForm = () => {
@@ -187,23 +208,41 @@ const Books = () => {
         setIsEditing(false);
         setIsModalOpen(false);
     };
-    const audioRef = useRef();
-    const playShort = (line) =>{
-        let id=line.replace(/[^a-z]/ig,'');
-        audioRef.current.src=`/short/${line.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]+/ig,'_')}.mp3?txt=${encodeURIComponent(line)}`;
-        audioRef.current.playbackRate = parseFloat(0.8)
-        audioRef.current.play();
-    }
-    const renderContentWithLineBreaks = (content) => {
-        return content.split('\n').map((line, index) => (
-            <p key={index} >
-                <a style={{cursor:'pointer'}} onClick={()=>playShort(line)}>{line}</a>
-            </p>
+
+    const [curBookIndex,setCurBookIndex] = useState(-1);
+    const playAudioSequentially = async (title, content,bookIndex) => {
+        const lines = [title, ...content.split('\n')];
+        setCurBookIndex(bookIndex);
+        for (let i = 0; i < lines.length; i++) {
+            setCurrentLineIndex(i); // Set current line index
+            await playLine(lines[i]);
+        }
+        setCurrentLineIndex(-1); // Reset after all lines have played
+    };
+
+    const playLine = (line) => {
+        return new Promise((resolve) => {
+            const audioFileName = line.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]+/ig, '_') + '.mp3';
+            audioRef.current.src = `/short/${audioFileName}?txt=${encodeURIComponent(line)}`;
+            audioRef.current.play();
+
+            audioRef.current.onended = () => {
+                resolve(); // Resolve the promise when the audio ends
+            };
+        });
+    };
+
+    const renderContentWithLineBreaks = (title, content,bookIndex) => {
+        const combinedContent = `${title}\n${content}`;
+        return combinedContent.split('\n').map((line, index) => (
+            <Line key={index} isActive={curBookIndex==bookIndex&&currentLineIndex === index}>
+               {index+1}. {line}
+            </Line>
         ));
     };
 
     const saveBooks = async (booksToSave) => {
-        const fileName = 'books.json'; // Set your desired filename here
+        const fileName = 'books.json';
         const payload = {
             fileName,
             data: booksToSave,
@@ -233,15 +272,21 @@ const Books = () => {
         <Container>
             <AddButton onClick={() => setIsModalOpen(true)}>Add Book</AddButton>
             <Heading>Book List</Heading>
-            <audio ref={audioRef} controls></audio>
+            <audio ref={audioRef} controls style={{ display: 'none' }}></audio>
             <List>
-                {books.map((book) => (
+                {books.map((book,bookIndex) => (
                     <ListItem key={book.id}>
-                        <Title style={{cursor:'pointer'}} onClick={()=>playShort(book.title)}>{book.title}</Title>
-                        <div style={{textAlign:'left'}}>{renderContentWithLineBreaks(book.content)}</div>
+                        <div style={{ textAlign: 'left' }}>
+                            {renderContentWithLineBreaks(book.title, book.content,bookIndex)}
+                        </div>
                         <ButtonGroup>
+                            <PlayButton onClick={() => playAudioSequentially(book.title, book.content,bookIndex)}>
+                                <FontAwesomeIcon icon={faPlay} />
+                            </PlayButton>
                             <EditButton onClick={() => { editBook(book); setIsModalOpen(true); }}>Edit</EditButton>
-                            <DeleteButton onClick={() => deleteBook(book.id)}>Delete</DeleteButton>
+                            <DeleteButton onClick={() => deleteBook(book.id)}>
+                                <FontAwesomeIcon icon={faTrash} /> Delete
+                            </DeleteButton>
                         </ButtonGroup>
                     </ListItem>
                 ))}
