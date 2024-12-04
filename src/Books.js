@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 // Styled Components
@@ -187,13 +187,18 @@ const Books = () => {
         setIsEditing(false);
         setIsModalOpen(false);
     };
-
+    const audioRef = useRef();
+    const playShort = (line) =>{
+        let id=line.replace(/[^a-z]/ig,'');
+        audioRef.current.src=`/short/${line.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]+/ig,'_')}.mp3?txt=${encodeURIComponent(line)}`;
+        audioRef.current.playbackRate = parseFloat(0.8)
+        audioRef.current.play();
+    }
     const renderContentWithLineBreaks = (content) => {
         return content.split('\n').map((line, index) => (
-            <span key={index}>
-                {line}
-                <br />
-            </span>
+            <p key={index} >
+                <a style={{cursor:'pointer'}} onClick={()=>playShort(line)}>{line}</a>
+            </p>
         ));
     };
 
@@ -228,11 +233,12 @@ const Books = () => {
         <Container>
             <AddButton onClick={() => setIsModalOpen(true)}>Add Book</AddButton>
             <Heading>Book List</Heading>
+            <audio ref={audioRef} controls></audio>
             <List>
                 {books.map((book) => (
                     <ListItem key={book.id}>
-                        <Title>{book.title}</Title>
-                        <Content>{renderContentWithLineBreaks(book.content)}</Content>
+                        <Title style={{cursor:'pointer'}} onClick={()=>playShort(book.title)}>{book.title}</Title>
+                        <div style={{textAlign:'left'}}>{renderContentWithLineBreaks(book.content)}</div>
                         <ButtonGroup>
                             <EditButton onClick={() => { editBook(book); setIsModalOpen(true); }}>Edit</EditButton>
                             <DeleteButton onClick={() => deleteBook(book.id)}>Delete</DeleteButton>
