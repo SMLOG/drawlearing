@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlay,faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPlay,faTrash,faVolumeUp } from '@fortawesome/free-solid-svg-icons';
 
 // Styled Components
 const Container = styled.div`
@@ -45,7 +45,7 @@ const Line = styled.p`
     color: #444;
     font-size: 1.1em;
     line-height: 1.6;
-    ${(props) => props.isActive && `
+    ${(props) => props.$isActive && `
         background-color: #e0f7fa; /* Highlight color */
     `}
 `;
@@ -144,6 +144,11 @@ const AddButton = styled(Button)`
     color: white;
 `;
 
+const Word = styled.span`
+    ${(props) => props.$isActive && `
+        color: red; /* Highlight color */
+    `}
+`;
 const Books = () => {
     const [books, setBooks] = useState([]);
     const [currentBook, setCurrentBook] = useState({ id: null, title: '', content: '' });
@@ -218,6 +223,8 @@ const Books = () => {
             await playLine(lines[i]);
         }
         setCurrentLineIndex(-1); // Reset after all lines have played
+        setCurBookIndex(-1);
+
     };
 
     const playLine = (line) => {
@@ -235,8 +242,8 @@ const Books = () => {
     const renderContentWithLineBreaks = (title, content,bookIndex) => {
         const combinedContent = `${title}\n${content}`;
         return combinedContent.split('\n').map((line, index) => (
-            <Line key={index} isActive={curBookIndex==bookIndex&&currentLineIndex === index}>
-               {index+1}. {line}
+            <Line key={index} $isActive={curBookIndex==bookIndex&&currentLineIndex === index}>
+               {index+1}. {line.split(/\s+/i).filter(e=>e).map((c,ci,words)=>(<Word $isActive={bookIndex==curBookIndex && index == currentLineIndex && curWordInex==ci} onClick={()=>playWordByWord(bookIndex,index,c,ci,words)}> {c}</Word>))}
             </Line>
         ));
     };
@@ -267,6 +274,68 @@ const Books = () => {
             console.error('Error saving books:', error);
         }
     };
+    const [isView,setIsView]=useState(window.location.href.indexOf('localhost')>-1);
+
+
+    const  preloadAndPlayAudios = async (audioList, callback, startIndex = 0) =>  {
+        let currentAudioIndex = startIndex;
+        let time = changed.current = +new Date();
+        // Preload all audios
+        const preloadAudio = (src) => {
+            return new Promise((resolve) => {
+                const audio = new Audio(src);
+                audio.oncanplaythrough = () => resolve(audio);
+                audio.load();
+            });
+        };
+    
+        // Load all audios
+        const audioElements = await Promise.all(audioList.map(preloadAudio));
+     
+        // Play audios sequentially
+        const playNext = async () => {
+            if(time !== changed.current) throw 'abort';
+
+            if (currentAudioIndex < audioElements.length) {
+                const audio = audioElements[currentAudioIndex];
+                audio.play();
+                callback(currentAudioIndex,audio.src, 'start');
+    
+                return new Promise((resolve) => {
+                    audio.onended = () => {
+                        callback(currentAudioIndex,audio.src, 'end');
+                        currentAudioIndex++;
+                        resolve(playNext());
+                    };
+                });
+            }
+        };
+        
+        // Start playing from startIndex
+        await playNext();
+    }
+
+    const [curWordInex,setCurWordIndex] = useState(-1);
+    const changed = useRef(-1);
+    const playWordByWord = async (bookIndex,lineIndex,word,index,words)=>{
+       let audioList = words.map(w=>`/audio/us/${w.toLowerCase().replace(/[^a-z]/gi,'')}.mp3`);
+       setCurBookIndex(bookIndex);
+       setCurrentLineIndex(lineIndex);
+       console.log(lineIndex);
+       setCurWordIndex(index);
+       
+        await preloadAndPlayAudios(audioList,(wordIndex)=>{
+            setCurWordIndex(wordIndex);
+        },index).then(()=>{
+            setCurrentLineIndex(-1);
+            setCurWordIndex(-1);
+            setCurBookIndex(-1);
+
+        }).catch(error=>{
+
+        });
+
+    }
 
     return (
         <Container>
@@ -281,12 +350,14 @@ const Books = () => {
                         </div>
                         <ButtonGroup>
                             <PlayButton onClick={() => playAudioSequentially(book.title, book.content,bookIndex)}>
-                                <FontAwesomeIcon icon={faPlay} />
+                                 <FontAwesomeIcon icon={curBookIndex==bookIndex?faVolumeUp:faPlay} />
                             </PlayButton>
+                            {isView&&<div>
                             <EditButton onClick={() => { editBook(book); setIsModalOpen(true); }}>Edit</EditButton>
                             <DeleteButton onClick={() => deleteBook(book.id)}>
                                 <FontAwesomeIcon icon={faTrash} /> Delete
                             </DeleteButton>
+                            </div>}
                         </ButtonGroup>
                     </ListItem>
                 ))}
