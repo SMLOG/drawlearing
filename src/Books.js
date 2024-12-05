@@ -337,6 +337,24 @@ const Books = () => {
 
     }
 
+    const modalRef = useRef();
+      const handleClickOutside = (event) => {
+    if (
+        modalRef.current &&
+      !modalRef.current.contains(event.target) &&
+      isModalOpen
+    ) {
+        resetForm();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isModalOpen]);
+
     return (
         <Container>
             <AddButton onClick={() => setIsModalOpen(true)}>Add Book</AddButton>
@@ -365,7 +383,7 @@ const Books = () => {
 
             {isModalOpen && (
                 <ModalBackground>
-                    <ModalContainer>
+                    <ModalContainer ref={modalRef}>
                         <h2>{isEditing ? 'Edit Book' : 'Add Book'}</h2>
                         <Input
                             type="text"
