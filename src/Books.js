@@ -277,66 +277,10 @@ const Books = () => {
     const [isView,setIsView]=useState(window.location.href.indexOf('localhost')>-1);
 
 
-    const  preloadAndPlayAudios = async (audioList, callback, startIndex = 0) =>  {
-        let currentAudioIndex = startIndex;
-        let time = changed.current = +new Date();
-        // Preload all audios
-        const preloadAudio = (src) => {
-            return new Promise((resolve) => {
-                const audio = new Audio(src);
-                audio.oncanplaythrough = () => resolve(audio);
-                audio.load();
-            });
-        };
-    
-        // Load all audios
-        const audioElements = await Promise.all(audioList.map(preloadAudio));
-     
-        // Play audios sequentially
-        const playNext = async () => {
-            if(time !== changed.current) throw 'abort';
+  
 
-            if (currentAudioIndex < audioElements.length) {
-                const audio = audioRef.current;
-                audio.src = audioElements[currentAudioIndex].src;
-                audio.play();
-                callback(currentAudioIndex,audio.src, 'start');
-    
-                return new Promise((resolve) => {
-                    audio.onended = () => {
-                        callback(currentAudioIndex,audio.src, 'end');
-                        currentAudioIndex++;
-                        resolve(playNext());
-                    };
-                });
-            }
-        };
-        
-        // Start playing from startIndex
-        await playNext();
-    }
-
-    const [curWordInex,setCurWordIndex] = useState(-1);
     const changed = useRef(-1);
-    const playWordByWord = async (bookIndex,lineIndex,word,index,words)=>{
-       let audioList = words.map(w=>`/audio/us/${w.toLowerCase().replace(/[^a-z]/gi,'')}.mp3`);
-       setCurBookIndex(bookIndex);
-       setCurrentLineIndex(lineIndex);
-       console.log(lineIndex);
-       setCurWordIndex(index);
-       
-        await preloadAndPlayAudios(audioList,(wordIndex)=>{
-            setCurWordIndex(wordIndex);
-        },index).then(()=>{
-            setCurrentLineIndex(-1);
-            setCurWordIndex(-1);
-            setCurBookIndex(-1);
 
-        }).catch(error=>{
-
-        });
-
-    }
 
     const modalRef = useRef();
       const handleClickOutside = (event) => {
