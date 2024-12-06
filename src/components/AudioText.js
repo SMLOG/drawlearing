@@ -28,19 +28,22 @@ const AudioText = ({ text }) => {
     // Load all audios
     const audioElements = await Promise.all(audioList.map(preloadAudio));
     const audio = audioRef.current;
-
+    if(audio.onended){
+        audio.onended(0);
+    }
     // Play audios sequentially
     for (let i = startIndex; i < audioElements.length; i++) {
       let isPlayable = audioElements[i];
       callback(i, "start");
       if (isPlayable) {
         audio.src = audioElements[i].src;
-        await new Promise((resolve) => {
-          audio.onended = () => {
-            resolve();
+       let exit = await new Promise((resolve) => {
+          audio.onended = (event) => {
+            resolve(event);
           };
           audio.play();
         });
+        if(!exit)break;
       }
       callback(i, "end");
     }
