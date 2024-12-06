@@ -12,38 +12,33 @@ const Text = styled.span`
 `;
 
 const AudioText = ({ text }) => {
-  const audioRef = useAudio();
+  const { audioRef, playAudio } = useAudio();
   const [tokens, setTokens] = useState(tokenize(text));
 
   const preloadAndPlayAudios = async (audioList, callback, startIndex = 0) => {
     // Preload all audios
     const preloadAudio = (src) => {
-        return src&&new Promise((resolve) => {
+      return (
+        src &&
+        new Promise((resolve) => {
           const audio = new Audio(src);
           audio.oncanplaythrough = () => resolve(audio);
           audio.load();
-        });
+        })
+      );
     };
 
     // Load all audios
     const audioElements = await Promise.all(audioList.map(preloadAudio));
-    const audio = audioRef.current;
-    if(audio.onended){
-        audio.onended(0);
-    }
+
     // Play audios sequentially
     for (let i = startIndex; i < audioElements.length; i++) {
       let isPlayable = audioElements[i];
       callback(i, "start");
       if (isPlayable) {
-        audio.src = audioElements[i].src;
-       let exit = await new Promise((resolve) => {
-          audio.onended = (event) => {
-            resolve(event);
-          };
-          audio.play();
+        await new Promise((resolve, reject) => {
+          playAudio(audioElements[i].src, resolve, reject);
         });
-        if(!exit)break;
       }
       callback(i, "end");
     }
@@ -57,13 +52,17 @@ const AudioText = ({ text }) => {
         ? `/audio/us/${token.c.toLowerCase().replace(/[^a-z]/gi, "")}.mp3`
         : null
     );
-    await preloadAndPlayAudios(
-      audioList,
-      (index) => {
-        setPlayIndex(index);
-      },
-      index
-    );
+    try {
+      await preloadAndPlayAudios(
+        audioList,
+        (index) => {
+          setPlayIndex(index);
+        },
+        index
+      );
+    } catch (error) {
+      setPlayIndex(-1);
+    }
   };
 
   return (

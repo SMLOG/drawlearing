@@ -156,7 +156,7 @@ const Books = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentLineIndex, setCurrentLineIndex] = useState(-1); // Track the currently playing line
-    const audioRef = useAudio();
+    const {playAudio} = useAudio();
     // Fetch books from the API on component mount
     useEffect(() => {
         const fetchBooks = async () => {
@@ -230,12 +230,7 @@ const Books = () => {
     const playLine = (line) => {
         return new Promise((resolve) => {
             const audioFileName = line.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]+/ig, '_') + '.mp3';
-            audioRef.current.src = `/short/${audioFileName}?txt=${encodeURIComponent(line)}`;
-            audioRef.current.play();
-
-            audioRef.current.onended = () => {
-                resolve(); // Resolve the promise when the audio ends
-            };
+            playAudio(`/short/${audioFileName}?txt=${encodeURIComponent(line)}`,resolve)
         });
     };
 
@@ -304,7 +299,6 @@ const Books = () => {
         <Container>
             {isView&&<AddButton onClick={() => setIsModalOpen(true)}>Add Book</AddButton>}
             <Heading>Book List</Heading>
-            <audio ref={audioRef} controls style={{ display: 'none' }}></audio>
             <List>
                 {books.map((book,bookIndex) => (
                     <ListItem key={book.id}>
