@@ -152,9 +152,14 @@ const WordCardList = () => {
 
             <h3>Other App</h3>
             <div>
-              {" "}
               <Link to="/draw" target="_blak">
                 Draw
+              </Link>
+
+            </div>
+            <div>
+            <Link to="/books" target="_blak">
+                Audio Books
               </Link>
             </div>
           </div>

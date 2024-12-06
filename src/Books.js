@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay,faTrash,faVolumeUp } from '@fortawesome/free-solid-svg-icons';
-
+import { useAudio } from './context/AudioContext';
 // Styled Components
 const Container = styled.div`
     max-width: 600px;
@@ -155,8 +155,7 @@ const Books = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentLineIndex, setCurrentLineIndex] = useState(-1); // Track the currently playing line
-    const audioRef = useRef();
-
+    const audioRef = useAudio();
     // Fetch books from the API on component mount
     useEffect(() => {
         const fetchBooks = async () => {
@@ -297,7 +296,8 @@ const Books = () => {
             if(time !== changed.current) throw 'abort';
 
             if (currentAudioIndex < audioElements.length) {
-                const audio = audioElements[currentAudioIndex];
+                const audio = audioRef.current;
+                audio.src = audioElements[currentAudioIndex].src;
                 audio.play();
                 callback(currentAudioIndex,audio.src, 'start');
     
@@ -357,7 +357,7 @@ const Books = () => {
 
     return (
         <Container>
-            <AddButton onClick={() => setIsModalOpen(true)}>Add Book</AddButton>
+            {isView&&<AddButton onClick={() => setIsModalOpen(true)}>Add Book</AddButton>}
             <Heading>Book List</Heading>
             <audio ref={audioRef} controls style={{ display: 'none' }}></audio>
             <List>
