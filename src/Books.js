@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay,faTrash,faVolumeUp } from '@fortawesome/free-solid-svg-icons';
 import { useAudio } from './context/AudioContext';
+import AudioText from './components/AudioText';
 // Styled Components
 const Container = styled.div`
     max-width: 600px;
@@ -242,7 +243,7 @@ const Books = () => {
         const combinedContent = `${title}\n${content}`;
         return combinedContent.split('\n').map((line, index) => (
             <Line key={index} $isActive={curBookIndex==bookIndex&&currentLineIndex === index}>
-               {index+1}. {line.split(/\s+/i).filter(e=>e).map((c,ci,words)=>(<Word $isActive={bookIndex==curBookIndex && index == currentLineIndex && curWordInex==ci} onClick={()=>playWordByWord(bookIndex,index,c,ci,words)}> {c}</Word>))}
+                {index+1}.<AudioText text={line}></AudioText>
             </Line>
         ));
     };
