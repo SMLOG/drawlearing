@@ -7,7 +7,6 @@ import AudioText from './components/AudioText';
 import AudioTextContainer from './components/AudioTextContainer';
 // Styled Components
 const Container = styled.div`
-    max-width: 600px;
     margin: 0 auto;
     padding: 20px;
     font-family: Arial, sans-serif;
