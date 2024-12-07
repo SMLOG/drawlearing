@@ -22,6 +22,10 @@ const AudioText = forwardRef(({ text,items,myIndex }, ref) => {
         src &&
         new Promise((resolve) => {
           const audio = new Audio(src);
+          audio.onerror = function() {
+            console.error('Error loading audio:', audio.error);
+            resolve(null);
+        };
           audio.oncanplaythrough = () => resolve(audio);
           audio.load();
         })
@@ -75,7 +79,7 @@ const AudioText = forwardRef(({ text,items,myIndex }, ref) => {
 }));
 
   return (
-    <>{myIndex}.
+    <>
       {tokens.map((token, index) => (
         <Text
           $isActive={playIndex == index}

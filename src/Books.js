@@ -239,7 +239,7 @@ const Books = () => {
         const combinedContent = `${title}\n${content}`;
         return combinedContent.split('\n').map((line, index) => (
             <Line key={index} $isActive={curBookIndex==bookIndex&&currentLineIndex === index}>
-                <AudioText text={line}></AudioText>
+               <span>{index+1}.</span> <AudioText text={line}></AudioText>
             </Line>
         ));
     };
@@ -299,7 +299,7 @@ const Books = () => {
     return (
         <Container>
             {isView&&<AddButton onClick={() => setIsModalOpen(true)}>Add Book</AddButton>}
-            <Heading>Book List</Heading>
+            <Heading><AudioText text={"Book List"}></AudioText></Heading>
             <List>
                 {books.map((book,bookIndex) => (
                     <ListItem key={book.id}>
