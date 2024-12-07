@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import styled from "styled-components";
 import { useAudio } from "../context/AudioContext.js";
 import { tokenize } from "../lib/Text.js";
@@ -11,10 +11,9 @@ const Text = styled.span`
     `}
 `;
 
-const AudioText = ({ text }) => {
-  const { audioRef, playAudio } = useAudio();
+const AudioText = forwardRef(({ text,items,myIndex }, ref) => {
+  const {  playAudio } = useAudio();
   const [tokens, setTokens] = useState(tokenize(text));
-
   const preloadAndPlayAudios = async (audioList, callback, startIndex = 0) => {
     // Preload all audios
     const preloadAudio = (src) => {
@@ -60,13 +59,20 @@ const AudioText = ({ text }) => {
         },
         index
       );
+      items&&await items[myIndex+1]?.current?.playTextAudio();
     } catch (error) {
       setPlayIndex(-1);
     }
   };
 
+  useImperativeHandle(ref, () => ({
+    playTextAudio: async () => {
+         await playTokens(0);
+        },
+}));
+
   return (
-    <>
+    <>{myIndex}.
       {tokens.map((token, index) => (
         <Text
           $isActive={playIndex == index}
@@ -78,6 +84,6 @@ const AudioText = ({ text }) => {
       ))}
     </>
   );
-};
+});
 
 export default AudioText;

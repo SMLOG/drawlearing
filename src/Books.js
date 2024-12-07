@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay,faTrash,faVolumeUp } from '@fortawesome/free-solid-svg-icons';
 import { useAudio } from './context/AudioContext';
 import AudioText from './components/AudioText';
+import AudioTextContainer from './components/AudioTextContainer';
 // Styled Components
 const Container = styled.div`
     max-width: 600px;
@@ -238,7 +239,7 @@ const Books = () => {
         const combinedContent = `${title}\n${content}`;
         return combinedContent.split('\n').map((line, index) => (
             <Line key={index} $isActive={curBookIndex==bookIndex&&currentLineIndex === index}>
-                {index+1}.<AudioText text={line}></AudioText>
+                <AudioText text={line}></AudioText>
             </Line>
         ));
     };
@@ -303,7 +304,9 @@ const Books = () => {
                 {books.map((book,bookIndex) => (
                     <ListItem key={book.id}>
                         <div style={{ textAlign: 'left' }}>
+                            <AudioTextContainer>
                             {renderContentWithLineBreaks(book.title, book.content,bookIndex)}
+                            </AudioTextContainer>
                         </div>
                         <ButtonGroup>
                             <PlayButton onClick={() => playAudioSequentially(book.title, book.content,bookIndex)}>
