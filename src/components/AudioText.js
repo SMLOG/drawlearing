@@ -16,6 +16,7 @@ const AudioText = forwardRef(({ text,items,myIndex }, ref) => {
   const [tokens, setTokens] = useState(tokenize(text));
   const preloadAndPlayAudios = async (audioList, callback, startIndex = 0) => {
     // Preload all audios
+    console.log(myIndex)
     const preloadAudio = (src) => {
       return (
         src &&
@@ -59,6 +60,8 @@ const AudioText = forwardRef(({ text,items,myIndex }, ref) => {
         },
         index
       );
+      console.log('playtoken:',myIndex)
+
       items&&await items[myIndex+1]?.current?.playTextAudio();
     } catch (error) {
       setPlayIndex(-1);
