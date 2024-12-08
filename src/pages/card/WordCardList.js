@@ -231,8 +231,6 @@ const WordCardList = () => {
 const styles = {
   container: {
     display: "flex",
-    padding: "20px",
-    paddingTop: "0",
     position: "relative", // To position the menu icon absolutely
   },
   sidebar: {

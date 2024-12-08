@@ -7,6 +7,8 @@ import WorkTrack2 from "./WorkTrack2";
 import WordCardList from "./pages/card/WordCardList";
 import PrintSheet from './pages/print/PrintSheet';
 import Books from './Books';
+import Layout from './Layout';
+import { SettingsProvider } from './SettingsContext';
 const App = () => {
   /*const preventScroll = (e) => {
     e.preventDefault();
@@ -23,20 +25,24 @@ const App = () => {
   }, []);*/
 
   return ( 
+    <SettingsProvider>
     <div className="App">
       <Routes>
-        <Route path="/draw" element={<DrawSVG />} />
-        <Route path="/p" element={<PrintOut />} />
-        <Route path="/s" element={<WorkTrack2 />} />
+      <Route path="/" element={<Layout />} >
+        <Route path="draw" element={<DrawSVG />} />
+        <Route path="p" element={<PrintOut />} />
+        <Route path="s" element={<WorkTrack2 />} />
         <Route path="/" element={<WordCardList />} />
-        <Route path="/printSheet" element={<PrintSheet />} />
-        <Route path="/books" element={<Books />} />
-        <Route path="/"  element={<Navigate to="/cards" />} />
-        <Route path="/cards/:type?" element={<WordCardList />}  />
+        <Route path="printSheet" element={<PrintSheet />} />
+        <Route path="books" element={<Books />} />
+        <Route path="./"  element={<Navigate to="/cards" />} />
+        <Route path="cards/:type?" element={<WordCardList />}  />
         
         <Route path="*" element={<Navigate to="/cards" />} />
+        </Route>
       </Routes>
     </div>
+    </SettingsProvider>
   );
 };
 

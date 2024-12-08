@@ -145,11 +145,7 @@ const AddButton = styled(Button)`
     color: white;
 `;
 
-const Word = styled.span`
-    ${(props) => props.$isActive && `
-        color: red; /* Highlight color */
-    `}
-`;
+
 const Books = () => {
     const [books, setBooks] = useState([]);
     const [currentBook, setCurrentBook] = useState({ id: null, title: '', content: '' });
@@ -274,7 +270,6 @@ const Books = () => {
 
   
 
-    const changed = useRef(-1);
 
 
     const modalRef = useRef();
