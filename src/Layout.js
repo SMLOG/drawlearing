@@ -35,7 +35,7 @@ const Mask = styled.div`
   height: 100%;
   background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
   z-index: 10999; /* Updated z-index for the mask */
-  display: ${props => (props.visible ? 'block' : 'none')}; /* Show/hide based on state */
+  display: ${props => (props.$visible ? 'block' : 'none')}; /* Show/hide based on state */
 `;
 
 const Main = styled.main`
@@ -60,7 +60,7 @@ const Layout = () => {
         <h2>Sidebar</h2>
         <p>Some additional content here.</p>
       </Aside>
-      <Mask visible={isAsideVisible} onClick={toggleAside} />
+      <Mask $visible={isAsideVisible} onClick={toggleAside} />
       <Main>
         <Outlet />
       </Main>

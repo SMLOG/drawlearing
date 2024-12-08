@@ -31,7 +31,7 @@ const App = () => {
       <Route path="/" element={<Layout />} >
         <Route path="draw" element={<DrawSVG />} />
         <Route path="p" element={<PrintOut />} />
-        <Route path="s" element={<WorkTrack2 />} />
+        <Route path="stroke/:sentence" element={<WorkTrack2 />} />
         <Route path="/" element={<WordCardList />} />
         <Route path="printSheet" element={<PrintSheet />} />
         <Route path="books" element={<Books />} />

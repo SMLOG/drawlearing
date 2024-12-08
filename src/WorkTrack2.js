@@ -27,10 +27,7 @@ import EventBus from "just-event-bus";
 
 const WordTrack2 = ({}) => {
   const location = useLocation();
-
-  // Function to parse query parameters
-  const queryParams = new URLSearchParams(location.search);
-  const sentence = queryParams.get("txt"); // Access the 'q' parameter
+  const { sentence } = useParams();
 
   const [word, setWord] = useState(null);
   const [words, setWords] = useState(sentence.split(""));

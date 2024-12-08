@@ -62,9 +62,11 @@ const Nav = ({ toggleAside }) => {
         <Line />
       </Hamburger>
       <NavList>
-        <NavItem><Link to="/">Home</Link></NavItem>
+        <NavItem><Link to="/cards">Cards</Link></NavItem>
         <NavItem><Link to="/books">Books</Link></NavItem>
         <NavItem><Link to="/draw">Draw</Link></NavItem>
+        <NavItem><Link to="/stroke/你好" >Stroke</Link></NavItem>
+        
       </NavList>
     </NavContainer>
   );

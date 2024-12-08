@@ -292,7 +292,7 @@ const Books = () => {
 
     return (
         <Container>
-            {isView&&<AddButton onClick={() => setIsModalOpen(true)}>Add Book</AddButton>}
+            <AddButton onClick={() => setIsModalOpen(true)}>New Book</AddButton>
             <Heading><AudioText text={"Book List"}></AudioText></Heading>
             <List>
                 {books.map((book,bookIndex) => (

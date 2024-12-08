@@ -15,7 +15,7 @@ export function tokenize(str) {
             }
             // If the character is not a space, add it to symbols
             if(/[\u4e00-\u9fa5]/.test(char)){
-                words.push({c:currentWord,t:'cn'});
+                words.push({c:char,t:'cn'});
             }else if ( !/[a-zA-Z']/.test(char)) {
                 words.push({c:char,t:''});
             }
@@ -24,7 +24,7 @@ export function tokenize(str) {
 
     // If there's a word left at the end, push it to the words array
     if (currentWord) {
-        words.push({c:currentWord,t:'w'});
+        words.push({c:currentWord,t:'en'});
     }
 
     return words;

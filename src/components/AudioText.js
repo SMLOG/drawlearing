@@ -13,10 +13,12 @@ const Text = styled.span`
 
 const AudioText = forwardRef(({ text,items,myIndex }, ref) => {
   const {  playAudio } = useAudio();
-  const [tokens, setTokens] = useState(tokenize(text));
+  const [tokens, setTokens] = useState([]);
+  useEffect(()=>{
+    setTokens(tokenize(text));
+  },[text]);
   const preloadAndPlayAudios = async (audioList, callback, startIndex = 0) => {
     // Preload all audios
-    console.log(myIndex)
     const preloadAudio = (src) => {
       return (
         src &&
@@ -26,8 +28,9 @@ const AudioText = forwardRef(({ text,items,myIndex }, ref) => {
             console.error('Error loading audio:', audio.error);
             resolve(null);
         };
-          audio.oncanplaythrough = () => resolve(audio);
-          audio.load();
+        //  audio.oncanplaythrough = () => resolve(audio);
+        //  audio.load();
+        resolve(audio);
         })
       );
     };
@@ -52,9 +55,9 @@ const AudioText = forwardRef(({ text,items,myIndex }, ref) => {
   const [playIndex, setPlayIndex] = useState(-1);
   const playTokens = async (index) => {
     let audioList = tokens.map((token) =>
-      token.t
+      token.t=='en'
         ? `/audio/us/${token.c.toLowerCase().replace(/[^a-z]/gi, "")}.mp3`
-        : null
+        : token.t=='cn'?`/sound/Cantonese/${encodeURIComponent(token.c)}.mp3`:null
     );
     try {
       await preloadAndPlayAudios(
