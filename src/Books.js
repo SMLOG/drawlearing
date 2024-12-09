@@ -46,6 +46,8 @@ const Line = styled.p`
     color: #444;
     font-size: 2em;
     line-height: 1.6;
+    background: rgba(255, 255, 255, 0.8);
+    display:inline-block;
     ${(props) => props.$isActive && `
         background-color: #e0f7fa; /* Highlight color */
     `}
@@ -120,6 +122,21 @@ const Textarea = styled.textarea`
     border-radius: 5px;
     border: 1px solid #ccc;
     font-size: 1em; /* Increased font size for textarea */
+    background-size: contain;
+    background-position: right;
+    background-repeat: no-repeat;
+        ${(props) => props.$image && `
+       background-image: url('${props.$image}');
+    `}
+`;
+const BookContent = styled.div`
+text-align:left;
+    background-size: contain;
+    background-position: right;
+    background-repeat: no-repeat;
+        ${(props) => props.$image && `
+       background-image: url('${props.$image}');
+    `}
 `;
 
 const SubmitButton = styled(Button)`
@@ -147,7 +164,7 @@ const AddButton = styled(Button)`
 
 const Books = () => {
     const [books, setBooks] = useState([]);
-    const [currentBook, setCurrentBook] = useState({ id: null, title: '', content: '' });
+    const [currentBook, setCurrentBook] = useState({ id: null, title: '', content: '',img:'' });
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentLineIndex, setCurrentLineIndex] = useState(-1); // Track the currently playing line
@@ -191,6 +208,7 @@ const Books = () => {
     };
 
     const updateBook = () => {
+        console.log(currentBook);
         const updatedBooks = books.map((book) => (book.id === currentBook.id ? currentBook : book));
         setBooks(updatedBooks);
         resetForm();
@@ -292,9 +310,9 @@ const Books = () => {
             <List>
                 {books.map((book,bookIndex) => (
                     <ListItem key={book.id}>
-                        <div style={{ textAlign: 'left' }}>
+                        <BookContent $image={book.img} >
                             {renderContentWithLineBreaks(book.title, book.content,bookIndex)}
-                        </div>
+                        </BookContent>
                         <ButtonGroup>
                             <PlayButton onClick={() => playAudioSequentially(book.title, book.content,bookIndex)}>
                                  <FontAwesomeIcon icon={curBookIndex==bookIndex?faVolumeUp:faPlay} />
@@ -327,7 +345,10 @@ const Books = () => {
                             onChange={handleInputChange}
                             placeholder="Book Content"
                             rows="4"
+                            $image={currentBook.img}
                         />
+                        <Input type="text" name="img"   onChange={handleInputChange}   placeholder="Image URL" value={currentBook.img}/>
+
                         <SubmitButton onClick={isEditing ? updateBook : addBook}>
                             {isEditing ? 'Update Book' : 'Add Book'}
                         </SubmitButton>
