@@ -251,9 +251,9 @@ const Books = () => {
     const renderContentWithLineBreaks = (title, content,bookIndex) => {
         const combinedContent = `${title}\n${content}`;
         return combinedContent.split('\n').map((line, index) => (
-            <Line key={index} $isActive={curBookIndex==bookIndex&&currentLineIndex === index}>
+            <div><Line key={index} $isActive={curBookIndex==bookIndex&&currentLineIndex === index}>
                <span>{index+1}.</span> <AudioText text={line}></AudioText>
-            </Line>
+            </Line></div>
         ));
     };
 
