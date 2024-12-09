@@ -44,7 +44,7 @@ const ListItem = styled.li`
 const Line = styled.p`
     margin: 0;
     color: #444;
-    font-size: 1.1em;
+    font-size: 2em;
     line-height: 1.6;
     ${(props) => props.$isActive && `
         background-color: #e0f7fa; /* Highlight color */
@@ -102,7 +102,6 @@ const ModalContainer = styled.div`
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    width: 400px;
 `;
 
 const Input = styled.input`
@@ -162,7 +161,7 @@ const Books = () => {
                     throw new Error('Network response was not ok');
                 }
                 const data = await response.json();
-                setBooks(data);
+                setBooks(data.sort((a,b)=>b.id-a.id));
             } catch (error) {
                 console.error('Error fetching books:', error);
             }
@@ -180,7 +179,7 @@ const Books = () => {
         if (!currentBook.title || !currentBook.content) return;
 
         const newBook = { ...currentBook, id: Date.now() };
-        setBooks([...books, newBook]);
+        setBooks([newBook,...books]);
         resetForm();
         saveBooks([...books, newBook]);
     };
@@ -199,9 +198,10 @@ const Books = () => {
     };
 
     const deleteBook = (id) => {
+        
         const updatedBooks = books.filter((book) => book.id !== id);
         setBooks(updatedBooks);
-       // saveBooks(updatedBooks);
+       saveBooks(updatedBooks);
     };
 
     const resetForm = () => {
@@ -265,11 +265,6 @@ const Books = () => {
             console.error('Error saving books:', error);
         }
     };
-    const [isView,setIsView]=useState(window.location.href.indexOf('localhost')>-1);
-
-
-  
-
 
 
     const modalRef = useRef();
@@ -298,20 +293,18 @@ const Books = () => {
                 {books.map((book,bookIndex) => (
                     <ListItem key={book.id}>
                         <div style={{ textAlign: 'left' }}>
-                            <AudioTextContainer>
                             {renderContentWithLineBreaks(book.title, book.content,bookIndex)}
-                            </AudioTextContainer>
                         </div>
                         <ButtonGroup>
                             <PlayButton onClick={() => playAudioSequentially(book.title, book.content,bookIndex)}>
                                  <FontAwesomeIcon icon={curBookIndex==bookIndex?faVolumeUp:faPlay} />
                             </PlayButton>
-                            {isView&&<div>
+                            <div>
                             <EditButton onClick={() => { editBook(book); setIsModalOpen(true); }}>Edit</EditButton>
                             <DeleteButton onClick={() => deleteBook(book.id)}>
                                 <FontAwesomeIcon icon={faTrash} /> Delete
                             </DeleteButton>
-                            </div>}
+                            </div>
                         </ButtonGroup>
                     </ListItem>
                 ))}
