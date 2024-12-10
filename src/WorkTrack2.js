@@ -1,32 +1,60 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   translateAndScaleSvgPath,
-  pointsSmooth,
-  scaleStroke,
   scaleSvgPath,
   getPointsOnPath,
   getOffset,
   PointsDistance,
 } from "./SVGUtils";
-import { useSelector, useDispatch } from "react-redux";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
-import { updateSettings } from "./features/settingsSlice";
-import { createStrokeJSON } from "./SvgEdit2/SVGUtils";
+import styled from 'styled-components';
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CollapsibleItemsContainer from "./CollapsibleItemsContainer";
 import {
   faPlay,
   faRedo,
   faLightbulb,
-  faArrowRight,
   faVolumeUp,
   faQuestionCircle,
 } from "@fortawesome/free-solid-svg-icons";
-import EventBus from "just-event-bus";
+
+const FlexBox =styled.div`
+display:flex;
+flex-grow:1;
+margin-left: 20px;
+margin-right: 20px;
+align-items: flex-start;
+@media (max-width: 800px){
+flex-direction: column;
+align-items: center;
+}
+`;
+const LineText = styled.div`
+  flex-grow: 1;
+      padding-left: 20px;
+      font-size: 3em;
+      text-align: left;
+      position:relative;
+      margin-left:10px;
+      min-width: 350px;
+      @media (min-width: 800px){
+      min-height: 350px;
+}
+`;
+
+const Container = styled.div`
+position: absolute;
+top: 0;
+right: 0;
+left: 0;
+bottom: 0;
+display: flex;
+flex-direction: column;
+`;
 
 const WordTrack2 = ({}) => {
-  const location = useLocation();
   const { sentence } = useParams();
 
   const [word, setWord] = useState(null);
@@ -305,16 +333,9 @@ const WordTrack2 = ({}) => {
   }, []);
 
   return (
-    <>
+    <Container>
       {word && (
-        <div
-          style={{
-            position: "absolute",
-            left: "50%",
-            transform: "translate(-50%, 0%)",
-            flexDirection: "column",
-          }}
-        >
+        <>
           <div
             style={{
               display: "flex",
@@ -346,11 +367,13 @@ const WordTrack2 = ({}) => {
               </CollapsibleItemsContainer>
             </div>
           </div>
+          <FlexBox>
           <svg
             viewBox={`0 0 ${word.viewBoxWidth}  100 `}
             style={{
               maxHeight: "100%",
-              maxWidth: "100%",
+              maxWidth: "min(350px,100%)",
+              minWidth:'350px'
             }}
             ref={svgRef}
             onMouseDown={startDrawing}
@@ -517,7 +540,8 @@ const WordTrack2 = ({}) => {
               ))}
             </g>
           </svg>
-          <div style={{ display: "flex" }}>
+          <LineText>
+            <div style={{position:'absolute',top:0,bottom:0,left:0,left:0,overflow:'auto'}}>
             {words &&
               words.map((ch, index) => (
                 <span
@@ -528,12 +552,14 @@ const WordTrack2 = ({}) => {
                   {ch}
                 </span>
               ))}
-          </div>
+              </div>
+          </LineText>
+          </FlexBox>
           <audio ref={audioRef} controls src={`/sound/3s.mp3`} style={{display:errorMsg?'':'none'}}></audio>
           {errorMsg&&<div>{errorMsg}</div>}
-        </div>
+        </>
       )}
-    </>
+    </Container>
   );
 };
 
