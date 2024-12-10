@@ -391,7 +391,7 @@ const Draw = () => {
   return (
     <div
       className="container"
-      style={{ userSelect: "none", overflow: "hidden" }}
+      style={{ userSelect: "none"}}
     >
       {isSettingsVisible && (
         <Settings onClose={toggleSettings} settings={settings} />

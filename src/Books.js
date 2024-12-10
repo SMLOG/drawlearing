@@ -134,13 +134,18 @@ text-align:left;
     background-size: contain;
     background-position: right;
     background-repeat: no-repeat;
-        ${(props) => props.$image && `
-       background-image: url('${props.$image}');
-    `}
+
     display:flex;
 
     @media (max-width: 480px) {
             flex-direction:column;
+
+  }
+                @media (min-width: 480px) {
+                       ${(props) => props.$image && `
+       background-image: url('${props.$image}');
+    `}
+     img{ display:none;};
   }
     img{ max-width:min(100%, 100px)};
 `;
@@ -316,7 +321,7 @@ const Books = () => {
             <List>
                 {books.map((book,bookIndex) => (
                     <ListItem key={book.id}>
-                        <BookContent  >
+                        <BookContent $image={book.img} >
                             <div>
                             {book.img&&<img src = {book.img}/>}
                             </div>
