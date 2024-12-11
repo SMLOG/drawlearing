@@ -5,8 +5,13 @@ import Nav from './Nav'; // Import the Nav component
 
 const LayoutContainer = styled.div`
   display: flex;
-  height: 100vh;
-  position: relative; /* Allow absolute positioning for the mask */
+  position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+
+
 `;
 
 const Aside = styled.aside`
@@ -52,6 +57,8 @@ const Layout = () => {
   const toggleAside = () => {
     setAsideVisible(!isAsideVisible);
   };
+
+
 
   return (
     <LayoutContainer>

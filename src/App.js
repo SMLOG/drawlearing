@@ -10,19 +10,7 @@ import Books from './Books';
 import Layout from './Layout';
 import { SettingsProvider } from './SettingsContext';
 const App = () => {
-  /*const preventScroll = (e) => {
-    e.preventDefault();
-  };
 
-  useEffect(() => {
-    // Add touch event listeners
-    document.body.addEventListener('touchmove', preventScroll, { passive: false });
-
-    // Cleanup function to remove event listeners
-    return () => {
-      document.body.removeEventListener('touchmove', preventScroll);
-    };
-  }, []);*/
 
   return ( 
     <SettingsProvider>

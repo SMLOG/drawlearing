@@ -388,6 +388,19 @@ const Draw = () => {
     }
   }, []);
 
+    const preventScroll = (e) => {
+    e.preventDefault();
+  };
+
+  useEffect(() => {
+    const divElement = svgRef.current;
+    divElement.addEventListener('touchmove', preventScroll, { passive: false });
+
+    // Cleanup function to remove event listeners
+    return () => {
+      divElement.removeEventListener('touchmove', preventScroll);
+    };
+  }, []);
   return (
     <div
       className="container"
