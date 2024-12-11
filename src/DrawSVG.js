@@ -416,7 +416,7 @@ const Draw = () => {
       >
         {/* left */}
         <div style={{display:'flex',flexDirection:'column'}}> 
-        <div style={{minWidth:'30px',margin:'5px 0'}}><FontAwesomeIcon icon={faBars}  size="1x" onClick={toggleSettings} /></div>
+        <div style={{minWidth:'30px',margin:'5px 0'}}><FontAwesomeIcon icon={faBars}  size="1x"  /></div>
         <div style={{position:'relative',flexGrow:1}}>
         <div
           id="leftbar"

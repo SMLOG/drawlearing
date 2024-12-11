@@ -16,8 +16,6 @@ const ModeSwitchButton = ({ settings, toggleSettings }) => {
 
   const modes = [
     { icon: faMusic, name: "Track" },
-    { icon: faVideo, name: "Video" },
-    { icon: faGamepad, name: "Game" },
     { icon: faGamepad, name: "Words" },
   ];
 
@@ -89,19 +87,6 @@ const ModeSwitchButton = ({ settings, toggleSettings }) => {
         </div>
         <div style={{ display: showMore ? "" : "none", position: "absolute" }} >
           <div>
-            <button
-              style={{
-                ...styles.button,
-                backgroundColor: settings.drawEnabled ? "#388E3C" : "#4CAF50", // Highlight if Draw is enabled
-              }}
-              onClick={() => toggleSettings()}
-            >
-              <div style={styles.iconContainer}>
-                <FontAwesomeIcon icon={faCog} size="sm" />
-                <span style={styles.label}>Setting</span>
-              </div>
-            </button>
-
             <button
               style={{
                 ...styles.button,
