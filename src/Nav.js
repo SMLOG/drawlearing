@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; // Import Link for navigation
+import { NavLink  } from 'react-router-dom'; // Import Link for navigation
 import styled from 'styled-components';
 
 const NavContainer = styled.nav`
@@ -52,7 +52,20 @@ const NavItem = styled.li`
     }
   }
 `;
+const StyledNavLink = styled(NavLink)`
+  text-decoration: none;
+  color: gray;
+  padding: 10px;
 
+  &.active {
+    font-weight: bold;
+    color: orange;
+  }
+
+  &:hover {
+    color: orange;
+  }
+`;
 const Nav = ({ toggleAside }) => {
   return (
     <NavContainer>
@@ -62,10 +75,10 @@ const Nav = ({ toggleAside }) => {
         <Line />
       </Hamburger>
       <NavList>
-        <NavItem><Link to="/cards">Cards</Link></NavItem>
-        <NavItem><Link to="/books">Books</Link></NavItem>
-        <NavItem><Link to="/draw">Draw</Link></NavItem>
-        <NavItem><Link to="/stroke/你好" >Stroke</Link></NavItem>
+        <NavItem><StyledNavLink  to="/cards">Cards</StyledNavLink></NavItem>
+        <NavItem><StyledNavLink  to="/books">Books</StyledNavLink></NavItem>
+        <NavItem><StyledNavLink  to="/draw">Draw</StyledNavLink></NavItem>
+        <NavItem><StyledNavLink  to="/stroke/你好" >Stroke</StyledNavLink></NavItem>
         
       </NavList>
     </NavContainer>
