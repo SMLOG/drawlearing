@@ -9,7 +9,7 @@ import {
 import { useParams } from "react-router-dom";
 
 import styled from 'styled-components';
-
+import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CollapsibleItemsContainer from "./CollapsibleItemsContainer";
 import {
@@ -17,7 +17,7 @@ import {
   faRedo,
   faLightbulb,
   faVolumeUp,
-  faQuestionCircle,
+  faQuestionCircle,faEdit,faSave,faTimes
 } from "@fortawesome/free-solid-svg-icons";
 
 const FlexBox =styled.div`
@@ -56,7 +56,7 @@ flex-direction: column;
 
 const WordTrack2 = ({}) => {
   const { sentence } = useParams();
-
+  const navigate = useNavigate();
   const [word, setWord] = useState(null);
   const [words, setWords] = useState(sentence.split(""));
   const [playedIndex, setPlayedIndex] = useState(-1);
@@ -99,7 +99,7 @@ const WordTrack2 = ({}) => {
           if (curTime !== playingRef.current) return;
           setPlayedIndex(i);
         }
-        playSound(`/sound/Cantonese/${encodeURIComponent(w.ch)}.mp3`);
+        playSound(`/sound/${selectedLanguage}/${encodeURIComponent(w.ch)}.mp3`);
         await new Promise((resolve) => setTimeout(resolve, 1000));
         if (curTime !== playingRef.current) return;
       }
@@ -265,15 +265,17 @@ const WordTrack2 = ({}) => {
       audioRef.current.src = url;
       audioRef.current.play().catch((error) => {
         console.error("Error playing sound:", error);
-        errorMsg = error;
+        setErrorMsg(errorMsg);
       });
     }
   };
-
+  const [selectedLanguage, setSelectedLanguage] = useState('Cantonese');
+  
   const playSounds = async () => {
     console.log("Sound played");
-    for (let w of word.chs) {
-      playSound(`/sound/Cantonese/${encodeURIComponent(w.ch)}.mp3`);
+
+    for (const w of word.chs) {
+      playSound(`/sound/${selectedLanguage}/${encodeURIComponent(w.ch)}.mp3`);
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   };
@@ -316,22 +318,23 @@ const WordTrack2 = ({}) => {
 
   const [trackPoints, setTrackPoints] = useState([]);
 
-  useEffect(() => {
-    const handleClick = () => {
-      playSound('/sound/3s.mp3');
-      // Remove event listener after the first click
-      document.body.removeEventListener('click', handleClick);
-    };
 
-    // Add event listener to the body
-    document.body.addEventListener('click', handleClick);
+  const [text, setText] = useState(sentence);
 
-    // Cleanup function to remove the event listener
-    return () => {
-      document.body.removeEventListener('click', handleClick);
-    };
-  }, []);
-
+  const [isEditing, setIsEditing] = useState(false);
+  const handleEditClick = () => {
+    setIsEditing(true);
+};
+const handleSaveClick = () => {
+  setIsEditing(false);
+  // Here you can also handle saving the text if needed
+  setWords(text.split(""));
+  navigate('/stroke/'+encodeURIComponent(text)); // Replace with your desired path
+};
+const handleCancelClick = () => {
+  setIsEditing(false);
+  // Optionally reset the text or handle cancellation
+};
   return (
     <Container>
       {word && (
@@ -364,6 +367,16 @@ const WordTrack2 = ({}) => {
                     <span style={{ marginLeft: "5px" }}>{button.label}</span>
                   </div>
                 ))}
+                      <select 
+              onChange={(e) => setSelectedLanguage(e.target.value)} 
+              value={selectedLanguage}
+            >
+              <option value="Cantonese">Cantonese</option>
+              <option value="Mandarin">Mandarin</option>
+              <option value="us">US English</option>
+              <option value="en">English</option>
+              {/* Add more languages as needed */}
+            </select>
               </CollapsibleItemsContainer>
             </div>
           </div>
@@ -542,16 +555,43 @@ const WordTrack2 = ({}) => {
           </svg>
           <LineText>
             <div style={{position:'absolute',top:0,bottom:0,left:0,left:0,overflow:'auto'}}>
-            {words &&
-              words.map((ch, index) => (
-                <span
-                  key={index}
-                  style={{ color: txtIndex > index ? "red" :txtIndex == index?"green": "black" }}
-                  onClick={() => setTxtIndex(index)}
-                >
-                  {ch}
-                </span>
-              ))}
+              
+            {isEditing ? (
+                <div>
+                  <div>
+                    <textarea
+                        rows={4}
+                        value={text}
+                        onChange={(e) => setText(e.target.value)}
+                        style={{ width: '100%',     boxSizing: 'border-box' }} // Style the textarea
+                    />
+                    </div>
+                    <div>
+                    <button onClick={handleSaveClick}>
+                        <FontAwesomeIcon icon={faSave} /> Save
+                    </button>
+                    <button onClick={handleCancelClick}>
+                        <FontAwesomeIcon icon={faTimes} /> Cancel
+                    </button>
+                    </div>
+                </div>
+            ) : (
+                <div>
+                    {words &&
+                        words.map((ch, index) => (
+                            <span
+                                key={index}
+                                style={{ color: txtIndex > index ? "red" : txtIndex === index ? "green" : "black" }}
+                                onClick={() => setTxtIndex(index)}
+                            >
+                                {ch}
+                            </span>
+                        ))}
+                    <button onClick={handleEditClick}>
+                        <FontAwesomeIcon icon={faEdit} /> Edit
+                    </button>
+                </div>
+            )}
               </div>
           </LineText>
           </FlexBox>
