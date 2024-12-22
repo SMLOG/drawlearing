@@ -204,7 +204,7 @@ const Books = () => {
     };
 
     const addBook = () => {
-        if (!currentBook.title || !currentBook.content) return;
+        if (!currentBook.title.trim() && !currentBook.content.trim()) return;
 
         const newBook = { ...currentBook, id: Date.now() };
         setBooks([newBook,...books]);
@@ -240,8 +240,11 @@ const Books = () => {
     };
 
     const [curBookIndex,setCurBookIndex] = useState(-1);
-    const playAudioSequentially = async (title, content,bookIndex) => {
-        const lines = [title, ...content.split('\n')];
+    const playAudioSequentially = async (book,bookIndex) => {
+        console.log(book)
+        const {content,title} = book;
+       
+        const lines = (title+'\n'+content).trim().split('\n');
         setCurBookIndex(bookIndex);
         for (let i = 0; i < lines.length; i++) {
             setCurrentLineIndex(i); // Set current line index
@@ -260,7 +263,7 @@ const Books = () => {
     };
 
     const renderContentWithLineBreaks = (title, content,bookIndex) => {
-        const combinedContent = `${title}\n${content}`;
+        const combinedContent = `${title}\n${content}`.trim();
         return combinedContent.split('\n').map((line, index) => (
             <div key={index}><Line  $isActive={curBookIndex==bookIndex&&currentLineIndex === index}>
                <span>{index+1}.</span> <AudioText text={line}></AudioText>
@@ -330,7 +333,7 @@ const Books = () => {
                             </div>
                         </BookContent>
                         <ButtonGroup>
-                            <PlayButton onClick={() => playAudioSequentially(book.title, book.content,bookIndex)}>
+                            <PlayButton onClick={() => playAudioSequentially(book,bookIndex)}>
                                  <FontAwesomeIcon icon={curBookIndex==bookIndex?faVolumeUp:faPlay} />
                             </PlayButton>
                             <div>
@@ -353,7 +356,7 @@ const Books = () => {
                             name="title"
                             value={currentBook.title}
                             onChange={handleInputChange}
-                            placeholder="Book Title"
+                            placeholder="Book Title(Optional)"
                         />
                         <Textarea
                             name="content"
