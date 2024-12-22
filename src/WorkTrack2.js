@@ -99,7 +99,7 @@ const WordTrack2 = ({}) => {
           if (curTime !== playingRef.current) return;
           setPlayedIndex(i);
         }
-        playSound(`/sound/${selectedLanguage}/${encodeURIComponent(w.ch)}.mp3`);
+        playSound(`/audio/${selectedLanguage}/${encodeURIComponent(w.ch.toLowerCase())}.mp3`);
         await new Promise((resolve) => setTimeout(resolve, 1000));
         if (curTime !== playingRef.current) return;
       }
@@ -109,9 +109,12 @@ const WordTrack2 = ({}) => {
   };
   useEffect(()=>{
     if(wordRef.current&&playedIndex>=wordRef.current.stroke.length-1){
-      setTimeout(()=>{
+      (async()=>{
+        await  playSounds();  
+        await new Promise((resolve)=>setTimeout(resolve,1000));    
         setTxtIndex((prev)=>prev+1>=words.length?prev:prev+1)
-      },2000);
+      })();
+
     }
      
   },[wordRef.current,playedIndex]);
@@ -141,7 +144,6 @@ const WordTrack2 = ({}) => {
             const path = scaleSvgPath(s.t || s.d, scale);
             s.track = getPointsOnPath(path, r, s.t ? scale : 1);
             s.track.map((t) => (t.x = (s.t ? tranX : 0) + t.x));
-            console.log(s);
           });
           tranX += cdata.scale * (cdata.w || 100);
 
@@ -275,7 +277,7 @@ const WordTrack2 = ({}) => {
     console.log("Sound played");
 
     for (const w of word.chs) {
-      playSound(`/sound/${selectedLanguage}/${encodeURIComponent(w.ch)}.mp3`);
+      playSound(`/audio/${selectedLanguage}/${encodeURIComponent(w.ch.toLowerCase())}.mp3`);
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   };
@@ -372,9 +374,7 @@ const handleCancelClick = () => {
               value={selectedLanguage}
             >
               <option value="Cantonese">Cantonese</option>
-              <option value="Mandarin">Mandarin</option>
-              <option value="us">US English</option>
-              <option value="en">English</option>
+              <option value="zh">Mandarin</option>
               {/* Add more languages as needed */}
             </select>
               </CollapsibleItemsContainer>
