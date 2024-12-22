@@ -258,16 +258,28 @@ const Books = () => {
     const playLine = (line) => {
         return new Promise((resolve) => {
             const audioFileName = line.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]+/ig, '_') + '.mp3';
-            playAudio(`/short/${audioFileName}?txt=${encodeURIComponent(line)}`,resolve)
+            return playAudio(`/short/${audioFileName}?txt=${encodeURIComponent(line)}`,resolve)
         });
     };
+
+    const playBookLine = async (bookIndex,index,line)=>{
+            setCurBookIndex(bookIndex);
+            setCurrentLineIndex(index);
+            await playLine(line);
+            setCurBookIndex(-1);
+            setCurrentLineIndex(-1);    
+    }
 
     const renderContentWithLineBreaks = (title, content,bookIndex) => {
         const combinedContent = `${title}\n${content}`.trim();
         return combinedContent.split('\n').map((line, index) => (
             <div key={index}><Line  $isActive={curBookIndex==bookIndex&&currentLineIndex === index}>
                <span>{index+1}.</span> <AudioText text={line}></AudioText>
-            </Line></div>
+            </Line> 
+            <button onClick={() => playBookLine(bookIndex,index,line)}>
+            <FontAwesomeIcon icon={curBookIndex==bookIndex&&currentLineIndex === index?faVolumeUp:faPlay} />
+            </button>
+            </div>
         ));
     };
 
