@@ -10,6 +10,7 @@ const AudioRecorder = () => {
     const [isRecording, setIsRecording] = useState(false);
     const [micDevices, setMicDevices] = useState([]);
     const [selectedMic, setSelectedMic] = useState('');
+    const [progress, setProgress] = useState(0); // State for progress
 
     useEffect(() => {
         const ws = WaveSurfer.create({
@@ -35,17 +36,26 @@ const AudioRecorder = () => {
             ws.load(recordedUrl);
         });
 
-        // Add click event to play from clicked position after loading audio
+        // Add click and touch event to play from clicked position after loading audio
+        const playAudioFromClick = (event) => {
+            const relativeX = event.touches ? event.touches[0].clientX : event.clientX;
+            const relativePosition = relativeX - wavesurferRef.current.getBoundingClientRect().left;
+            const duration = ws.getDuration();
+            const position = (relativePosition / wavesurferRef.current.clientWidth) * duration;
+            ws.seekTo(position / duration); // Seek to the clicked position
+            ws.play(); // Play the audio
+        };
+
         ws.on('ready', () => {
             if (wavesurferRef.current) {
-                wavesurferRef.current.addEventListener('click', (event) => {
-                    const relativeX = event.clientX - wavesurferRef.current.getBoundingClientRect().left;
-                    const duration = ws.getDuration();
-                    const position = (relativeX / wavesurferRef.current.clientWidth) * duration;
-                    ws.seekTo(position / duration); // Seek to the clicked position
-                    ws.play(); // Play the audio
-                });
+                wavesurferRef.current.addEventListener('click', playAudioFromClick);
+                wavesurferRef.current.addEventListener('touchstart', playAudioFromClick);
             }
+        });
+
+        // Update progress while playing
+        ws.on('audioprocess', (currentTime) => {
+            setProgress(currentTime);
         });
 
         // Cleanup on component unmount
@@ -95,6 +105,13 @@ const AudioRecorder = () => {
         }
     };
 
+    // Helper function to format time
+    const formatTime = (time) => {
+        const minutes = Math.floor(time / 60);
+        const seconds = Math.floor(time % 60).toString().padStart(2, '0');
+        return `${minutes}:${seconds}`;
+    };
+
     return (
         <div>
             <h1>Audio Recorder with Wavesurfer.js</h1>
@@ -112,7 +129,7 @@ const AudioRecorder = () => {
                 Save to Backend
             </button>
             <div id="mic" ref={wavesurferRef} style={{ width: '100%', height: '200px' }}></div>
-            <div id="progress">00:00</div>
+            <div id="progress">Current Time: {formatTime(progress)} / {formatTime(wavesurfer ? wavesurfer.getDuration() : 0)}</div>
         </div>
     );
 };
