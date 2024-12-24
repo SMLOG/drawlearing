@@ -12,7 +12,7 @@ const AudioRecorder = () => {
     const [selectedMic, setSelectedMic] = useState('');
     const [progress, setProgress] = useState(0); // Single progress state
     const [recordingDuration, setRecordingDuration] = useState(0); // For recording duration
-
+  const audioRecordsRef = useRef(null);
     useEffect(() => {
         const ws = WaveSurfer.create({
             container: wavesurferRef.current,
@@ -34,6 +34,9 @@ const AudioRecorder = () => {
         recordPlugin.on('record-end', (blob) => {
             setRecordedBlob(blob);
             const recordedUrl = URL.createObjectURL(blob);
+            if (audioRecordsRef.current) {
+                audioRecordsRef.current.addAudio(recordedUrl);
+              }
             ws.load(recordedUrl);
         });
 
@@ -147,7 +150,7 @@ const AudioRecorder = () => {
                 Current Time: {formatTime(displayedTime)} / {formatTime(totalDuration)}
             </div>
 
-            <AudioRecords />
+            <AudioRecords ref={audioRecordsRef}  />
         </div>
     );
 };
