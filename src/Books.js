@@ -204,9 +204,11 @@ const Books = () => {
     };
 
     const addBook = () => {
+        fixBook();
         if (!currentBook.title.trim() && !currentBook.content.trim()) return;
 
         const newBook = { ...currentBook, id: Date.now() };
+
         setBooks([newBook,...books]);
         resetForm();
         saveBooks([...books, newBook]);
@@ -218,8 +220,18 @@ const Books = () => {
         setIsModalOpen(true);
     };
 
+    const fixBook = () =>{
+        if(isRemoveNumber){
+            currentBook.content = currentBook.content.replace(/\d+\s/g,' ');
+
+        }
+        currentBook.content = currentBook.content.replace(/\n+/g,'\n').replace(/\s+/g,' ');
+        currentBook.content = currentBook.content.replace(/\.\s/g,'.\n').trim();
+
+    }
     const updateBook = () => {
-        console.log(currentBook);
+        fixBook();
+
         const updatedBooks = books.map((book) => (book.id === currentBook.id ? currentBook : book));
         setBooks(updatedBooks);
         resetForm();
@@ -285,6 +297,7 @@ const Books = () => {
 
     const saveBooks = async (booksToSave) => {
         const fileName = 'books.json';
+
         const payload = {
             fileName,
             data: booksToSave,
@@ -328,6 +341,15 @@ const Books = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isModalOpen]);
+
+
+
+  const [isRemoveNumber, setIsRemoveNumber] = useState(false);
+
+  const handleIsRemoveNumber = () => {
+    setIsRemoveNumber(prevState => !prevState);
+  };
+
 
     return (
         <Container>
@@ -379,11 +401,22 @@ const Books = () => {
                             $image={currentBook.img}
                         />
                         <Input type="text" name="img"   onChange={handleInputChange}   placeholder="Image URL" value={currentBook.img}/>
-
+                        <div>
+                        <label>
+                            <input
+                            type="checkbox"
+                            checked={isRemoveNumber}
+                            onChange={handleIsRemoveNumber}
+                            />
+                             Remove Number
+                        </label>
+                        </div>
+                        <div style={{display:'flex'}}>
                         <SubmitButton onClick={isEditing ? updateBook : addBook}>
                             {isEditing ? 'Update Book' : 'Add Book'}
                         </SubmitButton>
                         <CloseButton onClick={resetForm}>Close</CloseButton>
+                        </div>
                     </ModalContainer>
                 </ModalBackground>
             )}
