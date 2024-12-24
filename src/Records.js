@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import WaveSurfer from 'wavesurfer.js';
 import RecordPlugin from 'wavesurfer.js/dist/plugins/record.esm.js';
 import AudioRecords from './AudioRecords'; 
+import TextRecording from './TextRecording';
 const AudioRecorder = () => {
     const wavesurferRef = useRef(null);
     const [wavesurfer, setWavesurfer] = useState(null);
@@ -128,7 +129,10 @@ const AudioRecorder = () => {
     // Determine the displayed time
     const displayedTime = isRecording ? recordingDuration : progress;
     const totalDuration = isRecording ? recordingDuration : (wavesurfer ? wavesurfer.getDuration() : 0);
-
+    const handleFinish = (clicks) => {
+        console.log('Finished! Clicks:', clicks);
+        // Additional actions can be performed here
+    };
     return (
         <div>
             <h1>Audio Recorder with Wavesurfer.js</h1>
@@ -149,7 +153,7 @@ const AudioRecorder = () => {
             <div id="progress">
                 Current Time: {formatTime(displayedTime)} / {formatTime(totalDuration)}
             </div>
-
+            <TextRecording onFinish={handleFinish} />
             <AudioRecords ref={audioRecordsRef}  />
         </div>
     );
