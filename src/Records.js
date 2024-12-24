@@ -10,7 +10,8 @@ const AudioRecorder = () => {
     const [isRecording, setIsRecording] = useState(false);
     const [micDevices, setMicDevices] = useState([]);
     const [selectedMic, setSelectedMic] = useState('');
-    const [progress, setProgress] = useState(0); // State for progress
+    const [progress, setProgress] = useState(0); // Single progress state
+    const [recordingDuration, setRecordingDuration] = useState(0); // For recording duration
 
     useEffect(() => {
         const ws = WaveSurfer.create({
@@ -83,6 +84,15 @@ const AudioRecorder = () => {
         } else {
             await record.startRecording({ deviceId: selectedMic });
             setIsRecording(true);
+            setRecordingDuration(0); // Reset recording duration
+
+            // Update recording duration every second
+            const interval = setInterval(() => {
+                setRecordingDuration((prev) => prev + 1);
+            }, 1000);
+
+            // Clear interval when recording stops
+            return () => clearInterval(interval);
         }
     };
 
@@ -112,6 +122,10 @@ const AudioRecorder = () => {
         return `${minutes}:${seconds}`;
     };
 
+    // Determine the displayed time
+    const displayedTime = isRecording ? recordingDuration : progress;
+    const totalDuration = isRecording ? recordingDuration : (wavesurfer ? wavesurfer.getDuration() : 0);
+
     return (
         <div>
             <h1>Audio Recorder with Wavesurfer.js</h1>
@@ -129,7 +143,9 @@ const AudioRecorder = () => {
                 Save to Backend
             </button>
             <div id="mic" ref={wavesurferRef} style={{ width: '100%', height: '200px' }}></div>
-            <div id="progress">Current Time: {formatTime(progress)} / {formatTime(wavesurfer ? wavesurfer.getDuration() : 0)}</div>
+            <div id="progress">
+                Current Time: {formatTime(displayedTime)} / {formatTime(totalDuration)}
+            </div>
         </div>
     );
 };
