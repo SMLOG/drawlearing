@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import WaveSurfer from 'wavesurfer.js';
 import RecordPlugin from 'wavesurfer.js/dist/plugins/record.esm.js';
-
+import AudioRecords from './AudioRecords'; 
 const AudioRecorder = () => {
     const wavesurferRef = useRef(null);
     const [wavesurfer, setWavesurfer] = useState(null);
@@ -146,6 +146,8 @@ const AudioRecorder = () => {
             <div id="progress">
                 Current Time: {formatTime(displayedTime)} / {formatTime(totalDuration)}
             </div>
+
+            <AudioRecords />
         </div>
     );
 };
