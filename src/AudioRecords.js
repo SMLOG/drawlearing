@@ -18,6 +18,7 @@ const AudioRecords = () => {
   const containerRef = useRef(null);
   const [urlIndex, setUrlIndex] = useState(0);
   const [loop, setLoop] = useState(false);
+  const [showList, setShowList] = useState(false); // State for showing the audio list
 
   const { wavesurfer, isPlaying, currentTime } = useWavesurfer({
     container: containerRef,
@@ -36,22 +37,15 @@ const AudioRecords = () => {
     setLoop((prevLoop) => !prevLoop);
   }, []);
 
-  const onUrlChange = useCallback(() => {
-    setUrlIndex((index) => (index + 1) % audioUrls.length);
-    if (wavesurfer) {
-      wavesurfer.load(audioUrls[(urlIndex + 1) % audioUrls.length]);
-      if (loop) {
-        wavesurfer.on('finish', () => {
-          wavesurfer.play(); // Automatically play when finished if looping
-        });
-      }
-    }
-  }, [wavesurfer, urlIndex, loop]);
+  const selectAudio = useCallback((index) => {
+    setUrlIndex(index);
+    wavesurfer.load(audioUrls[index]);
+    setShowList(false); // Hide the list after selection
+  }, [wavesurfer]);
 
   // Effect to handle looping behavior
   React.useEffect(() => {
     if (loop && wavesurfer) {
-      // Handle looping by listening to the finish event
       const handleFinish = () => {
         wavesurfer.play();
       };
@@ -76,8 +70,21 @@ const AudioRecords = () => {
         <button onClick={toggleLoop} style={{ minWidth: '5em' }}>
           {loop ? 'Disable Loop' : 'Enable Loop'}
         </button>
-        <button onClick={onUrlChange}>Change audio</button>
+        <button onClick={() => setShowList((prev) => !prev)}>
+          Change audio
+        </button>
       </div>
+      {showList && (
+        <ul style={{ listStyleType: 'none', padding: 0 }}>
+          {audioUrls.map((url, index) => (
+            <li key={index} style={{ margin: '0.5em 0' }}>
+              <button onClick={() => selectAudio(index)}>
+                {url.split('/').pop()} {/* Display just the file name */}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </>
   );
 };
