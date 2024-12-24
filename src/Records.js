@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import WaveSurfer from 'wavesurfer.js';
 import RecordPlugin from 'wavesurfer.js/dist/plugins/record.esm.js';
-
+import QrCodeScanner from './QrCodeScanner';
 import AudioRecords from './AudioRecords'; 
 import TextRecording from './TextRecording';
 const AudioRecorder = () => {
@@ -156,6 +156,7 @@ const AudioRecorder = () => {
             </div>
             <TextRecording onFinish={handleFinish} />
             <AudioRecords ref={audioRecordsRef}  />
+            <QrCodeScanner />
         </div>
     );
 };

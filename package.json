@@ -11,6 +11,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@wavesurfer/react": "^1.0.8",
+    "html5-qrcode": "^2.3.8",
     "just-event-bus": "^1.1.0",
     "qrcode.react": "^4.1.0",
     "react": "^19.0.0",
