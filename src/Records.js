@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import WaveSurfer from 'wavesurfer.js';
 import RecordPlugin from 'wavesurfer.js/dist/plugins/record.esm.js';
+
 import AudioRecords from './AudioRecords'; 
 import TextRecording from './TextRecording';
 const AudioRecorder = () => {
@@ -25,14 +26,14 @@ const AudioRecorder = () => {
         const recordPlugin = ws.registerPlugin(
             RecordPlugin.create({
                 renderRecordedAudio: false,
-                scrollingWaveform: false,
-                continuousWaveform: true,
+                scrollingWaveform: true,
+                continuousWaveform: false,
                 continuousWaveformDuration: 30,
             })
         );
         setRecord(recordPlugin);
 
-        recordPlugin.on('record-end', (blob) => {
+        recordPlugin.on('record-end', async (blob) => {
             setRecordedBlob(blob);
             const recordedUrl = URL.createObjectURL(blob);
             if (audioRecordsRef.current) {
@@ -149,7 +150,7 @@ const AudioRecorder = () => {
             <button onClick={handleSave} disabled={!recordedBlob}>
                 Save to Backend
             </button>
-            <div id="mic" ref={wavesurferRef} style={{ width: '100%', height: '200px' }}></div>
+            <div id="mic" ref={wavesurferRef} style={{  height: '200px' }}></div>
             <div id="progress">
                 Current Time: {formatTime(displayedTime)} / {formatTime(totalDuration)}
             </div>
