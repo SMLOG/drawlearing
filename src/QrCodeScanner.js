@@ -105,22 +105,17 @@ const QrCodeScannerModal = ({ onClose, onScanResult }) => {
     };
 
     const handleImageUpload = async (event) => {
+        console.log('event.target.files[0]')
         const file = event.target.files[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onload = async () => {
-                const imgUrl = reader.result;
-                // Decode the QR code from the image URL
-                Html5Qrcode.scanFile(imgUrl, true)
-                    .then(decodedText => {
-                        setResult(decodedText);
-                        onScanResult(decodedText); // Call the parent with the scan result
-                    })
-                    .catch(err => {
-                        console.error(`Failed to decode QR code from image: ${err}`);
-                    });
-            };
-            reader.readAsDataURL(file);
+            html5QrCodeRef.current.scanFile(file, true)
+            .then(decodedText => {
+                setResult(decodedText);
+                onScanResult(decodedText); // Call the parent with the scan result
+            })
+            .catch(err => {
+                console.error(`Failed to decode QR code from image: ${err}`);
+            });
         }
     };
 
