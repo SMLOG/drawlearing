@@ -23,6 +23,9 @@ const ModalContent = styled.div`
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 400px; /* Set a fixed height for the modal */
 `;
 
 const Button = styled.button`
@@ -35,6 +38,7 @@ const ReaderContainer = styled.div`
     width: 100%;
     max-width: 600px;
     margin: 20px auto;
+    flex-grow: 1; /* Allow this to grow and take available space */
 `;
 
 const Result = styled.div`
@@ -44,10 +48,10 @@ const Result = styled.div`
 
 const QrCodeScannerModal = ({ onClose }) => {
     const [result, setResult] = useState('');
-    const [isScanning, setIsScanning] = useState(false);
     const readerRef = useRef(null);
     const html5QrCodeRef = useRef(null);
     const modalRef = useRef(null);
+    const isScanningRef = useRef(false); // Using ref to track scanning state
 
     useEffect(() => {
         // Initialize the QR code scanner
@@ -61,15 +65,15 @@ const QrCodeScannerModal = ({ onClose }) => {
         const config = { fps: 10, qrbox: 250 };
 
         const startScanning = () => {
-            if (!isScanning) {
-                setIsScanning(true);
+            if (!isScanningRef.current) {
+                isScanningRef.current = true; // Set scanning to true
                 html5QrCodeRef.current.start(
                     { facingMode: 'environment' },
                     config,
                     qrCodeSuccessCallback
                 ).catch(err => {
                     console.error(`Unable to start scanning: ${err}`);
-                    setIsScanning(false); // Reset scanning state on error
+                    isScanningRef.current = false; // Reset scanning state on error
                 });
             }
         };
@@ -82,16 +86,16 @@ const QrCodeScannerModal = ({ onClose }) => {
         };
     }, []); // Run once on mount
 
-    const stopScanning = () => {
-        if (html5QrCodeRef.current && isScanning) {
-            html5QrCodeRef.current.stop().then(() => {
-                setIsScanning(false);
-                onClose(); // Close the modal after stopping
-            }).catch(err => {
-                console.warn(`Failed to stop scanning: ${err}`);
-            });
-        } else {
-            onClose(); // Ensure modal closes even if not scanning
+    const stopScanning = async () => {
+        try {
+            if (html5QrCodeRef.current && isScanningRef.current) {
+                await html5QrCodeRef.current.stop();
+                isScanningRef.current = false; // Reset scanning state
+            }
+        } catch (err) {
+            console.warn(`Failed to stop scanning: ${err.message}`);
+        } finally {
+            onClose(); // Ensure modal closes
         }
     };
 
@@ -117,9 +121,9 @@ const QrCodeScannerModal = ({ onClose }) => {
         <Modal>
             <ModalContent ref={modalRef}>
                 <h1>QR Code Scanner</h1>
-                <Button onClick={stopScanning}>Cancel</Button>
                 <ReaderContainer id="reader" ref={readerRef}></ReaderContainer>
                 {result && <Result>Scanned Result: {result}</Result>}
+                <Button onClick={stopScanning}>Cancel</Button>
             </ModalContent>
         </Modal>
     );
