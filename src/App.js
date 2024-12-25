@@ -7,7 +7,7 @@ import WorkTrack2 from "./WorkTrack2";
 import WordCardList from "./pages/card/WordCardList";
 import PrintSheet from './pages/print/PrintSheet';
 import Books from './Books';
-import Records from './Records';
+import Records from './pages/record/Records';
 import Layout from './Layout';
 import { SettingsProvider } from './SettingsContext';
 const App = () => {

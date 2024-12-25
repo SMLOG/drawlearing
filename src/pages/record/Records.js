@@ -136,7 +136,7 @@ const AudioRecorder = () => {
     };
     return (
         <div>
-            <h1>Audio Recorder with Wavesurfer.js</h1>
+            <h1>Audio Recorder</h1>
             <select value={selectedMic} onChange={(e) => setSelectedMic(e.target.value)}>
                 {micDevices.map((device) => (
                     <option key={device.deviceId} value={device.deviceId}>
