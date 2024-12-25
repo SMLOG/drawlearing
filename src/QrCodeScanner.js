@@ -168,7 +168,6 @@ const QrCodeScannerApp = ({onScanResult}) => {
 
     return (
         <div style={{ textAlign: 'center' }}>
-            <h1>QR Code Scanner App</h1>
             <Button className="open-scanner-button" onClick={openScanner}>Open QR Code Scanner</Button>
             {isModalOpen && (
                 <QrCodeScannerModal 

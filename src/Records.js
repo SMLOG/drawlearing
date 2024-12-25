@@ -156,7 +156,7 @@ const AudioRecorder = () => {
             </div>
             <TextRecording onFinish={handleFinish} />
             <AudioRecords ref={audioRecordsRef}  />
-            <QrCodeScanner onScanResult={(url)=>{ console.error(url);audioRecordsRef.current.addAudio(url);}}/>
+            <QrCodeScanner onScanResult={(url)=>{ console.error(url);audioRecordsRef.current.addAudio(url,true);}}/>
         </div>
     );
 };

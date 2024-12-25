@@ -6,9 +6,7 @@ import Timeline from 'wavesurfer.js/dist/plugins/timeline.esm.js';
 const AudioRecords = React.forwardRef((_, ref) => {
   const containerRef = useRef(null);
   const [audioUrls, setAudioUrls] = useState([
-    '/audio/us/a.mp3',
-    '/audio/us/b.mp3',
-    '/audio/us/c.mp3',
+    '/audio/us/a.mp3'
   ]);
   const [urlIndex, setUrlIndex] = useState(0);
   const [loop, setLoop] = useState(false);
@@ -27,8 +25,9 @@ const AudioRecords = React.forwardRef((_, ref) => {
   });
 
   React.useImperativeHandle(ref, () => ({
-    addAudio: (url) => {
-      setAudioUrls((prevUrls) => [...prevUrls, url]);
+    addAudio: (url,selected=false) => {
+      setAudioUrls((prevUrls) => [url,...prevUrls]);
+      if(selected)selectAudio(0);
     },
   }));
 
