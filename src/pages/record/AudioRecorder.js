@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import WaveSurfer from 'wavesurfer.js';
 import RecordPlugin from 'wavesurfer.js/dist/plugins/record.esm.js';
 import TextRecording from './TextRecording';
+import WordHighlighter from './WordHighlighter';
 const AudioRecorder = () => {
     const wavesurferRef = useRef(null);
     const [wavesurfer, setWavesurfer] = useState(null);
@@ -12,7 +13,8 @@ const AudioRecorder = () => {
     const [selectedMic, setSelectedMic] = useState('');
     const [progress, setProgress] = useState(0); // Single progress state
     const [recordingDuration, setRecordingDuration] = useState(0); // For recording duration
-    const [seqData,setSeqData] = useState([]);
+    const [wordsTimes,setWordsTimes] = useState([]);
+    const [currentTime,setCurrentTime] = useState(0);
   const audioRecordsRef = useRef(null);
     useEffect(() => {
         const ws = WaveSurfer.create({
@@ -60,6 +62,7 @@ const AudioRecorder = () => {
 
         // Update progress while playing
         ws.on('audioprocess', (currentTime) => {
+            setCurrentTime(currentTime);
             setProgress(currentTime);
         });
 
@@ -131,8 +134,9 @@ const AudioRecorder = () => {
     const totalDuration = isRecording ? recordingDuration : (wavesurfer ? wavesurfer.getDuration() : 0);
     const handleFinish = (clicks) => {
         console.log('Finished! Clicks:', clicks);
+        console.log(JSON.stringify(clicks))
         // Additional actions can be performed here
-        setSeqData(clicks);
+        setWordsTimes(clicks);
     };
     return (
         <div>
@@ -151,6 +155,7 @@ const AudioRecorder = () => {
                 Save to Backend
             </button>
             <div id="mic" ref={wavesurferRef} style={{  height: '200px' }}></div>
+            <WordHighlighter wordsTimes={wordsTimes} currentTime={currentTime*1000} />
             <div id="progress">
                 Current Time: {formatTime(displayedTime)} / {formatTime(totalDuration)}
             </div>

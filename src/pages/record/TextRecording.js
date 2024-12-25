@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const TextRecording = ({ onFinish }) => {
     const [inputWords, setInputWords] = useState('Hello World This Is A Test');
@@ -23,12 +23,16 @@ const TextRecording = ({ onFinish }) => {
             const newIndex = currentIndex + 1;
             setCurrentIndex(newIndex);
 
-            if (newIndex === words.length && onFinish) {
-                const finalClickData = [clicks, words]; // Format as [[time1, time2, ...], words]
-                onFinish(finalClickData);
-            }
+
         }
     };
+
+    useEffect(()=>{
+        if (currentIndex === words.length && onFinish) {
+            const finalClickData = [clicks, words]; // Format as [[time1, time2, ...], words]
+            onFinish(finalClickData);
+        }
+    },[currentIndex]);
 
     const handleInputChange = (e) => {
         const newInput = e.target.value;
