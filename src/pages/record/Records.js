@@ -4,6 +4,7 @@ import RecordPlugin from 'wavesurfer.js/dist/plugins/record.esm.js';
 import QrCodeScanner from './QrCodeScanner';
 import AudioRecords from './AudioRecords'; 
 import TextRecording from './TextRecording';
+import URLInputButton from './URLInputButton';
 const AudioRecorder = () => {
     const wavesurferRef = useRef(null);
     const [wavesurfer, setWavesurfer] = useState(null);
@@ -156,6 +157,7 @@ const AudioRecorder = () => {
             </div>
             <TextRecording onFinish={handleFinish} />
             <AudioRecords ref={audioRecordsRef}  />
+            <URLInputButton />
             <QrCodeScanner onScanResult={(url)=>{ console.error(url);audioRecordsRef.current.addAudio(url,true);}}/>
         </div>
     );
