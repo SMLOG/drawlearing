@@ -3,7 +3,7 @@ import WaveSurfer from 'wavesurfer.js';
 import RecordPlugin from 'wavesurfer.js/dist/plugins/record.esm.js';
 import TextRecording from './TextRecording';
 import WordHighlighter from './WordHighlighter';
-const AudioRecorder = () => {
+const AudioRecorder = ({onSuccessRecord}) => {
     const wavesurferRef = useRef(null);
     const [wavesurfer, setWavesurfer] = useState(null);
     const [record, setRecord] = useState(null);
@@ -15,7 +15,6 @@ const AudioRecorder = () => {
     const [recordingDuration, setRecordingDuration] = useState(0); // For recording duration
     const [wordsTimes,setWordsTimes] = useState([]);
     const [currentTime,setCurrentTime] = useState(0);
-  const audioRecordsRef = useRef(null);
     useEffect(() => {
         const ws = WaveSurfer.create({
             container: wavesurferRef.current,
@@ -37,9 +36,7 @@ const AudioRecorder = () => {
         recordPlugin.on('record-end', async (blob) => {
             setRecordedBlob(blob);
             const recordedUrl = URL.createObjectURL(blob);
-            if (audioRecordsRef.current) {
-                audioRecordsRef.current.addAudio(recordedUrl);
-              }
+              onSuccessRecord&&onSuccessRecord(recordedUrl);
             ws.load(recordedUrl);
         });
 

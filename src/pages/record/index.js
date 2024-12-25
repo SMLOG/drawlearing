@@ -5,9 +5,15 @@ import URLInputButton from './URLInputButton';
 import AudioRecorder from './AudioRecorder';
 const Recorder = () => {
   const audioRecordsRef = useRef(null);
+
+  const onSuccessRecord = (url)=>{
+    if (audioRecordsRef.current) {
+        audioRecordsRef.current.addAudio(url,true);
+      };
+  }
     return (
         <div>
-            <AudioRecorder></AudioRecorder>
+            <AudioRecorder onSuccessRecord={onSuccessRecord}></AudioRecorder>
             <AudioRecords ref={audioRecordsRef}  />
             <URLInputButton onSubmit ={(urls)=>{urls.forEach((url)=>{
                 console.error(url)
