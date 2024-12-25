@@ -1,10 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import WaveSurfer from 'wavesurfer.js';
 import RecordPlugin from 'wavesurfer.js/dist/plugins/record.esm.js';
-import QrCodeScanner from './QrCodeScanner';
-import AudioRecords from './AudioRecords'; 
 import TextRecording from './TextRecording';
-import URLInputButton from './URLInputButton';
 const AudioRecorder = () => {
     const wavesurferRef = useRef(null);
     const [wavesurfer, setWavesurfer] = useState(null);
@@ -156,12 +153,7 @@ const AudioRecorder = () => {
                 Current Time: {formatTime(displayedTime)} / {formatTime(totalDuration)}
             </div>
             <TextRecording onFinish={handleFinish} />
-            <AudioRecords ref={audioRecordsRef}  />
-            <URLInputButton onSubmit ={(urls)=>{urls.forEach((url)=>{
-                console.error(url)
-                audioRecordsRef.current.addAudio(url,true);
-                });}}/>
-            <QrCodeScanner onScanResult={(url)=>{ console.error(url);audioRecordsRef.current.addAudio(url,true);}}/>
+
         </div>
     );
 };
