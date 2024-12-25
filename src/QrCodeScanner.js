@@ -111,6 +111,7 @@ const QrCodeScannerModal = ({ onClose, onScanResult }) => {
             html5QrCodeRef.current.scanFile(file, true)
             .then(decodedText => {
                 setResult(decodedText);
+                console.log(decodedText);
                 onScanResult(decodedText); // Call the parent with the scan result
             })
             .catch(err => {
@@ -150,7 +151,7 @@ const QrCodeScannerModal = ({ onClose, onScanResult }) => {
     );
 };
 
-const QrCodeScannerApp = () => {
+const QrCodeScannerApp = ({onScanResult}) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [scanResult, setScanResult] = useState('');
 
@@ -162,6 +163,7 @@ const QrCodeScannerApp = () => {
         setScanResult(result); // Update the state with the scan result
         console.log(`Scanned Result: ${result}`); // Handle the result as needed
         setIsModalOpen(false); // Optionally close the modal after a scan
+        onScanResult(result);
     };
 
     return (
