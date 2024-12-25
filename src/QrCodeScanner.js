@@ -47,12 +47,12 @@ const QrCodeScannerModal = ({ onClose }) => {
     const [isScanning, setIsScanning] = useState(false);
     const readerRef = useRef(null);
     const html5QrCodeRef = useRef(null);
-    const modalRef = useRef(null); // Reference for the modal
+    const modalRef = useRef(null);
 
     useEffect(() => {
         // Initialize the QR code scanner
         html5QrCodeRef.current = new Html5Qrcode(readerRef.current.id);
-
+        
         const qrCodeSuccessCallback = (decodedText) => {
             setResult(decodedText);
             stopScanning(); // Stop scanning on successful scan
@@ -63,7 +63,6 @@ const QrCodeScannerModal = ({ onClose }) => {
         const startScanning = () => {
             if (!isScanning) {
                 setIsScanning(true);
-                console.log('startScanning');
                 html5QrCodeRef.current.start(
                     { facingMode: 'environment' },
                     config,
@@ -75,12 +74,13 @@ const QrCodeScannerModal = ({ onClose }) => {
             }
         };
 
-        startScanning(); // Start scanning immediately when component mounts
+        // Start scanning when the modal opens
+        startScanning();
 
         return () => {
-            stopScanning(); // Cleanup function to stop scanning
+            // Cleanup function does not call stopScanning
         };
-    }, []); // Empty dependency array to run once on mount
+    }, []); // Run once on mount
 
     const stopScanning = () => {
         if (html5QrCodeRef.current && isScanning) {
@@ -90,12 +90,18 @@ const QrCodeScannerModal = ({ onClose }) => {
             }).catch(err => {
                 console.warn(`Failed to stop scanning: ${err}`);
             });
+        } else {
+            onClose(); // Ensure modal closes even if not scanning
         }
     };
 
     // Handle click outside the modal
     const handleClickOutside = (event) => {
-        if (modalRef.current && !modalRef.current.contains(event.target)) {
+        if (
+            modalRef.current && 
+            !modalRef.current.contains(event.target) && 
+            event.target.closest('.open-scanner-button') === null // Check if not the button
+        ) {
             stopScanning(); // Stop scanning and close modal
         }
     };
@@ -122,10 +128,14 @@ const QrCodeScannerModal = ({ onClose }) => {
 const QrCodeScannerApp = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const openScanner = () => {
+        setIsModalOpen(true);
+    };
+
     return (
         <div style={{ textAlign: 'center' }}>
             <h1>QR Code Scanner App</h1>
-            <Button onClick={() => setIsModalOpen(true)}>Open QR Code Scanner</Button>
+            <Button className="open-scanner-button" onClick={openScanner}>Open QR Code Scanner</Button>
             {isModalOpen && (
                 <QrCodeScannerModal onClose={() => setIsModalOpen(false)} />
             )}
