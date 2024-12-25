@@ -83,7 +83,7 @@ const AudioRecorder = () => {
         };
         getAudioDevices();
     }, []);
-
+    const [startTime, setStartTime] = useState(null);
     const handleRecord = async () => {
         if (isRecording) {
             await record.stopRecording();
@@ -92,7 +92,7 @@ const AudioRecorder = () => {
             await record.startRecording({ deviceId: selectedMic });
             setIsRecording(true);
             setRecordingDuration(0); // Reset recording duration
-
+            setStartTime(new Date().getTime())
             // Update recording duration every second
             const interval = setInterval(() => {
                 setRecordingDuration((prev) => prev + 1);
@@ -159,7 +159,7 @@ const AudioRecorder = () => {
             <div id="progress">
                 Current Time: {formatTime(displayedTime)} / {formatTime(totalDuration)}
             </div>
-            <TextRecording onFinish={handleFinish} />
+            <TextRecording onFinish={handleFinish} startTime={startTime} />
 
         </div>
     );

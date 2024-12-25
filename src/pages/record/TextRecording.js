@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 
-const TextRecording = ({ onFinish }) => {
+const TextRecording = ({ onFinish,startTime }) => {
     const [inputWords, setInputWords] = useState('Hello World This Is A Test');
     const [words, setWords] = useState(inputWords.split(' '));
     const [clicks, setClicks] = useState([]);
-    const [startTime, setStartTime] = useState(null);
+    //const [startTime, setStartTime] = useState(null);
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const handleClick = (word) => {
         if (word === words[currentIndex]) {
             const currentTime = Date.now();
-            if (startTime === null) {
+           /* if (startTime === null) {
                 setStartTime(currentTime);
-            }
+            }*/
 
             const elapsedTime = currentTime - (startTime || currentTime);
             setClicks(prevClicks => [
@@ -44,7 +44,7 @@ const TextRecording = ({ onFinish }) => {
     const resetState = () => {
         setClicks([]);
         setCurrentIndex(0);
-        setStartTime(null);
+       // setStartTime(null);
     };
 
     const handleReset = () => {
