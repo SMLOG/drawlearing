@@ -157,7 +157,10 @@ const AudioRecorder = () => {
             </div>
             <TextRecording onFinish={handleFinish} />
             <AudioRecords ref={audioRecordsRef}  />
-            <URLInputButton />
+            <URLInputButton onSubmit ={(urls)=>{urls.forEach((url)=>{
+                console.error(url)
+                audioRecordsRef.current.addAudio(url,true);
+                });}}/>
             <QrCodeScanner onScanResult={(url)=>{ console.error(url);audioRecordsRef.current.addAudio(url,true);}}/>
         </div>
     );

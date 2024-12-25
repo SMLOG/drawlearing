@@ -13,6 +13,11 @@ const URLsInputModal = ({ isOpen, onClose, onSubmit }) => {
         setUrls([...urls, '']);
     };
 
+    const handleDeleteUrl = (index) => {
+        const newUrls = urls.filter((_, i) => i !== index);
+        setUrls(newUrls);
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
         onSubmit(urls.filter(url => url)); // Filter out empty URLs
@@ -39,6 +44,13 @@ const URLsInputModal = ({ isOpen, onClose, onSubmit }) => {
                                 required
                                 style={inputStyles}
                             />
+                            <button 
+                                type="button" 
+                                onClick={() => handleDeleteUrl(index)} 
+                                style={deleteButtonStyles}
+                            >
+                                X
+                            </button>
                         </div>
                     ))}
                     <button type="button" onClick={handleAddUrl}>
@@ -52,12 +64,13 @@ const URLsInputModal = ({ isOpen, onClose, onSubmit }) => {
     );
 };
 
-const URLInputButton = () => {
+const URLInputButton = ({onSubmit}) => {
     const [isModalOpen, setModalOpen] = useState(false);
 
     const handleUrlSubmit = (urls) => {
         console.log('Submitted URLs:', urls);
         // Handle the submitted URLs as needed
+        onSubmit(urls);
     };
 
     return (
@@ -110,6 +123,17 @@ const labelStyles = {
 // Styles for input
 const inputStyles = {
     flex: 1, // Take remaining space
+};
+
+// Styles for delete button
+const deleteButtonStyles = {
+    marginLeft: '10px',
+    backgroundColor: 'red',
+    color: 'white',
+    border: 'none',
+    borderRadius: '3px',
+    cursor: 'pointer',
+    padding: '5px',
 };
 
 export default URLInputButton;
