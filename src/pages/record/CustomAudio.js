@@ -19,9 +19,12 @@ const CustomAudio = ({ src }) => {
         audioRef.current.addEventListener('ended', handleEnded);
 
         return () => {
-            audioRef.current.pause();
-            audioRef.current.src = '';
-            audioRef.current.removeEventListener('ended', handleEnded);
+            if(audioRef?.current){
+                audioRef.current.pause();
+                audioRef.current.src = '';
+                audioRef.current.removeEventListener('ended', handleEnded);
+            }
+
         };
     }, [volume, playbackRate, loop]);
 
