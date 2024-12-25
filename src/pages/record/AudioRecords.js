@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useMemo, useState, useCallback, useRef, useEffect } from 'react';
 import { useWavesurfer } from '@wavesurfer/react';
 import Timeline from 'wavesurfer.js/dist/plugins/timeline.esm.js';
+import CustomAudio from './CustomAudio';
 
 const AudioRecords = React.forwardRef((_, ref) => {
   const containerRef = useRef(null);
@@ -106,10 +107,13 @@ const AudioRecords = React.forwardRef((_, ref) => {
       .map((v) => `0${v}`.slice(-2))
       .join(':');
 
+  const  audioRef = useRef();
   return (
     <>
       <div style={{ position: 'relative' }}>
         <div ref={containerRef} />
+        <div><CustomAudio ref={audioRef} controls src={audioUrls[urlIndex]}></CustomAudio>
+        </div>
         <p>Current audio: {audioUrls[urlIndex]}</p>
         <p>Current time: {formatTime(currentTime)}</p>
         {loading && <p>Loading audio...</p>}
