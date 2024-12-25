@@ -1,38 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
 
-const TextRecording = ({ onFinish,startTime }) => {
+const TextRecording = forwardRef(({ onFinish, startTime }, ref) => {
     const [inputWords, setInputWords] = useState('Hello World This Is A Test');
     const [words, setWords] = useState(inputWords.split(' '));
     const [clicks, setClicks] = useState([]);
-    //const [startTime, setStartTime] = useState(null);
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const handleClick = (word) => {
         if (word === words[currentIndex]) {
             const currentTime = Date.now();
-           /* if (startTime === null) {
-                setStartTime(currentTime);
-            }*/
-
             const elapsedTime = currentTime - (startTime || currentTime);
-            setClicks(prevClicks => [
-                ...prevClicks,
-                elapsedTime // Store elapsed time
-            ]);
-
-            const newIndex = currentIndex + 1;
-            setCurrentIndex(newIndex);
-
-
+            setClicks(prevClicks => [...prevClicks, elapsedTime]);
+            setCurrentIndex(currentIndex + 1);
         }
     };
 
-    useEffect(()=>{
+    useEffect(() => {
         if (currentIndex === words.length && onFinish) {
-            const finalClickData = [clicks, words]; // Format as [[time1, time2, ...], words]
+            const finalClickData = [clicks, words];
             onFinish(finalClickData);
         }
-    },[currentIndex]);
+    }, [currentIndex, words]);
 
     const handleInputChange = (e) => {
         const newInput = e.target.value;
@@ -44,14 +32,18 @@ const TextRecording = ({ onFinish,startTime }) => {
     const resetState = () => {
         setClicks([]);
         setCurrentIndex(0);
-       // setStartTime(null);
     };
 
     const handleReset = () => {
         resetState();
-        setInputWords('Hello World This Is A Test'); // Optional: Reset input to default
-        setWords(inputWords.split(' ')); // Update words based on default input
+        setInputWords('Hello World This Is A Test');
+        setWords(inputWords.split(' '));
     };
+
+    // Expose the resetState method to parent component
+    useImperativeHandle(ref, () => ({
+        reset: resetState,
+    }));
 
     return (
         <div>
@@ -93,6 +85,6 @@ const TextRecording = ({ onFinish,startTime }) => {
             </ul>
         </div>
     );
-};
+});
 
 export default TextRecording;

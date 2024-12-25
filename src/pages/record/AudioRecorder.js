@@ -92,7 +92,10 @@ const AudioRecorder = () => {
             await record.startRecording({ deviceId: selectedMic });
             setIsRecording(true);
             setRecordingDuration(0); // Reset recording duration
-            setStartTime(new Date().getTime())
+            setStartTime(new Date().getTime());
+            if (textRecordingRef.current) {
+                textRecordingRef.current.reset();
+            }
             // Update recording duration every second
             const interval = setInterval(() => {
                 setRecordingDuration((prev) => prev + 1);
@@ -138,6 +141,9 @@ const AudioRecorder = () => {
         // Additional actions can be performed here
         setWordsTimes(clicks);
     };
+
+    const textRecordingRef = useRef();
+
     return (
         <div>
             <h1>Audio Recorder</h1>
@@ -159,7 +165,7 @@ const AudioRecorder = () => {
             <div id="progress">
                 Current Time: {formatTime(displayedTime)} / {formatTime(totalDuration)}
             </div>
-            <TextRecording onFinish={handleFinish} startTime={startTime} />
+            <TextRecording ref={textRecordingRef} onFinish={handleFinish} startTime={startTime} />
 
         </div>
     );
