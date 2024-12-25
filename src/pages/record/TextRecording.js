@@ -1,60 +1,83 @@
 import React, { useState } from 'react';
 
 const TextRecording = ({ onFinish }) => {
-    const words = ['Hello', 'World', 'This', 'Is', 'A', 'Test'];
+    const [inputWords, setInputWords] = useState('Hello World This Is A Test');
+    const [words, setWords] = useState(inputWords.split(' '));
     const [clicks, setClicks] = useState([]);
     const [startTime, setStartTime] = useState(null);
-    const [highlightedWords, setHighlightedWords] = useState(new Set());
-    const [currentIndex, setCurrentIndex] = useState(0); // To track the expected index
+    const [currentIndex, setCurrentIndex] = useState(0);
 
     const handleClick = (word) => {
-        // Check if the clicked word matches the expected word
         if (word === words[currentIndex]) {
             const currentTime = Date.now();
             if (startTime === null) {
                 setStartTime(currentTime);
             }
 
-            const elapsedTime = currentTime - (startTime || currentTime); // Calculate elapsed time in milliseconds
-
+            const elapsedTime = currentTime - (startTime || currentTime);
             setClicks(prevClicks => [
                 ...prevClicks,
-                { word, time: elapsedTime } // Store elapsed time in milliseconds
+                { word, time: elapsedTime }
             ]);
 
-            // Highlight the clicked word
-            setHighlightedWords(prev => new Set(prev).add(word));
             const newIndex = currentIndex + 1;
-            setCurrentIndex(newIndex); // Move to the next word
+            setCurrentIndex(newIndex);
 
-            // If it's the last word, call the finish callback if it exists
             if (newIndex === words.length && onFinish) {
                 onFinish(clicks);
             }
         }
     };
 
+    const handleInputChange = (e) => {
+        const newInput = e.target.value;
+        setInputWords(newInput);
+        setWords(newInput.split(' '));
+        resetState(); // Reset state when words change
+    };
+
+    const resetState = () => {
+        setClicks([]);
+        setCurrentIndex(0);
+        setStartTime(null);
+    };
+
+    const handleReset = () => {
+        resetState();
+        setInputWords('Hello World This Is A Test'); // Optional: Reset input to default
+        setWords(inputWords.split(' ')); // Update words based on default input
+    };
+
     return (
         <div>
             <h1>Click the Words in Sequence</h1>
+            <input
+                type="text"
+                value={inputWords}
+                onChange={handleInputChange}
+                style={{ marginBottom: '20px', width: '100%', padding: '10px' }}
+            />
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                 {words.map((word, index) => (
                     <button
                         key={index}
                         onClick={() => handleClick(word)}
                         style={{
-                            backgroundColor: highlightedWords.has(word) ? 'lightgreen' : 'white',
+                            backgroundColor: currentIndex > index ? 'lightgreen' : 'white',
                             border: '1px solid #ccc',
                             padding: '10px',
                             cursor: 'pointer',
-                            opacity: currentIndex > index ? 0.5 : 1 // Disable already clicked words
+                            opacity: currentIndex > index ? 0.5 : 1
                         }}
-                        disabled={currentIndex > index} // Disable clicks on already clicked words
+                        disabled={currentIndex > index}
                     >
                         {word}
                     </button>
                 ))}
             </div>
+            <button onClick={handleReset} style={{ marginTop: '20px', padding: '10px 20px' }}>
+                Reset
+            </button>
             <h2>Recorded Clicks</h2>
             <ul>
                 {clicks.map((click, index) => (

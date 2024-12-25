@@ -12,6 +12,7 @@ const AudioRecorder = () => {
     const [selectedMic, setSelectedMic] = useState('');
     const [progress, setProgress] = useState(0); // Single progress state
     const [recordingDuration, setRecordingDuration] = useState(0); // For recording duration
+    const [seqData,setSeqData] = useState([]);
   const audioRecordsRef = useRef(null);
     useEffect(() => {
         const ws = WaveSurfer.create({
@@ -131,6 +132,7 @@ const AudioRecorder = () => {
     const handleFinish = (clicks) => {
         console.log('Finished! Clicks:', clicks);
         // Additional actions can be performed here
+        setSeqData(clicks);
     };
     return (
         <div>
