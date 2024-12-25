@@ -17,14 +17,15 @@ const TextRecording = ({ onFinish }) => {
             const elapsedTime = currentTime - (startTime || currentTime);
             setClicks(prevClicks => [
                 ...prevClicks,
-                { word, time: elapsedTime }
+                elapsedTime // Store elapsed time
             ]);
 
             const newIndex = currentIndex + 1;
             setCurrentIndex(newIndex);
 
             if (newIndex === words.length && onFinish) {
-                onFinish(clicks);
+                const finalClickData = [clicks, words]; // Format as [[time1, time2, ...], words]
+                onFinish(finalClickData);
             }
         }
     };
@@ -82,7 +83,7 @@ const TextRecording = ({ onFinish }) => {
             <ul>
                 {clicks.map((click, index) => (
                     <li key={index}>
-                        {click.word} clicked at {click.time} milliseconds
+                        Clicked at {click} milliseconds
                     </li>
                 ))}
             </ul>
