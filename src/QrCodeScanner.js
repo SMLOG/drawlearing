@@ -13,46 +13,48 @@ const QrCodeScanner = () => {
 
         const qrCodeSuccessCallback = (decodedText) => {
             setResult(decodedText);
-            stopScanning(); // Stop scanning when a QR code is successfully decoded
+            stopScanning();
         };
 
         const config = { fps: 10, qrbox: 250 };
 
         const startScanning = () => {
-            if (!isScanning) {
-                setIsScanning(true);
-                html5QrCodeRef.current.start(
-                    { facingMode: 'environment' },
-                    config,
-                    qrCodeSuccessCallback
-                ).catch(err => {
-                    console.error(`Unable to start scanning: ${err}`);
-                    setIsScanning(false); // Reset scanning state on error
-                });
-            }
+            html5QrCodeRef.current.start(
+                { facingMode: 'environment' },
+                config,
+                qrCodeSuccessCallback
+            ).catch(err => {
+                console.error(`Unable to start scanning: ${err}`);
+                setIsScanning(false); // Reset scanning state on error
+            });
         };
 
-        const stopScanning = () => {
-            if (isScanning) {
-                html5QrCodeRef.current.stop().then(() => {
-                    setIsScanning(false);
-                }).catch(err => {
-                    console.warn(`Failed to stop scanning: ${err}`);
-                });
-            }
-        };
+        // Start scanning if isScanning is true
+        if (isScanning) {
+            startScanning();
+        }
 
-        // Clean up on component unmount or when scanning stops
+        // Cleanup function to stop scanning
         return () => {
             stopScanning();
         };
-    }, [isScanning]);
+    }, [isScanning]); // Effect depends on isScanning
+
+    const stopScanning = () => {
+        if (html5QrCodeRef.current && isScanning) {
+            html5QrCodeRef.current.stop().then(() => {
+                setIsScanning(false);
+            }).catch(err => {
+                console.warn(`Failed to stop scanning: ${err}`);
+            });
+        }
+    };
 
     return (
         <div style={{ textAlign: 'center' }}>
             <h1>QR Code Scanner</h1>
             <button
-                onClick={() => setIsScanning(true)}
+                onClick={() => setIsScanning(true)} // Set to true to start scanning
                 disabled={isScanning}
                 style={{ margin: '20px', padding: '10px 20px' }}
             >
