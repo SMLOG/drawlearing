@@ -46,7 +46,11 @@ const Result = styled.div`
     font-size: 1.5em;
 `;
 
-const QrCodeScannerModal = ({ onClose }) => {
+const FileInput = styled.input`
+    margin-top: 20px;
+`;
+
+const QrCodeScannerModal = ({ onClose, onScanResult }) => {
     const [result, setResult] = useState('');
     const readerRef = useRef(null);
     const html5QrCodeRef = useRef(null);
@@ -56,9 +60,10 @@ const QrCodeScannerModal = ({ onClose }) => {
     useEffect(() => {
         // Initialize the QR code scanner
         html5QrCodeRef.current = new Html5Qrcode(readerRef.current.id);
-        
+
         const qrCodeSuccessCallback = (decodedText) => {
             setResult(decodedText);
+            onScanResult(decodedText); // Call the parent with the scan result
             stopScanning(); // Stop scanning on successful scan
         };
 
@@ -99,6 +104,26 @@ const QrCodeScannerModal = ({ onClose }) => {
         }
     };
 
+    const handleImageUpload = async (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = async () => {
+                const imgUrl = reader.result;
+                // Decode the QR code from the image URL
+                Html5Qrcode.scanFile(imgUrl, true)
+                    .then(decodedText => {
+                        setResult(decodedText);
+                        onScanResult(decodedText); // Call the parent with the scan result
+                    })
+                    .catch(err => {
+                        console.error(`Failed to decode QR code from image: ${err}`);
+                    });
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     // Handle click outside the modal
     const handleClickOutside = (event) => {
         if (
@@ -123,6 +148,7 @@ const QrCodeScannerModal = ({ onClose }) => {
                 <h1>QR Code Scanner</h1>
                 <ReaderContainer id="reader" ref={readerRef}></ReaderContainer>
                 {result && <Result>Scanned Result: {result}</Result>}
+                <FileInput type="file" accept="image/*" onChange={handleImageUpload} />
                 <Button onClick={stopScanning}>Cancel</Button>
             </ModalContent>
         </Modal>
@@ -131,9 +157,16 @@ const QrCodeScannerModal = ({ onClose }) => {
 
 const QrCodeScannerApp = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [scanResult, setScanResult] = useState('');
 
     const openScanner = () => {
         setIsModalOpen(true);
+    };
+
+    const handleScanResult = (result) => {
+        setScanResult(result); // Update the state with the scan result
+        console.log(`Scanned Result: ${result}`); // Handle the result as needed
+        setIsModalOpen(false); // Optionally close the modal after a scan
     };
 
     return (
@@ -141,8 +174,12 @@ const QrCodeScannerApp = () => {
             <h1>QR Code Scanner App</h1>
             <Button className="open-scanner-button" onClick={openScanner}>Open QR Code Scanner</Button>
             {isModalOpen && (
-                <QrCodeScannerModal onClose={() => setIsModalOpen(false)} />
+                <QrCodeScannerModal 
+                    onClose={() => setIsModalOpen(false)} 
+                    onScanResult={handleScanResult} // Pass the callback to the modal
+                />
             )}
+            {scanResult && <div>Last Scanned Result: {scanResult}</div>} {/* Display the last scanned result */}
         </div>
     );
 };
