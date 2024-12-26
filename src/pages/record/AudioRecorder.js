@@ -144,7 +144,6 @@ const AudioRecorder = ({onSuccessRecord}) => {
 
     return (
         <div>
-            <h1>Audio Recorder</h1>
             <select value={selectedMic} onChange={(e) => setSelectedMic(e.target.value)}>
                 {micDevices.map((device) => (
                     <option key={device.deviceId} value={device.deviceId}>
@@ -158,7 +157,7 @@ const AudioRecorder = ({onSuccessRecord}) => {
             <button onClick={handleSave} disabled={!recordedBlob}>
                 Save to Backend
             </button>
-            <div id="mic" ref={wavesurferRef} style={{  height: '200px' }}></div>
+            <div id="mic" ref={wavesurferRef} style={{  height: '100px' }}></div>
             <WordHighlighter wordsTimes={wordsTimes} currentTime={currentTime*1000} />
             <div id="progress">
                 Current Time: {formatTime(displayedTime)} / {formatTime(totalDuration)}

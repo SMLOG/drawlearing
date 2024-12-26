@@ -35,7 +35,10 @@ const TextRecording = forwardRef(({ onStart, onFinish, startTime }, ref) => {
         setInputWords('Hello World This Is A Test');
         setWords(inputWords.split(' '));
     };
-
+    const handleClear = () => {
+        setInputWords('');
+    };
+    
     useImperativeHandle(ref, () => ({
         reset: resetState,
     }));
@@ -63,6 +66,7 @@ const TextRecording = forwardRef(({ onStart, onFinish, startTime }, ref) => {
                 style={{
                     marginBottom: '20px',
                     width: '100%',
+                    fontSize:'1.6em',
                     boxSizing: 'border-box',
                     padding: '10px',
                     overflow: 'hidden', // Prevent scrolling
@@ -99,6 +103,9 @@ const TextRecording = forwardRef(({ onStart, onFinish, startTime }, ref) => {
             </div>
             <button onClick={handleReset} style={{ marginTop: '20px', padding: '10px 20px' }}>
                 Reset
+            </button>
+            <button onClick={handleClear} style={{ marginTop: '20px', padding: '10px 20px' }}>
+                Clear
             </button>
         </div>
     );
