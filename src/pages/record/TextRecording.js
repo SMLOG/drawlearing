@@ -7,6 +7,7 @@ const TextRecording = forwardRef(({ onStart, onFinish, startTime }, ref) => {
     const [words, setWords] = useState(inputWords.split(' '));
     const [clicks, setClicks] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
+    const textareaRef = React.useRef(null);
 
     const handleClick = (word) => {
         if (word === words[currentIndex]) {
@@ -39,20 +40,34 @@ const TextRecording = forwardRef(({ onStart, onFinish, startTime }, ref) => {
         reset: resetState,
     }));
 
-    const handleDone = ()=>{
+    const handleDone = () => {
         if (currentIndex === words.length && onFinish) {
             const finalClickData = [clicks, words];
             onFinish(finalClickData);
         }
-    }
+    };
+
+    useEffect(() => {
+        if (textareaRef.current) {
+            textareaRef.current.style.height = 'auto'; // Reset height
+            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`; // Set to scrollHeight
+        }
+    }, [inputWords]);
 
     return (
         <div>
             <textarea
-                type="text"
+                ref={textareaRef}
                 value={inputWords}
                 onChange={handleInputChange}
-                style={{ marginBottom: '20px', width: '100%',boxSizing:'border-box', padding: '10px' }}
+                style={{
+                    marginBottom: '20px',
+                    width: '100%',
+                    boxSizing: 'border-box',
+                    padding: '10px',
+                    overflow: 'hidden', // Prevent scrolling
+                    resize: 'none', // Disable manual resizing
+                }}
             />
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                 <button 
@@ -85,14 +100,6 @@ const TextRecording = forwardRef(({ onStart, onFinish, startTime }, ref) => {
             <button onClick={handleReset} style={{ marginTop: '20px', padding: '10px 20px' }}>
                 Reset
             </button>
-            <h2>Recorded Clicks</h2>
-            <ul>
-                {clicks.map((click, index) => (
-                    <li key={index}>
-                        Clicked at {click} milliseconds
-                    </li>
-                ))}
-            </ul>
         </div>
     );
 });
