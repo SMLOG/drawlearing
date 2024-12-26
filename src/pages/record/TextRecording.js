@@ -1,6 +1,8 @@
 import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlay, faCheck } from '@fortawesome/free-solid-svg-icons';
 
-const TextRecording = forwardRef(({ onFinish, startTime }, ref) => {
+const TextRecording = forwardRef(({ onStart, onFinish, startTime }, ref) => {
     const [inputWords, setInputWords] = useState('Hello World This Is A Test');
     const [words, setWords] = useState(inputWords.split(' '));
     const [clicks, setClicks] = useState([]);
@@ -15,18 +17,11 @@ const TextRecording = forwardRef(({ onFinish, startTime }, ref) => {
         }
     };
 
-    useEffect(() => {
-        if (currentIndex === words.length && onFinish) {
-            const finalClickData = [clicks, words];
-            onFinish(finalClickData);
-        }
-    }, [currentIndex, words]);
-
     const handleInputChange = (e) => {
         const newInput = e.target.value;
         setInputWords(newInput);
         setWords(newInput.split(' '));
-        resetState(); // Reset state when words change
+        resetState();
     };
 
     const resetState = () => {
@@ -40,37 +35,52 @@ const TextRecording = forwardRef(({ onFinish, startTime }, ref) => {
         setWords(inputWords.split(' '));
     };
 
-    // Expose the resetState method to parent component
     useImperativeHandle(ref, () => ({
         reset: resetState,
     }));
 
+    const handleDone = ()=>{
+        if (currentIndex === words.length && onFinish) {
+            const finalClickData = [clicks, words];
+            onFinish(finalClickData);
+        }
+    }
+
     return (
         <div>
-            <h1>Click the Words in Sequence</h1>
-            <input
+            <textarea
                 type="text"
                 value={inputWords}
                 onChange={handleInputChange}
-                style={{ marginBottom: '20px', width: '100%', padding: '10px' }}
+                style={{ marginBottom: '20px', width: '100%',boxSizing:'border-box', padding: '10px' }}
             />
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                <button 
+                    onClick={onStart} 
+                    style={buttonStyle}
+                >
+                    <FontAwesomeIcon icon={faPlay} style={iconStyle} /> Start
+                </button>
                 {words.map((word, index) => (
                     <button
                         key={index}
                         onClick={() => handleClick(word)}
                         style={{
+                            ...buttonStyle,
                             backgroundColor: currentIndex > index ? 'lightgreen' : 'white',
-                            border: '1px solid #ccc',
-                            padding: '10px',
-                            cursor: 'pointer',
-                            opacity: currentIndex > index ? 0.5 : 1
+                            opacity: currentIndex > index ? 0.5 : 1,
                         }}
                         disabled={currentIndex > index}
                     >
                         {word}
                     </button>
                 ))}
+                <button 
+                    onClick={handleDone} 
+                    style={buttonStyle}
+                >
+                    <FontAwesomeIcon icon={faCheck} style={iconStyle} /> Done
+                </button>
             </div>
             <button onClick={handleReset} style={{ marginTop: '20px', padding: '10px 20px' }}>
                 Reset
@@ -86,5 +96,20 @@ const TextRecording = forwardRef(({ onFinish, startTime }, ref) => {
         </div>
     );
 });
+
+// Define styles for buttons and icons
+const buttonStyle = {
+    border: '1px solid #ccc',
+    padding: '10px 15px',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    borderRadius: '5px',
+    transition: 'background-color 0.3s',
+};
+
+const iconStyle = {
+    marginRight: '5px',
+};
 
 export default TextRecording;

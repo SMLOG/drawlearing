@@ -137,6 +137,7 @@ const AudioRecorder = ({onSuccessRecord}) => {
         console.log(JSON.stringify(clicks))
         // Additional actions can be performed here
         setWordsTimes(clicks);
+        handleRecord();
     };
 
     const textRecordingRef = useRef();
@@ -162,7 +163,7 @@ const AudioRecorder = ({onSuccessRecord}) => {
             <div id="progress">
                 Current Time: {formatTime(displayedTime)} / {formatTime(totalDuration)}
             </div>
-            <TextRecording ref={textRecordingRef} onFinish={handleFinish} startTime={startTime} />
+            <TextRecording ref={textRecordingRef} onStart={handleRecord} onFinish={handleFinish} startTime={startTime} />
 
         </div>
     );
