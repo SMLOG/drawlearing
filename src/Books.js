@@ -317,11 +317,37 @@ const Books = () => {
             setCurBookIndex(-1);
             setCurrentLineIndex(-1);    
     }
+    const scrollToCenter = (element) => {
+        const container = document.getElementById('container');
+    
+        if (container && element) {
+            const rect = element.getBoundingClientRect();
+            const containerRect = container.getBoundingClientRect();
+            const elementHeight = rect.height;
+    
+            // Check if the element is out of view
+            const isElementInView = (
+                rect.top >= containerRect.top && 
+                rect.bottom <= containerRect.bottom
+            );
+    
+            if (!isElementInView) {
+                // Calculate the scroll position to center the item in the container
+                const scrollPosition = container.scrollTop + rect.top - containerRect.top - (containerRect.height / 2) + (elementHeight / 2);
+    
+                container.scrollTo({ top: scrollPosition, behavior: 'smooth' });
+            }
+        }
+    };
 
+    useEffect(()=>{
+        const element = document.querySelector(`[data-line="${curBookIndex+'-'+currentLineIndex}"]`);
+        scrollToCenter(element);
+    },[curBookIndex,currentLineIndex]);  
     const renderContentWithLineBreaks = (title, content,bookIndex) => {
         const combinedContent = `${title}\n${content}`.trim();
         return combinedContent.split('\n').map((line, index) => (
-            <div key={index}><Line  $isActive={curBookIndex==bookIndex&&currentLineIndex === index}>
+            <div key={index}><Line data-line={bookIndex+'-'+index} $isActive={curBookIndex==bookIndex&&currentLineIndex === index}>
                <span>{index+1}.</span> <AudioText text={line}></AudioText>
             </Line> 
             <button onClick={() => playBookLine(bookIndex,index,line)}>
@@ -393,7 +419,7 @@ const Books = () => {
             console.error('Error saving books:', error);
         }
     };
-    
+
     const modalRef = useRef();
       const handleClickOutside = (event) => {
     if (
