@@ -1,4 +1,4 @@
-import React, { useState, useEffect, forwardRef, useImperativeHandle } from "react";
+import React, { useState, useEffect, forwardRef, useImperativeHandle,useRef } from "react";
 import styled from "styled-components";
 import { useAudio } from "../context/AudioContext.js";
 import { tokenize } from "../lib/Text.js";
@@ -58,6 +58,7 @@ const AudioText = forwardRef(({ text,items,myIndex }, ref) => {
       playAudio('');
       return;
     }
+    scrollToCenter(index);
     let audioList = tokens.map((token) =>
       token.t=='en'
         ? `/audio/us/${token.c.toLowerCase().replace(/[^a-z]/gi, "")}.mp3`
@@ -85,6 +86,24 @@ const AudioText = forwardRef(({ text,items,myIndex }, ref) => {
         },
 }));
 
+const itemRefs = useRef([]);
+
+const scrollToCenter = (index) => {
+  const container = document.getElementById('container');
+  const element = itemRefs.current[index];
+  
+  if (container && element) {
+    const rect = element.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+    const elementHeight = rect.height;
+
+    // Calculate the scroll position to center the item in the container
+    const scrollPosition = container.scrollTop + rect.top - containerRect.top - (containerRect.height / 2) + (elementHeight / 2);
+
+    container.scrollTo({ top: scrollPosition, behavior: 'smooth' });
+  }
+};
+
   return (
     <>
       {tokens.map((token, index) => (
@@ -92,6 +111,7 @@ const AudioText = forwardRef(({ text,items,myIndex }, ref) => {
           $isActive={playIndex == index}
           onClick={() => playTokens(index)}
           key={index}
+          ref={el => itemRefs.current[index] = el} 
         >
           {token.c}
         </Text>
