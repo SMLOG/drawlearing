@@ -23,7 +23,8 @@ const App = () => {
         <Route path="stroke/:sentence" element={<WorkTrack2 />} />
         <Route path="/" element={<WordCardList />} />
         <Route path="printSheet" element={<PrintSheet />} />
-        <Route path="books" element={<Books />} />
+        <Route path="books" element={<Navigate to="/books/1" />} />
+         <Route path="books/:pageNo" element={<Books />} />
         <Route path="records" element={<Records />} />
         
         <Route path="./"  element={<Navigate to="/cards" />} />
