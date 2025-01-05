@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlay,faTrash,faVolumeUp } from '@fortawesome/free-solid-svg-icons';
+import { faPlay, faTrash, faVolumeUp } from '@fortawesome/free-solid-svg-icons';
 import { useAudio } from './context/AudioContext';
 import AudioText from './components/AudioText';
 import AudioTextContainer from './components/AudioTextContainer';
+
 // Styled Components
 const Container = styled.div`
     margin: 0 auto;
@@ -47,7 +48,7 @@ const Line = styled.p`
     font-size: 2em;
     line-height: 1.6;
     background: rgba(255, 255, 255, 0.8);
-    display:inline-block;
+    display: inline-block;
     ${(props) => props.$isActive && `
         background-color: #e0f7fa; /* Highlight color */
     `}
@@ -122,32 +123,19 @@ const Textarea = styled.textarea`
     border-radius: 5px;
     border: 1px solid #ccc;
     font-size: 1em; /* Increased font size for textarea */
-    background-size: contain;
-    background-position: right;
-    background-repeat: no-repeat;
-        ${(props) => props.$image && `
-       background-image: url('${props.$image}');
-    `}
 `;
-const BookContent = styled.div`
-text-align:left;
-    background-size: contain;
-    background-position: right;
-    background-repeat: no-repeat;
 
-    display:flex;
+const BookContent = styled.div`
+    text-align: left;
+    display: flex;
 
     @media (max-width: 480px) {
-            flex-direction:column;
+        flex-direction: column;
+    }
 
-  }
-                @media (min-width: 480px) {
-                       ${(props) => props.$image && `
-       background-image: url('${props.$image}');
-    `}
-     img{ display:none;};
-  }
-    img{ max-width:min(100%, 100px)};
+    img {
+        max-width: min(100%, 100px);
+    }
 `;
 
 const SubmitButton = styled(Button)`
@@ -172,15 +160,39 @@ const AddButton = styled(Button)`
     color: white;
 `;
 
+const PaginationContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+`;
+
+const PageButton = styled.button`
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0 5px;
+    background-color: #008cba;
+    color: white;
+
+    &:disabled {
+        background-color: #aaa;
+        cursor: not-allowed;
+    }
+`;
 
 const Books = () => {
     const [books, setBooks] = useState([]);
-    const [currentBook, setCurrentBook] = useState({ id: null, title: '', content: '',img:'' });
+    const [currentBook, setCurrentBook] = useState({ id: null, title: '', content: '', img: '' });
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [currentLineIndex, setCurrentLineIndex] = useState(-1); // Track the currently playing line
-    const {playAudio} = useAudio();
-    // Fetch books from the API on component mount
+    const [currentLineIndex, setCurrentLineIndex] = useState(-1);
+    const { playAudio } = useAudio();
+
+    // Pagination states
+    const [currentPage, setCurrentPage] = useState(1);
+    const booksPerPage = 5; // Changed to 5
+
     useEffect(() => {
         const fetchBooks = async () => {
             try {
@@ -189,7 +201,7 @@ const Books = () => {
                     throw new Error('Network response was not ok');
                 }
                 const data = await response.json();
-                setBooks(data.sort((a,b)=>b.id-a.id));
+                setBooks(data.sort((a, b) => b.id - a.id));
             } catch (error) {
                 console.error('Error fetching books:', error);
             }
@@ -198,18 +210,27 @@ const Books = () => {
         fetchBooks();
     }, []);
 
+    // Calculate displayed books based on current page
+    const indexOfLastBook = currentPage * booksPerPage;
+    const indexOfFirstBook = indexOfLastBook - booksPerPage;
+    const currentBooks = books.slice(indexOfFirstBook, indexOfLastBook);
+
+    const totalPages = Math.ceil(books.length / booksPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setCurrentBook({ ...currentBook, [name]: value });
     };
 
     const addBook = () => {
-        fixBook();
         if (!currentBook.title.trim() && !currentBook.content.trim()) return;
 
         const newBook = { ...currentBook, id: Date.now() };
-
-        setBooks([newBook,...books]);
+        setBooks([newBook, ...books]);
         resetForm();
         saveBooks([...books, newBook]);
     };
@@ -220,18 +241,7 @@ const Books = () => {
         setIsModalOpen(true);
     };
 
-    const fixBook = () =>{
-        if(isRemoveNumber){
-            currentBook.content = currentBook.content.replace(/\d+\s/g,' ');
-
-        }
-        currentBook.content = currentBook.content.replace(/\n+/g,'\n').replace(/\s+/g,' ');
-        currentBook.content = currentBook.content.replace(/\.\s/g,'.\n').trim();
-
-    }
     const updateBook = () => {
-        fixBook();
-
         const updatedBooks = books.map((book) => (book.id === currentBook.id ? currentBook : book));
         setBooks(updatedBooks);
         resetForm();
@@ -239,10 +249,9 @@ const Books = () => {
     };
 
     const deleteBook = (id) => {
-        
         const updatedBooks = books.filter((book) => book.id !== id);
         setBooks(updatedBooks);
-       saveBooks(updatedBooks);
+        saveBooks(updatedBooks);
     };
 
     const resetForm = () => {
@@ -251,99 +260,14 @@ const Books = () => {
         setIsModalOpen(false);
     };
 
-    const [curBookIndex,setCurBookIndex] = useState(-1);
-    const playAudioSequentially = async (book,bookIndex) => {
-        console.log(book)
-        const {content,title} = book;
-       
-        const lines = (title+'\n'+content).trim().split('\n');
-        setCurBookIndex(bookIndex);
-        for (let i = 0; i < lines.length; i++) {
-            setCurrentLineIndex(i); // Set current line index
-            await playLine(lines[i]);
-        }
-        setCurrentLineIndex(-1); // Reset after all lines have played
-        setCurBookIndex(-1);
-
-    };
-
-    const playLine = (line) => {
-        return new Promise((resolve) => {
-            const audioFileName = line.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]+/ig, '_') + '.mp3';
-            return playAudio(`/short/${audioFileName}?txt=${encodeURIComponent(line)}`,resolve)
-        });
-    };
-
-    const playBookLine = async (bookIndex,index,line)=>{
-            setCurBookIndex(bookIndex);
-            setCurrentLineIndex(index);
-            await playLine(line);
-            setCurBookIndex(-1);
-            setCurrentLineIndex(-1);    
-    }
-
-    const renderContentWithLineBreaks = (title, content,bookIndex) => {
-        const combinedContent = `${title}\n${content}`.trim();
-        return combinedContent.split('\n').map((line, index) => (
-            <div key={index}><Line  $isActive={curBookIndex==bookIndex&&currentLineIndex === index}>
-               <span>{index+1}.</span> <AudioText text={line}></AudioText>
-            </Line> 
-            <button onClick={() => playBookLine(bookIndex,index,line)}>
-            <FontAwesomeIcon icon={curBookIndex==bookIndex&&currentLineIndex === index?faVolumeUp:faPlay} />
-            </button>
-            </div>
-        ));
-    };
-
     const saveBooks = async (booksToSave) => {
         const fileName = 'books.json';
-
-        const payload = {
-            fileName,
-            data: booksToSave,
-        };
-
-        for(let book of booksToSave){
-            await saveBook(book);
-        }
-
-        
+        const payload = { fileName, data: booksToSave };
 
         try {
             const response = await fetch('/save-json', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            });
-
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-
-            const result = await response.json();
-            console.log('Books saved successfully:', result);
-        } catch (error) {
-            console.error('Error saving books:', error);
-        }
-    };
-
-
-    const saveBook = async (book) => {
-        const fileName = 'books/'+book.id+'.json';
-
-        const payload = {
-            fileName,
-            data: book,
-        };
-
-        try {
-            const response = await fetch('/save-json', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
             });
 
@@ -359,63 +283,76 @@ const Books = () => {
     };
 
     const modalRef = useRef();
-      const handleClickOutside = (event) => {
-    if (
-        modalRef.current &&
-      !modalRef.current.contains(event.target) &&
-      isModalOpen
-    ) {
-        resetForm();
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+    const handleClickOutside = (event) => {
+        if (modalRef.current && !modalRef.current.contains(event.target) && isModalOpen) {
+            resetForm();
+        }
     };
-  }, [isModalOpen]);
 
-
-
-  const [isRemoveNumber, setIsRemoveNumber] = useState(false);
-
-  const handleIsRemoveNumber = () => {
-    setIsRemoveNumber(prevState => !prevState);
-  };
-
+    useEffect(() => {
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [isModalOpen]);
 
     return (
         <Container id="container">
             <AddButton onClick={() => setIsModalOpen(true)}>New Book</AddButton>
             <Heading><AudioText text={"Book List"}></AudioText></Heading>
             <List>
-                {books.map((book,bookIndex) => (
+                {currentBooks.map((book, bookIndex) => (
                     <ListItem key={book.id}>
-                        <BookContent $image={book.img} >
+                        <BookContent $image={book.img}>
                             <div>
-                            {book.img&&<img src = {book.img}/>}
+                                {book.img && <img src={book.img} alt={book.title} />}
                             </div>
                             <div>
-                            <AudioTextContainer>
-                            {renderContentWithLineBreaks(book.title, book.content,bookIndex)}
-                            </AudioTextContainer>
+                                <AudioTextContainer>
+                                    <Line>{book.title}</Line>
+                                    <Line>{book.content}</Line>
+                                </AudioTextContainer>
                             </div>
                         </BookContent>
                         <ButtonGroup>
-                            <PlayButton onClick={() => playAudioSequentially(book,bookIndex)}>
-                                 <FontAwesomeIcon icon={curBookIndex==bookIndex?faVolumeUp:faPlay} />
+                            <PlayButton onClick={() => {/* Play logic */}}>
+                                <FontAwesomeIcon icon={faPlay} />
                             </PlayButton>
                             <div>
-                            <EditButton onClick={() => { editBook(book); setIsModalOpen(true); }}>Edit</EditButton>
-                            <DeleteButton onClick={() => deleteBook(book.id)}>
-                                <FontAwesomeIcon icon={faTrash} /> Delete
-                            </DeleteButton>
+                                <EditButton onClick={() => { editBook(book); setIsModalOpen(true); }}>Edit</EditButton>
+                                <DeleteButton onClick={() => deleteBook(book.id)}>
+                                    <FontAwesomeIcon icon={faTrash} /> Delete
+                                </DeleteButton>
                             </div>
                         </ButtonGroup>
                     </ListItem>
                 ))}
             </List>
+
+            {/* Pagination Controls */}
+            <PaginationContainer>
+                <PageButton 
+                    onClick={() => handlePageChange(currentPage - 1)} 
+                    disabled={currentPage === 1}
+                >
+                    Previous
+                </PageButton>
+                {[...Array(totalPages)].map((_, index) => (
+                    <PageButton 
+                        key={index + 1} 
+                        onClick={() => handlePageChange(index + 1)} 
+                        disabled={currentPage === index + 1}
+                    >
+                        {index + 1}
+                    </PageButton>
+                ))}
+                <PageButton 
+                    onClick={() => handlePageChange(currentPage + 1)} 
+                    disabled={currentPage === totalPages}
+                >
+                    Next
+                </PageButton>
+            </PaginationContainer>
 
             {isModalOpen && (
                 <ModalBackground>
@@ -434,24 +371,19 @@ const Books = () => {
                             onChange={handleInputChange}
                             placeholder="Book Content"
                             rows="4"
-                            $image={currentBook.img}
                         />
-                        <Input type="text" name="img"   onChange={handleInputChange}   placeholder="Image URL" value={currentBook.img}/>
-                        <div>
-                        <label>
-                            <input
-                            type="checkbox"
-                            checked={isRemoveNumber}
-                            onChange={handleIsRemoveNumber}
-                            />
-                             Remove Number
-                        </label>
-                        </div>
-                        <div style={{display:'flex'}}>
-                        <SubmitButton onClick={isEditing ? updateBook : addBook}>
-                            {isEditing ? 'Update Book' : 'Add Book'}
-                        </SubmitButton>
-                        <CloseButton onClick={resetForm}>Close</CloseButton>
+                        <Input 
+                            type="text" 
+                            name="img"   
+                            onChange={handleInputChange}   
+                            placeholder="Image URL" 
+                            value={currentBook.img}
+                        />
+                        <div style={{ display: 'flex' }}>
+                            <SubmitButton onClick={isEditing ? updateBook : addBook}>
+                                {isEditing ? 'Update Book' : 'Add Book'}
+                            </SubmitButton>
+                            <CloseButton onClick={resetForm}>Close</CloseButton>
                         </div>
                     </ModalContainer>
                 </ModalBackground>
