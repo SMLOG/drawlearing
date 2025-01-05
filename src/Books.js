@@ -303,6 +303,12 @@ const Books = () => {
             data: booksToSave,
         };
 
+        for(let book of booksToSave){
+            await saveBook(book);
+        }
+
+        
+
         try {
             const response = await fetch('/save-json', {
                 method: 'POST',
@@ -323,6 +329,34 @@ const Books = () => {
         }
     };
 
+
+    const saveBook = async (book) => {
+        const fileName = 'books/'+book.id+'.json';
+
+        const payload = {
+            fileName,
+            data: book,
+        };
+
+        try {
+            const response = await fetch('/save-json', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const result = await response.json();
+            console.log('Books saved successfully:', result);
+        } catch (error) {
+            console.error('Error saving books:', error);
+        }
+    };
 
     const modalRef = useRef();
       const handleClickOutside = (event) => {
