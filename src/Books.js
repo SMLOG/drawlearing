@@ -363,7 +363,9 @@ const Books = () => {
                             {book.img&&<img src = {book.img}/>}
                             </div>
                             <div>
+                            <AudioTextContainer>
                             {renderContentWithLineBreaks(book.title, book.content,bookIndex)}
+                            </AudioTextContainer>
                             </div>
                         </BookContent>
                         <ButtonGroup>

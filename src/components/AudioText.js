@@ -54,6 +54,10 @@ const AudioText = forwardRef(({ text,items,myIndex }, ref) => {
 
   const [playIndex, setPlayIndex] = useState(-1);
   const playTokens = async (index) => {
+    if(playIndex==index){
+      playAudio('');
+      return;
+    }
     let audioList = tokens.map((token) =>
       token.t=='en'
         ? `/audio/us/${token.c.toLowerCase().replace(/[^a-z]/gi, "")}.mp3`
