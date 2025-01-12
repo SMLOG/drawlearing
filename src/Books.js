@@ -205,7 +205,7 @@ const Books = () => {
 
     // Pagination states
     const [currentPage, setCurrentPage] = useState(1);
-    const booksPerPage = 5; // Changed to 5
+    const booksPerPage = 10; // Changed to 5
 
     useEffect(() => {
         const fetchBooks = async () => {
@@ -451,7 +451,7 @@ const Books = () => {
         <Container id="container">
             <AddButton onClick={() => setIsModalOpen(true)}>New Book</AddButton>
             <Heading><AudioText text={"Book List"}></AudioText></Heading>
-            <List>
+            <List>  <AudioTextContainer>
                 {currentBooks.map((book, bookIndex) => (
                     <ListItem key={book.id}>
                         <BookContent $image={book.img}>
@@ -459,10 +459,10 @@ const Books = () => {
                                 {book.img && <img src={book.img} alt={book.title} />}
                             </div>
                             <div>
-                                <AudioTextContainer>
+                              
                                 {renderContentWithLineBreaks(book.title, book.content,bookIndex)}
 
-                                </AudioTextContainer>
+                             
                             </div>
                         </BookContent>
                         <ButtonGroup>
@@ -478,6 +478,7 @@ const Books = () => {
                         </ButtonGroup>
                     </ListItem>
                 ))}
+                   </AudioTextContainer>
             </List>
 
             {/* Pagination Controls */}
