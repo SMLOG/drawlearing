@@ -61,7 +61,7 @@ const AudioText = forwardRef(({ text,items,myIndex }, ref) => {
     scrollToCenter(index);
     let audioList = tokens.map((token) =>
       token.t=='en'
-        ? `/audio/us/${token.c.toLowerCase().replace(/[^a-z]/gi, "")}.mp3`
+        ? `/audio/us/${token.c.toLowerCase()}.mp3`
         : token.t=='cn'?`/sound/Cantonese/${encodeURIComponent(token.c)}.mp3`:null
     );
     try {
