@@ -211,6 +211,15 @@ const Books = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
+    
+    useEffect(() => {
+        const hash = location.hash;
+        if (hash) {
+            const pageMatch = hash.match(/\/books\/(\d+)/);
+            const page = pageMatch ? parseInt(pageMatch[1]) : 1; // Default to 1 if no match
+            setCurrentPage(page);
+        }
+    }, [location.hash]);
 
     useEffect(() => {
         const fetchBooks = async () => {
