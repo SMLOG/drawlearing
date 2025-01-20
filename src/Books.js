@@ -5,7 +5,7 @@ import { faPlay, faTrash, faVolumeUp } from '@fortawesome/free-solid-svg-icons';
 import { useAudio } from './context/AudioContext';
 import AudioText from './components/AudioText';
 import AudioTextContainer from './components/AudioTextContainer';
-
+import { useNavigate, useLocation } from 'react-router-dom';
 // Styled Components
 const Container = styled.div`
     margin: 0 auto;
@@ -209,6 +209,9 @@ const Books = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const booksPerPage = 10; // Changed to 5
 
+    const navigate = useNavigate();
+    const location = useLocation();
+
     useEffect(() => {
         const fetchBooks = async () => {
             try {
@@ -235,7 +238,18 @@ const Books = () => {
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
+        navigate(`/books/${pageNumber}`); // Update the URL
     };
+
+
+    useEffect(() => {
+        const hash = location.hash;
+        if (hash) {
+            const pageMatch = hash.match(/\/books\/(\d+)/);
+            const page = pageMatch ? parseInt(pageMatch[1]) : 1; // Default to 1 if no match
+            setCurrentPage(page);
+        }
+    }, [location.hash]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
