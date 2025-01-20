@@ -10,6 +10,9 @@ const Text = styled.span`
         color: red; /* Highlight color */
     `}
 `;
+const Article = styled.div`
+font-size:2em;
+`;
 
 const AudioText = forwardRef(({ text,items,myIndex }, ref) => {
   const {  playAudio } = useAudio();
@@ -105,18 +108,20 @@ const scrollToCenter = (index) => {
 };
 
   return (
-    <>
+    <Article>
       {tokens.map((token, index) => (
+        token.c=='\n'?<br/>:
         <Text
           $isActive={playIndex == index}
           onClick={() => playTokens(index)}
           key={index}
           ref={el => itemRefs.current[index] = el} 
         >
+
           {token.c}
         </Text>
       ))}
-    </>
+    </Article>
   );
 });
 

@@ -25,7 +25,7 @@ const Container = styled.div`
 const Heading = styled.h1`
     text-align: center;
     color: #333;
-    font-size: 2em;
+    font-size: 1em;
     margin-bottom: 20px;
 `;
 
@@ -207,7 +207,7 @@ const Books = () => {
 
     // Pagination states
     const [currentPage, setCurrentPage] = useState(1);
-    const booksPerPage = 10; // Changed to 5
+    const booksPerPage = 1; // Changed to 5
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -371,15 +371,15 @@ const Books = () => {
     },[curBookIndex,currentLineIndex]);  
     const renderContentWithLineBreaks = (title, content,bookIndex) => {
         const combinedContent = `${title}\n${content}`.trim();
-        return combinedContent.split('\n').map((line, index) => (
+        return (<AudioText text={combinedContent}></AudioText>);/* combinedContent.split('\n').map((line, index) => (
             <div key={index}><Line data-line={bookIndex+'-'+index} $isActive={curBookIndex==bookIndex&&currentLineIndex === index}>
-               <span>{index+1}.</span> <AudioText text={line}></AudioText>
+               <span>{index+1}.</span> <AudioText text={combinedContent}></AudioText>
             </Line> 
             <button onClick={() => playBookLine(bookIndex,index,line)}>
             <FontAwesomeIcon icon={curBookIndex==bookIndex&&currentLineIndex === index?faVolumeUp:faPlay} />
             </button>
             </div>
-        ));
+        ));*/
     };
 
     const saveBooks = async (booksToSave) => {
