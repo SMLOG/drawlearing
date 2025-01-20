@@ -514,15 +514,6 @@ const Books = () => {
                 >
                     Previous
                 </PageButton>
-                {[...Array(totalPages)].map((_, index) => (
-                    <PageButton 
-                        key={index + 1} 
-                        onClick={() => handlePageChange(index + 1)} 
-                        disabled={currentPage === index + 1}
-                    >
-                        {index + 1}
-                    </PageButton>
-                ))}
                 <PageButton 
                     onClick={() => handlePageChange(currentPage + 1)} 
                     disabled={currentPage === totalPages}
