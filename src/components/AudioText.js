@@ -21,42 +21,53 @@ const AudioText = forwardRef(({ text,items,myIndex }, ref) => {
     setTokens(tokenize(text));
   },[text]);
   const preloadAndPlayAudios = async (audioList, callback, startIndex = 0) => {
-    // Preload all audios
     const preloadAudio = (src) => {
-      return (
-        src &&
-        new Promise((resolve) => {
-          const audio = new Audio(src);
-          audio.onerror = function() {
-            console.error('Error loading audio:', audio.error);
-            resolve(null);
-        };
-        //  audio.oncanplaythrough = () => resolve(audio);
-        //  audio.load();
-        resolve(audio);
-        })
-      );
+      return src&&new Audio(src);
     };
-
-    // Load all audios
-    const audioElements = await Promise.all(audioList.map(preloadAudio));
-
-    // Play audios sequentially
-    for (let i = startIndex; i < audioElements.length; i++) {
-      let isPlayable = audioElements[i];
+  
+    const audioElements = [];
+    let loadedCount = 0; // Counter for loaded audios
+  
+    // Preload initial audios up to the preload limit
+    let bufIndex=0;
+    for (let i =bufIndex; i < audioList.length && loadedCount < 5; i++) {
+      if(audioList[i]){
+        audioElements[i] =  preloadAudio(audioList[i]);
+        if (audioElements[i]) loadedCount++;
+      }
+      bufIndex++;
+    }
+  
+    for (let i = startIndex; i < audioList.length; i++) {
       callback(i, "start");
+  
+      const isPlayable = audioList[i];
+      
       if (isPlayable) {
         await new Promise((resolve, reject) => {
-          playAudio(audioElements[i].src, resolve, reject);
+          playAudio(audioList[i], resolve, reject);
         });
+
+        for(let j=bufIndex+1;j<audioList.length;j++){
+          
+          if(audioList[j]){
+            audioElements[j]=  preloadAudio(audioList[j]);
+            bufIndex++;
+             break;
+          }
+        }
+
       }
+  
       callback(i, "end");
     }
+  
     callback(-1, "end");
   };
 
   const [playIndex, setPlayIndex] = useState(-1);
   const playTokens = async (index) => {
+    setPlayIndex(index);
     if(playIndex==index){
       playAudio('');
       return;
