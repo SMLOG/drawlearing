@@ -370,16 +370,7 @@ const Books = () => {
         scrollToCenter(element);
     },[curBookIndex,currentLineIndex]);  
     const renderContentWithLineBreaks = (title, content,bookIndex) => {
-        const combinedContent = `${title}\n${content}`.trim();
-        return (<AudioText text={combinedContent}></AudioText>);/* combinedContent.split('\n').map((line, index) => (
-            <div key={index}><Line data-line={bookIndex+'-'+index} $isActive={curBookIndex==bookIndex&&currentLineIndex === index}>
-               <span>{index+1}.</span> <AudioText text={combinedContent}></AudioText>
-            </Line> 
-            <button onClick={() => playBookLine(bookIndex,index,line)}>
-            <FontAwesomeIcon icon={curBookIndex==bookIndex&&currentLineIndex === index?faVolumeUp:faPlay} />
-            </button>
-            </div>
-        ));*/
+        return (<AudioText subject={title} text={content}></AudioText>);
     };
 
     const saveBooks = async (booksToSave) => {
