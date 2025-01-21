@@ -15,7 +15,7 @@ export const AudioProvider = ({ children }) => {
 
     const playAudio=(src,resolve,reject)=>{
         if(lastReject){
-            lastReject();
+            lastReject(1);
         }
         lastReject = reject;
         lastResolve = resolve;
