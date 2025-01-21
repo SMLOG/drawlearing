@@ -5,7 +5,7 @@ import { faPlay, faTrash, faVolumeUp } from '@fortawesome/free-solid-svg-icons';
 import { useAudio } from './context/AudioContext';
 import AudioText from './components/AudioText';
 import AudioTextContainer from './components/AudioTextContainer';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation,useParams } from 'react-router-dom';
 // Styled Components
 const Container = styled.div`
     margin: 0 auto;
@@ -206,20 +206,23 @@ const Books = () => {
     const { playAudio } = useAudio();
 
     // Pagination states
-    const [currentPage, setCurrentPage] = useState(1);
+    const { pageNo } = useParams();
+
+    const [currentPage, setCurrentPage] = useState(parseInt(pageNo));
     const booksPerPage = 1; // Changed to 5
 
     const navigate = useNavigate();
     const location = useLocation();
     
     useEffect(() => {
-        const hash = location.hash;
-        if (hash) {
-            const pageMatch = hash.match(/\/books\/(\d+)/);
-            const page = pageMatch ? parseInt(pageMatch[1]) : 1; // Default to 1 if no match
-            setCurrentPage(page);
-        }
-    }, [location.hash]);
+                const hash = location.pathname;            if (hash) {
+                const pageMatch = hash.match(/\/books\/(\d+)/);
+                const page = pageMatch ? parseInt(pageMatch[1]) : 1; // Default to 1 if no match
+                setCurrentPage(page);
+            }
+        
+
+    }, [location]);
 
     useEffect(() => {
         const fetchBooks = async () => {
@@ -466,7 +469,6 @@ const Books = () => {
     return (
         <Container id="container">
             <AddButton onClick={() => setIsModalOpen(true)}>New Book</AddButton>
-            <Heading><AudioText text={"Book List"}></AudioText></Heading>
             <List>  <AudioTextContainer>
                 {currentBooks.map((book, bookIndex) => (
                     <ListItem key={book.id}>
