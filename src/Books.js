@@ -117,7 +117,7 @@ const Input = styled.input`
 `;
 
 const Textarea = styled.textarea`
-    width: calc(100% - 20px);
+    width: calc(100% - 20px)!important;
     padding: 10px;
     margin: 10px 0;
     border-radius: 5px;
@@ -199,7 +199,7 @@ const PageButton = styled.button`
 
 const Books = () => {
     const [books, setBooks] = useState([]);
-    const [currentBook, setCurrentBook] = useState({ id: null, title: '', content: '', img: '' });
+    const [currentBook, setCurrentBook] = useState({ id: null, title: '', content: '', img: '',audio:'' });
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentLineIndex, setCurrentLineIndex] = useState(-1);
@@ -289,8 +289,11 @@ const Books = () => {
             currentBook.content = currentBook.content.replace(/\d+\s/g,' ');
 
         }
-        currentBook.content = currentBook.content.replace(/\n+/g,'\n').replace(/\s+/g,' ');
-        currentBook.content = currentBook.content.replace(/\.\s/g,'.\n').trim();
+        if(isPretty){
+            currentBook.content = currentBook.content.replace(/\n+/g,'\n').replace(/\s+/g,' ');
+            currentBook.content = currentBook.content.replace(/\.\s/g,'.\n').trim();
+        }
+
 
     }
     const updateBook = () => {
@@ -460,7 +463,12 @@ const Books = () => {
 
 
     const [isRemoveNumber, setIsRemoveNumber] = useState(false);
-
+    const [isPretty, setIsPretty] = useState(false);
+    
+    
+    const handleIsPretty = () => {
+        setIsPretty(prevState => !prevState);
+      };
     const handleIsRemoveNumber = () => {
       setIsRemoveNumber(prevState => !prevState);
     };
@@ -534,6 +542,13 @@ const Books = () => {
                             rows="4"
                             $image={currentBook.img}
                         />
+                          <Input
+                            type="text"
+                            name="audio"
+                            value={currentBook.audio}
+                            onChange={handleInputChange}
+                            placeholder="Audio Url(Optional)"
+                        />
                         <Input type="text" name="img"   onChange={handleInputChange}   placeholder="Image URL" value={currentBook.img}/>
                         <div>
                         <label>
@@ -544,6 +559,15 @@ const Books = () => {
                             />
                              Remove Number
                         </label>
+                        <label>
+                            <input
+                            type="checkbox"
+                            checked={isPretty}
+                            onChange={handleIsPretty}
+                            />
+                             Pretty
+                        </label>
+                        
                         </div>
                         <div style={{display:'flex'}}>
                         <SubmitButton onClick={isEditing ? updateBook : addBook}>

@@ -150,7 +150,7 @@ const scrollToCenter = (index) => {
       </Title>
       <Content>
       {tokens.map((token, index) => (
-        token.c=='\n'?<br/>:
+        token.c=='\n'?<br/>:(token.c==' '?'\u00A0':
         <Text
           $isActive={tokenType==1&&playIndex == index}
           onClick={() => playTokens(1,index)}
@@ -159,7 +159,7 @@ const scrollToCenter = (index) => {
         >
 
           {token.c}
-        </Text>
+        </Text>)
       ))}
         </Content>
     </Article>
