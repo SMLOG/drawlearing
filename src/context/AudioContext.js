@@ -3,17 +3,21 @@ import React, { createContext, useRef, useContext } from 'react';
 const AudioContext = createContext();
 
 export const AudioProvider = ({ children }) => {
-    const audio = new Audio();
-    const audioRef = useRef(audio);
+    //const audio = new Audio();
+    const audioRef = useRef(null);
     let lastReject;
     let lastResolve;
 
-    audio.onended=()=>{
-        lastResolve&&lastResolve();
-        lastResolve = lastReject = null;
-    };
 
     const playAudio=(src,resolve,reject)=>{
+        const audio = audioRef.current;
+        console.log(audio)
+        if(!audio.onended)
+        audio.onended=()=>{
+            lastResolve&&lastResolve();
+            lastResolve = lastReject = null;
+        };
+
         if(lastReject){
             lastReject(1);
         }
@@ -24,6 +28,8 @@ export const AudioProvider = ({ children }) => {
     }
     return (
         <AudioContext.Provider value={{audioRef,playAudio}}>
+            <audio rel="noreferrer" referrerpolicy="no-referrer" ref={audioRef} controls >
+            </audio>
             {children}
         </AudioContext.Provider>
     );

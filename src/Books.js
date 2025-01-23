@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlay, faTrash, faVolumeUp } from '@fortawesome/free-solid-svg-icons';
+import { faPlay, faTrash, faVolumeUp,faMusic } from '@fortawesome/free-solid-svg-icons';
 import { useAudio } from './context/AudioContext';
 import AudioText from './components/AudioText';
 import AudioTextContainer from './components/AudioTextContainer';
@@ -334,6 +334,14 @@ const Books = () => {
 
     };
 
+    const playBookAudio=async(book,bookIndex)=>{
+
+        return new Promise((resolve) => {
+            return playAudio(book.audio,resolve);
+        });
+
+    }
+
     const playLine = (line) => {
         return new Promise((resolve) => {
             const audioFileName = line.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]+/ig, '_') + '.mp3';
@@ -492,9 +500,14 @@ const Books = () => {
                             </div>
                         </BookContent>
                         <ButtonGroup>
+                        <div style={{display:'flex'}}>
                         <PlayButton onClick={() => playAudioSequentially(book,bookIndex)}>
                                  <FontAwesomeIcon icon={curBookIndex==bookIndex?faVolumeUp:faPlay} />
-                            </PlayButton>
+                        </PlayButton>
+                        {(book.audio&&<PlayButton onClick={() => playBookAudio(book,bookIndex)}>
+                                 <FontAwesomeIcon icon={curBookIndex==bookIndex?faVolumeUp:faMusic} />
+                        </PlayButton>)}
+                        </div>
                             <div>
                                 <EditButton onClick={() => { editBook(book); setIsModalOpen(true); }}>Edit</EditButton>
                                 <DeleteButton onClick={() => deleteBook(book.id)}>
