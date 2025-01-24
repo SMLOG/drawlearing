@@ -6,6 +6,7 @@ import { useAudio } from './context/AudioContext';
 import AudioText from './components/AudioText';
 import AudioTextContainer from './components/AudioTextContainer';
 import { useNavigate, useLocation,useParams } from 'react-router-dom';
+
 // Styled Components
 const Container = styled.div`
     margin: 0 auto;
@@ -203,7 +204,7 @@ const Books = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentLineIndex, setCurrentLineIndex] = useState(-1);
-    const { playAudio } = useAudio();
+    const { playAudio,togglePlayAudio } = useAudio();
 
     // Pagination states
     const { pageNo } = useParams();
@@ -334,11 +335,21 @@ const Books = () => {
 
     };
 
-    const playBookAudio=async(book,bookIndex)=>{
+    const [isPlayBookAudio,setIsPlayBookAudio] = useState(false);
+    const togglePlayBookAudio=async(book,bookIndex)=>{
+        let src=book.audio;
+        setIsPlayBookAudio(!isPlayBookAudio);
 
-        return new Promise((resolve) => {
-            return playAudio(book.audio,resolve);
-        });
+        try{
+            await new Promise((resolve) => {
+                
+                return togglePlayAudio(src,resolve);
+            });
+        }catch(e){
+
+        }
+        setIsPlayBookAudio(false);
+
 
     }
 
@@ -483,7 +494,9 @@ const Books = () => {
   
 
     return (
+
         <Container id="container">
+            
             <AddButton onClick={() => setIsModalOpen(true)}>New Book</AddButton>
             <List>  <AudioTextContainer>
                 {currentBooks.map((book, bookIndex) => (
@@ -504,8 +517,8 @@ const Books = () => {
                         <PlayButton onClick={() => playAudioSequentially(book,bookIndex)}>
                                  <FontAwesomeIcon icon={curBookIndex==bookIndex?faVolumeUp:faPlay} />
                         </PlayButton>
-                        {(book.audio&&<PlayButton onClick={() => playBookAudio(book,bookIndex)}>
-                                 <FontAwesomeIcon icon={curBookIndex==bookIndex?faVolumeUp:faMusic} />
+                        {(book.audio&&<PlayButton onClick={() => togglePlayBookAudio(book,bookIndex)}>
+                                 <FontAwesomeIcon icon={isPlayBookAudio?faVolumeUp:faMusic} />
                         </PlayButton>)}
                         </div>
                             <div>

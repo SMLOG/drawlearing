@@ -4,6 +4,7 @@
 VERSION=`git branch --show-current`
 
 dest='../w3/learning'
+(cd ${dest} && while ! git pull --rebase ; do echo 'pulling...';done;)
 
 
 GENERATE_SOURCEMAP=false BUILD_PATH=${dest}/${VERSION} PUBLIC_URL=./ npm run build2 -output-hashing=none

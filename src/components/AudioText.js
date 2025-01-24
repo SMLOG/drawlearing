@@ -18,6 +18,7 @@ const Text = styled.span`
 `;
 const Article = styled.div`
 font-size:2em;
+word-break: break-word;
 `;
 
 const AudioText = forwardRef(({ text,subject,items,myIndex }, ref) => {
