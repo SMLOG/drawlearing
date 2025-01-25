@@ -210,7 +210,7 @@ const Books = () => {
     const { pageNo } = useParams();
 
     const [currentPage, setCurrentPage] = useState(parseInt(pageNo));
-    const booksPerPage = 1; // Changed to 5
+    const [booksPerPage,setBooksPerPage] = useState(1) // Changed to 5
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -547,7 +547,14 @@ const Books = () => {
                 >
                     Next
                 </PageButton>
-            </PaginationContainer>
+                <input
+                type="number"
+                style={{ width: '25px' }}
+                value={booksPerPage}
+                min={1}
+                onChange={(event) => setBooksPerPage(parseInt(event.target.value) || 1)}
+                />           
+                </PaginationContainer>
 
             {isModalOpen && (
                 <ModalBackground>
