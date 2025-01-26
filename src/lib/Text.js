@@ -5,7 +5,7 @@ export function tokenize(str) {
     for (let i = 0; i < str.length; i++) {
         const char = str[i];
         // Check if the character is a letter or apostrophe
-        if (/[a-zA-Z']/.test(char)) {
+        if (/[a-zA-Z0-9']/.test(char)) {
             currentWord += char; // Build the current word
         } else {
             // If we have a current word, push it to the words array
