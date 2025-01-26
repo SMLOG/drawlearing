@@ -14,6 +14,7 @@ export const Container = styled.div`
     overflow: auto;
     left: 0;
     right: 0;
+    padding-top:0;
 `;
 
 export const Heading = styled.h1`
@@ -165,19 +166,17 @@ export const CloseButton = styled(Button)`
 `;
 
 export const AddButton = styled(Button)`
-    position: absolute;
-    top: 20px;
-    right: 20px;
     background-color: #008cba;
     color: white;
 `;
 
 export const PaginationContainer = styled.div`
     display: flex;
-    justify-content: center;
-    margin-top: 20px;
-    position: sticky;
-    bottom: 0;
+    justify-content: space-between;
+    top: 0;
+    position:sticky;
+    background:rgba(100,100,100,0.6);
+    padding-top:10px;
 `;
 
 export const PageButton = styled.button`

@@ -156,8 +156,11 @@ const Books = () => {
         const lines = (title+'\n'+content).trim().split('\n');
         setCurBookIndex(bookIndex);
         for (let i = 0; i < lines.length; i++) {
-            setCurrentLineIndex(i); // Set current line index
-            await playLine(lines[i]);
+            if(lines[i].trim()){
+                setCurrentLineIndex(i); // Set current line index
+                await playLine(lines[i]);
+            }
+
         }
         setCurrentLineIndex(-1); // Reset after all lines have played
         setCurBookIndex(-1);
@@ -325,7 +328,37 @@ const Books = () => {
 
         <Container id="container">
             
-            <AddButton onClick={() => setIsModalOpen(true)}>New Book</AddButton>
+            
+            {/* Pagination Controls */}
+            <PaginationContainer>
+                <div>
+                <PageButton 
+                    onClick={() => handlePageChange(currentPage - 1)} 
+                    disabled={currentPage === 1}
+                >
+                    Previous
+                </PageButton>
+                <PageButton 
+                    onClick={() => handlePageChange(currentPage + 1)} 
+                    disabled={currentPage === totalPages}
+                >
+                    Next
+                </PageButton>
+                </div>
+                <div>
+                <input
+                type="number"
+                style={{ width: '25px' }}
+                value={booksPerPage}
+                min={1}
+                onChange={(event) => setBooksPerPage(parseInt(event.target.value) || 1)}
+                />
+                 <button> {currentPage}/{totalPages}  </button> 
+                 </div>
+                 <AddButton onClick={() => setIsModalOpen(true)}>New Book</AddButton>      
+                </PaginationContainer>
+
+            
             <List>  <AudioTextContainer>
                 {currentBooks.map((book, bookIndex) => (
                     <ListItem key={book.id}>
@@ -361,29 +394,6 @@ const Books = () => {
                    </AudioTextContainer>
             </List>
 
-            {/* Pagination Controls */}
-            <PaginationContainer>
-                <PageButton 
-                    onClick={() => handlePageChange(currentPage - 1)} 
-                    disabled={currentPage === 1}
-                >
-                    Previous
-                </PageButton>
-                <PageButton 
-                    onClick={() => handlePageChange(currentPage + 1)} 
-                    disabled={currentPage === totalPages}
-                >
-                    Next
-                </PageButton>
-                <input
-                type="number"
-                style={{ width: '25px' }}
-                value={booksPerPage}
-                min={1}
-                onChange={(event) => setBooksPerPage(parseInt(event.target.value) || 1)}
-                />
-                 <button> {currentPage}/{totalPages}  </button>       
-                </PaginationContainer>
 
             {isModalOpen && (
                 <ModalBackground>

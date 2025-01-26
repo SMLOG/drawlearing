@@ -252,7 +252,7 @@ export const AudioProvider = ({ children }) => {
               {isPlaying ? "Pause" : "Play"}
             </button>
             <select onChange={handleSpeedChange} value={playbackRate}>
-              {Array.from({ length: 9 }, (_, i) => (0.5 + i * 0.25).toFixed(2)).map((speed) => (
+              {[0.5,0.75,1.0,1.25,1.5,1.75,2.0,2.25,2.5,3.0].map((speed) => (
                 <option value={speed} key={speed}>{speed}x</option>
               ))}
             </select>
