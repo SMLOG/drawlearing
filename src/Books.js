@@ -34,7 +34,7 @@ const Books = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentLineIndex, setCurrentLineIndex] = useState(-1);
-    const { playAudio,togglePlayAudio } = useAudio();
+    const { playAudio,togglePlayAudio,getSentenceSource } = useAudio();
 
     // Pagination states
     const { pageNo } = useParams();
@@ -151,7 +151,6 @@ const Books = () => {
 
     const [curBookIndex,setCurBookIndex] = useState(-1);
     const playAudioSequentially = async (book,bookIndex) => {
-        console.log(book)
         const {content,title} = book;
        
         const lines = (title+'\n'+content).trim().split('\n');
@@ -185,8 +184,7 @@ const Books = () => {
 
     const playLine = (line) => {
         return new Promise((resolve) => {
-            const audioFileName = line.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]+/ig, '_') + '.mp3';
-            return playAudio(`/short/${audioFileName}?txt=${encodeURIComponent(line)}`,resolve)
+            return playAudio(getSentenceSource(line),resolve)
         });
     };
 
@@ -383,7 +381,8 @@ const Books = () => {
                 value={booksPerPage}
                 min={1}
                 onChange={(event) => setBooksPerPage(parseInt(event.target.value) || 1)}
-                />           
+                />
+                 <button> {currentPage}/{totalPages}  </button>       
                 </PaginationContainer>
 
             {isModalOpen && (

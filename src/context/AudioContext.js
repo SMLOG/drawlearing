@@ -110,6 +110,32 @@ export const AudioProvider = ({ children }) => {
   useEffect(() => {
     curSourceRef.current = curSource;
   }, [curSource]);
+
+  const getSentenceSource=(text)=>{
+    const audioFileName = text.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]+/ig, '_') + '.mp3';
+
+    return curSourceRef.current == "YD-en"
+    ? `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(
+        text
+      )}&type=1`
+    : curSourceRef.current == "YD-us"
+    ? `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(
+        text
+      )}&type=2`
+    : curSourceRef.current == "BD-en"
+    ? `https://fanyi.baidu.com/gettts?lan=en&text=${encodeURIComponent(
+        text
+      )}&spd=5&source=web`
+    : curSourceRef.current == "BD-us"
+    ? `https://fanyi.baidu.com/gettts?lan=us&text=${encodeURIComponent(
+        text
+      )}&spd=5&source=web`
+    : curSourceRef.current == "Local-en"
+    ? `/short/en/${audioFileName}?txt=${encodeURIComponent(text)}`
+    : `/short/us/${audioFileName}?txt=${encodeURIComponent(text)}`;
+
+
+  }
   const getTextAudioUrl = (token) => {
     const type = token.t;
     const text = token.c;
@@ -161,6 +187,7 @@ export const AudioProvider = ({ children }) => {
         seekTo,
         getTextAudioUrl,
         looplay,
+        getSentenceSource
       }}
     >
       {children}
@@ -216,7 +243,7 @@ export const AudioProvider = ({ children }) => {
           </div>
           <audio
             rel="noreferrer"
-            referrerpolicy="no-referrer"
+            referrerPolicy="no-referrer"
             ref={audioRef}
             controls
           ></audio>
@@ -225,8 +252,8 @@ export const AudioProvider = ({ children }) => {
               {isPlaying ? "Pause" : "Play"}
             </button>
             <select onChange={handleSpeedChange} value={playbackRate}>
-              {[0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0].map((speed) => (
-                <option value={speed}>{speed}x</option>
+              {Array.from({ length: 9 }, (_, i) => (0.5 + i * 0.25).toFixed(2)).map((speed) => (
+                <option value={speed} key={speed}>{speed}x</option>
               ))}
             </select>
             <label>

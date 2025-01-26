@@ -28,9 +28,9 @@ const Article = styled.div`
 `;
 
 const AudioText = forwardRef(({ text, subject, items, myIndex }, ref) => {
-  const { playAudio, getTextAudioUrl } = useAudio();
+  const { playAudio, getTextAudioUrl,looplay } = useAudio();
   const [tokens, setTokens] = useState([]);
-  const [subjectTokens, setSubjectTokens, looplay] = useState([]);
+  const [subjectTokens, setSubjectTokens] = useState([]);
   useEffect(() => {
     setTokens(tokenize(text));
     setSubjectTokens(tokenize(subject || ""));
@@ -148,8 +148,10 @@ const AudioText = forwardRef(({ text, subject, items, myIndex }, ref) => {
       <Title>
         {subjectTokens.map((token, index) =>
           token.c == "\n" ? (
-            <br />
-          ) : (
+            <br  key={index} />
+          ) : token.c == " " ? (
+            "\u00A0"
+          ): (
             <Text
               $isActive={tokenType == 0 && playIndex == index}
               onClick={() => playTokens(0, index)}
@@ -164,7 +166,7 @@ const AudioText = forwardRef(({ text, subject, items, myIndex }, ref) => {
       <Content>
         {tokens.map((token, index) =>
           token.c == "\n" ? (
-            <br />
+            <br  key={index} />
           ) : token.c == " " ? (
             "\u00A0"
           ) : (
