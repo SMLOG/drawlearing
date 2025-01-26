@@ -15,6 +15,7 @@ const Title = styled.div`
 `;
 const Content = styled.div``;
 const Text = styled.span`
+display:inline-block;
   ${(props) =>
     props.$isActive &&
     `
