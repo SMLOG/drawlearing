@@ -178,6 +178,8 @@ export const AudioProvider = ({ children }) => {
   const toggleShowAudioSetting = () => {
     setShowAudioSetting(!showAudioSetting);
   };
+  
+  const [showAudio,setShowAudio] = useState(false);
   return (
     <AudioContext.Provider
       value={{
@@ -187,7 +189,7 @@ export const AudioProvider = ({ children }) => {
         seekTo,
         getTextAudioUrl,
         looplay,
-        getSentenceSource
+        getSentenceSource,showAudio
       }}
     >
       {children}
@@ -236,8 +238,14 @@ export const AudioProvider = ({ children }) => {
                   type="checkbox"
                   checked={looplay}
                   onChange={() => setLoopPlay(!looplay)}
-                />{" "}
+                />
                 Loop
+                <input
+                  type="checkbox"
+                  checked={showAudio}
+                  onChange={() => setShowAudio(!showAudio)}
+                />
+                A
               </div>
             )}
           </div>

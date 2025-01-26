@@ -34,7 +34,7 @@ const Books = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentLineIndex, setCurrentLineIndex] = useState(-1);
-    const { playAudio,togglePlayAudio,getSentenceSource } = useAudio();
+    const { playAudio,togglePlayAudio,getSentenceSource,showAudio } = useAudio();
 
     // Pagination states
     const { pageNo } = useParams();
@@ -378,7 +378,7 @@ const Books = () => {
                         <PlayButton onClick={() => playAudioSequentially(book,bookIndex)}>
                                  <FontAwesomeIcon icon={curBookIndex==bookIndex?faVolumeUp:faPlay} />
                         </PlayButton>
-                        {(book.audio&&<PlayButton onClick={() => togglePlayBookAudio(book,bookIndex)}>
+                        {(showAudio&&book.audio&&<PlayButton onClick={() => togglePlayBookAudio(book,bookIndex)}>
                                  <FontAwesomeIcon icon={isPlayBookAudio?faVolumeUp:faMusic} />
                         </PlayButton>)}
                         </div>
