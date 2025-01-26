@@ -15,7 +15,7 @@ const Title = styled.div`
 `;
 const Content = styled.div``;
 const Text = styled.span`
-display:inline-block;
+  display: inline-block;
   ${(props) =>
     props.$isActive &&
     `
@@ -28,9 +28,9 @@ const Article = styled.div`
 `;
 
 const AudioText = forwardRef(({ text, subject, items, myIndex }, ref) => {
-  const { playAudio } = useAudio();
+  const { playAudio, getTextAudioUrl } = useAudio();
   const [tokens, setTokens] = useState([]);
-  const [subjectTokens, setSubjectTokens] = useState([]);
+  const [subjectTokens, setSubjectTokens, looplay] = useState([]);
   useEffect(() => {
     setTokens(tokenize(text));
     setSubjectTokens(tokenize(subject || ""));
@@ -79,55 +79,6 @@ const AudioText = forwardRef(({ text, subject, items, myIndex }, ref) => {
     callback(-1, "end");
   };
 
-  const [looplay, setLoopPlay] = useState(() => {
-    const saved = localStorage.getItem('looplay');
-    return saved !== null ? JSON.parse(saved) : false;
-  });
-
-  useEffect(() => {
-    localStorage.setItem("looplay", JSON.stringify(looplay));
-  }, [looplay]);
-
-  const [curSource, setCurSource] = useState(localStorage.getItem("curSource"));
-
-  useEffect(() => {
-    console.log(curSource);
-    localStorage.setItem("curSource", curSource);
-  }, [curSource]);
-
-  const curSourceRef = useRef();
-  useEffect(() => {
-    curSourceRef.current = curSource;
-  }, [curSource]);
-  const getTextAudioUrl = (token) => {
-    const type = token.t;
-    const text = token.c;
-    if (type == "en") {
-      return curSourceRef.current == "YD-en"
-        ? `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(
-            text
-          )}&type=1`
-        : curSourceRef.current == "YD-us"
-        ? `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(
-            text
-          )}&type=2`
-        : curSourceRef.current == "BD-en"
-        ? `https://fanyi.baidu.com/gettts?lan=en&text=${encodeURIComponent(
-            text
-          )}&spd=5&source=web`
-        : curSourceRef.current == "BD-us"
-        ? `https://fanyi.baidu.com/gettts?lan=us&text=${encodeURIComponent(
-            text
-          )}&spd=5&source=web`
-        : curSourceRef.current == "Local-en"
-        ? `/audio/en/${text.toLowerCase()}.mp3`
-        : `/audio/us/${text.toLowerCase()}.mp3`;
-    } else if (type == "cn") {
-      return `/sound/Cantonese/${encodeURIComponent(text)}.mp3`;
-    } else if (type == "zh") {
-    }
-  };
-
   const [playIndex, setPlayIndex] = useState(-1);
   const playTokens = async (type, index) => {
     setTokenType(type);
@@ -149,12 +100,10 @@ const AudioText = forwardRef(({ text, subject, items, myIndex }, ref) => {
       );
       console.log("playtoken:", myIndex);
 
-      
-      if(type==1 ){
-        if(looplay)await playTokens(type == 0 ? 1 : 0, 0);
-        else items&&await items[myIndex+1]?.current?.playTextAudio(); 
-      }else await playTokens(type == 0 ? 1 : 0, 0);
-      
+      if (type == 1) {
+        if (looplay) await playTokens(type == 0 ? 1 : 0, 0);
+        else items && (await items[myIndex + 1]?.current?.playTextAudio());
+      } else await playTokens(type == 0 ? 1 : 0, 0);
     } catch (error) {
       setPlayIndex(-1);
     }
@@ -194,36 +143,8 @@ const AudioText = forwardRef(({ text, subject, items, myIndex }, ref) => {
     }
   };
 
-  const [showAudioSetting, setShowAudioSetting] = useState(false);
-  const toggleShowAudioSetting = () => {
-    setShowAudioSetting(!showAudioSetting);
-  };
   return (
     <Article>
-      <div>
-        <div onClick={toggleShowAudioSetting}>Setting</div>
-        {showAudioSetting && (
-          <div>
-            <div style={{ display: "flex", flexWrap: "wrap" }}>
-              {["YD-en", "YD-us", "Local-en", "Local-us"].map((src) => (
-                <button
-                  key={src}
-                  onClick={() => setCurSource(src)}
-                  style={{
-                    cursor: "pointer",
-                    fontSize: "1em",
-                    marginRight: "1em",
-                    color: curSource == src ? "green" : "black",
-                  }}
-                >
-                  {src}
-                </button>
-              ))}
-            </div>
-            <input type="checkbox" checked={looplay} onChange={()=>setLoopPlay(!looplay)} /> Loop
-          </div>
-        )}
-      </div>
       <Title>
         {subjectTokens.map((token, index) =>
           token.c == "\n" ? (

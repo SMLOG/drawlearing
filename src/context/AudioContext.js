@@ -10,8 +10,8 @@ const AudioContext = createContext();
 export const AudioProvider = ({ children }) => {
   //const audio = new Audio();
   const audioRef = useRef(null);
-  let lastRejectRef= useRef();;
-  let lastResolveRef= useRef();
+  let lastRejectRef = useRef();
+  let lastResolveRef = useRef();
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackRate, setPlaybackRate] = useState(1);
@@ -95,18 +95,125 @@ export const AudioProvider = ({ children }) => {
     audio.currentTime = position;
   };
 
-  const [isShow,setIsShow] = useState(false);
-  const toggleShow = ()=>{
+  const [isShow, setIsShow] = useState(false);
+  const toggleShow = () => {
     setIsShow(!isShow);
-  }
+  };
+
+  const [curSource, setCurSource] = useState(localStorage.getItem("curSource"));
+
+  useEffect(() => {
+    console.log(curSource);
+    localStorage.setItem("curSource", curSource);
+  }, [curSource]);
+  const curSourceRef = useRef();
+  useEffect(() => {
+    curSourceRef.current = curSource;
+  }, [curSource]);
+  const getTextAudioUrl = (token) => {
+    const type = token.t;
+    const text = token.c;
+    if (type == "en") {
+      return curSourceRef.current == "YD-en"
+        ? `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(
+            text
+          )}&type=1`
+        : curSourceRef.current == "YD-us"
+        ? `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(
+            text
+          )}&type=2`
+        : curSourceRef.current == "BD-en"
+        ? `https://fanyi.baidu.com/gettts?lan=en&text=${encodeURIComponent(
+            text
+          )}&spd=5&source=web`
+        : curSourceRef.current == "BD-us"
+        ? `https://fanyi.baidu.com/gettts?lan=us&text=${encodeURIComponent(
+            text
+          )}&spd=5&source=web`
+        : curSourceRef.current == "Local-en"
+        ? `/audio/en/${text.toLowerCase()}.mp3`
+        : `/audio/us/${text.toLowerCase()}.mp3`;
+    } else if (type == "cn") {
+      return `/sound/Cantonese/${encodeURIComponent(text)}.mp3`;
+    } else if (type == "zh") {
+    }
+  };
+
+  const [looplay, setLoopPlay] = useState(() => {
+    const saved = localStorage.getItem("looplay");
+    return saved !== null ? JSON.parse(saved) : false;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("looplay", JSON.stringify(looplay));
+  }, [looplay]);
+  const [showAudioSetting, setShowAudioSetting] = useState(false);
+
+  const toggleShowAudioSetting = () => {
+    setShowAudioSetting(!showAudioSetting);
+  };
   return (
     <AudioContext.Provider
-      value={{ audioRef, playAudio, togglePlayAudio, seekTo }}
+      value={{
+        audioRef,
+        playAudio,
+        togglePlayAudio,
+        seekTo,
+        getTextAudioUrl,
+        looplay,
+      }}
     >
       {children}
-      <div style={{ position: "fixed", bottom: 0, width: "100%",background:'#ccc' }}>
-        <div style={{position:'absolute',top:'-2em',width:'100%',textAlign:'right',right:'10px'}}><a onClick={toggleShow}>Show</a></div>
-        <div style={{margin:'10px',display:isShow?'':'none'}} >
+      <div
+        style={{
+          position: "fixed",
+          bottom: 0,
+          width: "100%",
+          background: "#ccc",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            top: "-2em",
+            width: "100%",
+            textAlign: "right",
+            right: "10px",
+          }}
+        >
+          <a onClick={toggleShow}>Show</a>
+        </div>
+
+        <div style={{ margin: "10px", display: isShow ? "" : "none" }}>
+          <div>
+            <div onClick={toggleShowAudioSetting}>Setting</div>
+            {showAudioSetting && (
+              <div>
+                <div style={{ display: "flex", flexWrap: "wrap" }}>
+                  {["YD-en", "YD-us", "Local-en", "Local-us"].map((src) => (
+                    <button
+                      key={src}
+                      onClick={() => setCurSource(src)}
+                      style={{
+                        cursor: "pointer",
+                        fontSize: "1em",
+                        marginRight: "1em",
+                        color: curSource == src ? "green" : "black",
+                      }}
+                    >
+                      {src}
+                    </button>
+                  ))}
+                </div>
+                <input
+                  type="checkbox"
+                  checked={looplay}
+                  onChange={() => setLoopPlay(!looplay)}
+                />{" "}
+                Loop
+              </div>
+            )}
+          </div>
           <audio
             rel="noreferrer"
             referrerpolicy="no-referrer"
@@ -118,8 +225,9 @@ export const AudioProvider = ({ children }) => {
               {isPlaying ? "Pause" : "Play"}
             </button>
             <select onChange={handleSpeedChange} value={playbackRate}>
-            {[0.5,0.75,1.0,1.25,1.5,1.75,2.0].map((speed)=><option value={speed}>{speed}x</option>)}
-        
+              {[0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0].map((speed) => (
+                <option value={speed}>{speed}x</option>
+              ))}
             </select>
             <label>
               <input
