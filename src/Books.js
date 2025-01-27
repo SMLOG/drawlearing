@@ -40,7 +40,7 @@ const Books = () => {
     const { pageNo } = useParams();
 
     const [currentPage, setCurrentPage] = useState(parseInt(pageNo));
-    const [booksPerPage,setBooksPerPage] = useState(1) // Changed to 5
+    const [booksPerPage,setBooksPerPage] = useState(2) // Changed to 5
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -225,9 +225,7 @@ const Books = () => {
         const element = document.querySelector(`[data-line="${curBookIndex+'-'+currentLineIndex}"]`);
         scrollToCenter(element);
     },[curBookIndex,currentLineIndex]);  
-    const renderContentWithLineBreaks = (title, content,bookIndex) => {
-        return (<AudioText subject={title} text={content}></AudioText>);
-    };
+
 
     const saveBooks = async (booksToSave) => {
         const fileName = 'books.json';
@@ -323,7 +321,7 @@ const Books = () => {
       setIsRemoveNumber(prevState => !prevState);
     };
   
-
+    const audioTextRefs = useRef([]);
     return (
 
         <Container id="container">
@@ -359,17 +357,13 @@ const Books = () => {
                 </PaginationContainer>
 
             
-            <List>  <AudioTextContainer>
+            <List> 
                 {currentBooks.map((book, bookIndex) => (
                     <ListItem key={book.id}>
                         <BookContent $image={book.img}>
+         
                             <div>
-                                {book.img && <img src={book.img} alt={book.title} />}
-                            </div>
-                            <div>
-                              
-                                {renderContentWithLineBreaks(book.title, book.content,bookIndex)}
-
+                            <AudioText ref={(el) => (audioTextRefs.current[bookIndex] = el)} items={audioTextRefs.current} myIndex={bookIndex}   subject={book.title} text={book.content}></AudioText>
                              
                             </div>
                         </BookContent>
@@ -391,7 +385,6 @@ const Books = () => {
                         </ButtonGroup>
                     </ListItem>
                 ))}
-                   </AudioTextContainer>
             </List>
 
 

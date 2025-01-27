@@ -101,8 +101,9 @@ const AudioText = forwardRef(({ text, subject, items, myIndex }, ref) => {
       console.log("playtoken:", myIndex);
 
       if (type == 1) {
-        if (looplay) await playTokens(type == 0 ? 1 : 0, 0);
-        else items && (await items[myIndex + 1]?.current?.playTextAudio());
+        if(items&&items[myIndex + 1])
+         items && (await items[myIndex + 1]?.playTextAudio());
+        else if(looplay) (items&&await items[0]?.playTextAudio());
       } else await playTokens(type == 0 ? 1 : 0, 0);
     } catch (error) {
       setPlayIndex(-1);
