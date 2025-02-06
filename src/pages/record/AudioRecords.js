@@ -7,7 +7,7 @@ import CustomAudio from './CustomAudio';
 const AudioRecords = React.forwardRef((_, ref) => {
   const containerRef = useRef(null);
   const [audioUrls, setAudioUrls] = useState([
-    '/audio/us/a.mp3'
+    '/data/audio/us/a.mp3'
   ]);
   const [urlIndex, setUrlIndex] = useState(0);
   const [loop, setLoop] = useState(false);

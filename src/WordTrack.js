@@ -66,7 +66,7 @@ const WordTrack = ({}) => {
           if (curTime !== playingRef.current) return;
           setPlayedIndex(i);
         }
-        playSound(`/sound/Cantonese/${encodeURIComponent(w.ch)}.mp3`);
+        playSound(`/data/sound/Cantonese/${encodeURIComponent(w.ch)}.mp3`);
         await new Promise((resolve) => setTimeout(resolve, 1000));
         if (curTime !== playingRef.current) return;
       }
@@ -234,7 +234,7 @@ const WordTrack = ({}) => {
   const playSounds = async () => {
     console.log("Sound played");
     for(let w of word.chs){
-      playSound(`/sound/Cantonese/${encodeURIComponent(w.ch)}.mp3`);
+      playSound(`/data/sound/Cantonese/${encodeURIComponent(w.ch)}.mp3`);
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
 

@@ -50,12 +50,12 @@ const WordCardList = () => {
       if (!selectedType) return;
 
       try {
-        const response = await fetch(`/api/types/${selectedType}.json`);
+        const response = await fetch(`/data/api/types/${selectedType}.json`);
         const data = await response.json();
         const formattedWords = data.map((item) => ({
           word: item.w,
           imageUrl: item.icon ? "/" + item.icon : "/square-dashed.svg",
-          audioUrl: `/audio/us/${item.w.toLowerCase()}.mp3`,
+          audioUrl: `/data/audio/us/${item.w.toLowerCase()}.mp3`,
         }));
         setWords(formattedWords.sort((a, b) => a.word.localeCompare(b.word)));
       } catch (error) {

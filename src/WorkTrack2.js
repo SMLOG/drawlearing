@@ -99,7 +99,7 @@ const WordTrack2 = ({}) => {
           if (curTime !== playingRef.current) return;
           setPlayedIndex(i);
         }
-        playSound(`/audio/${selectedLanguage}/${encodeURIComponent(w.ch.toLowerCase())}.mp3`);
+        playSound(`/data/audio/${selectedLanguage}/${encodeURIComponent(w.ch.toLowerCase())}.mp3`);
         await new Promise((resolve) => setTimeout(resolve, 1000));
         if (curTime !== playingRef.current) return;
       }
@@ -277,7 +277,7 @@ const WordTrack2 = ({}) => {
     console.log("Sound played");
 
     for (const w of word.chs) {
-      playSound(`/audio/${selectedLanguage}/${encodeURIComponent(w.ch.toLowerCase())}.mp3`);
+      playSound(`/data/audio/${selectedLanguage}/${encodeURIComponent(w.ch.toLowerCase())}.mp3`);
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   };
@@ -595,7 +595,7 @@ const handleCancelClick = () => {
               </div>
           </LineText>
           </FlexBox>
-          <audio ref={audioRef} controls src={`/sound/3s.mp3`} style={{display:errorMsg?'':'none'}}></audio>
+          <audio ref={audioRef} controls src={`/data/sound/3s.mp3`} style={{display:errorMsg?'':'none'}}></audio>
           {errorMsg&&<div>{errorMsg}</div>}
         </>
       )}

@@ -157,10 +157,10 @@ export const AudioProvider = ({ children }) => {
             text
           )}&spd=5&source=web`
         : curSourceRef.current == "Local-en"
-        ? `/audio/en/${text.toLowerCase()}.mp3`
-        : `/audio/us/${text.toLowerCase()}.mp3`;
+        ? `/data/audio/en/${text.toLowerCase()}.mp3`
+        : `/data/audio/us/${text.toLowerCase()}.mp3`;
     } else if (type == "cn") {
-      return `/sound/Cantonese/${encodeURIComponent(text)}.mp3`;
+      return `/data/audio/Cantonese/${encodeURIComponent(text)}.mp3`;
     } else if (type == "zh") {
     }
   };
