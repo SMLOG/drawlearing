@@ -146,6 +146,12 @@ export const AudioProvider = ({ children }) => {
 
 
   }
+
+  const getPrefix = (text)=>{
+   let prefix= text.toLowerCase().replace(/[^a-z]/gi,'').substring(0,4);
+   return (prefix.length<4?'':prefix+'/')+text;
+
+  }
   const getTextAudioUrl = (token) => {
     const type = token.t;
     const text = token.c;
@@ -167,8 +173,8 @@ export const AudioProvider = ({ children }) => {
             text
           )}&spd=5&source=web`
         : curSourceRef.current == "Local-en"
-        ? `/data/audio/en/${text.toLowerCase()}.mp3`
-        : `/data/audio/us/${text.toLowerCase()}.mp3`;
+        ? `/data/audio/en/${getPrefix(text)}.mp3`
+        : `/data/audio/us/${getPrefix(text)}.mp3`;
     } else if (type == "cn") {
       return `/data/audio/Cantonese/${encodeURIComponent(text)}.mp3`;
     } else if (type == "zh") {
