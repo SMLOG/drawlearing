@@ -34,7 +34,7 @@ const Books = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentLineIndex, setCurrentLineIndex] = useState(-1);
-    const { playAudio,togglePlayAudio,getSentenceSource,showAudio } = useAudio();
+    const { playAudio,togglePlayAudio,getSentenceSource,showAudio,isPlayingToken } = useAudio();
 
     // Pagination states
     const { pageNo } = useParams();
@@ -325,12 +325,18 @@ const Books = () => {
 
     const onPage = ()=>{
         setTimeout(()=>{
-            handlePageChange(currentPage + 1);
-            setTimeout(()=>{
-                audioTextRefs.current[0].playTextAudio()
-            },1000);
+            handlePageChange(totalPages<=currentPage?1:currentPage + 1);
+
         },1000);
     }
+    useEffect(()=>{
+            if(isPlayingToken){
+                setTimeout(()=>{
+                    audioTextRefs.current[0].playTextAudio();
+                },1000);
+            }
+              
+    },[currentPage]);
     return (
 
         <Container id="container">

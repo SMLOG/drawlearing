@@ -18,6 +18,16 @@ export const AudioProvider = ({ children }) => {
   const [isLooping, setIsLooping] = useState(false);
   const [progress, setProgress] = useState(0);
 
+  const [isPlayingToken, setIsPlayingToken] = useState(false);
+  const togglePlayingToken=(value)=>{
+    if(value!=undefined){
+      setIsPlayingToken(value);
+    }else{
+      setIsPlayingToken(!isPlayingToken);
+
+    }
+  }
+
   useEffect(() => {
     const audio = audioRef.current;
 
@@ -189,7 +199,8 @@ export const AudioProvider = ({ children }) => {
         seekTo,
         getTextAudioUrl,
         looplay,
-        getSentenceSource,showAudio
+        getSentenceSource,showAudio,
+        isPlayingToken,togglePlayingToken
       }}
     >
       {children}

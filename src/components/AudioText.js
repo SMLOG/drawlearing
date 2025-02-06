@@ -28,7 +28,7 @@ const Article = styled.div`
 `;
 
 const AudioText = forwardRef(({ text, subject, items, myIndex,onPage }, ref) => {
-  const { playAudio, getTextAudioUrl,looplay } = useAudio();
+  const { playAudio, getTextAudioUrl,looplay,togglePlayingToken } = useAudio();
   const [tokens, setTokens] = useState([]);
   const [subjectTokens, setSubjectTokens] = useState([]);
   useEffect(() => {
@@ -83,8 +83,11 @@ const AudioText = forwardRef(({ text, subject, items, myIndex,onPage }, ref) => 
   const playTokens = async (type, index) => {
     setTokenType(type);
     setPlayIndex(index);
+    togglePlayingToken(true);
     if (playIndex == index) {
       playAudio("");
+      togglePlayingToken(false);
+
       return;
     }
 
@@ -104,7 +107,10 @@ const AudioText = forwardRef(({ text, subject, items, myIndex,onPage }, ref) => 
         if(items&&items[myIndex + 1])
          items && (await items[myIndex + 1]?.playTextAudio());
         else if(looplay) (items&&await items[0]?.playTextAudio());
-        else onPage&&onPage();
+        else {
+          console.log('onpage');
+          onPage&&onPage();
+        }
       } else await playTokens(type == 0 ? 1 : 0, 0);
     } catch (error) {
       setPlayIndex(-1);
