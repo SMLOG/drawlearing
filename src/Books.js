@@ -40,7 +40,7 @@ const Books = () => {
     const { pageNo } = useParams();
 
     const [currentPage, setCurrentPage] = useState(parseInt(pageNo));
-    const [booksPerPage,setBooksPerPage] = useState(2) // Changed to 5
+    const [booksPerPage,setBooksPerPage] = useState(1) // Changed to 5
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -322,6 +322,15 @@ const Books = () => {
     };
   
     const audioTextRefs = useRef([]);
+
+    const onPage = ()=>{
+        setTimeout(()=>{
+            handlePageChange(currentPage + 1);
+            setTimeout(()=>{
+                audioTextRefs.current[0].playTextAudio()
+            },1000);
+        },1000);
+    }
     return (
 
         <Container id="container">
@@ -363,7 +372,7 @@ const Books = () => {
                         <BookContent $image={book.img}>
          
                             <div>
-                            <AudioText ref={(el) => (audioTextRefs.current[bookIndex] = el)} items={audioTextRefs.current} myIndex={bookIndex}   subject={book.title} text={book.content}></AudioText>
+                            <AudioText ref={(el) => (audioTextRefs.current[bookIndex] = el)} items={audioTextRefs.current} myIndex={bookIndex}   subject={book.title} text={book.content} onPage={onPage}></AudioText>
                              
                             </div>
                         </BookContent>

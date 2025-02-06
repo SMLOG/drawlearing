@@ -27,7 +27,7 @@ const Article = styled.div`
   word-break: break-word;
 `;
 
-const AudioText = forwardRef(({ text, subject, items, myIndex }, ref) => {
+const AudioText = forwardRef(({ text, subject, items, myIndex,onPage }, ref) => {
   const { playAudio, getTextAudioUrl,looplay } = useAudio();
   const [tokens, setTokens] = useState([]);
   const [subjectTokens, setSubjectTokens] = useState([]);
@@ -104,6 +104,7 @@ const AudioText = forwardRef(({ text, subject, items, myIndex }, ref) => {
         if(items&&items[myIndex + 1])
          items && (await items[myIndex + 1]?.playTextAudio());
         else if(looplay) (items&&await items[0]?.playTextAudio());
+        else onPage&&onPage();
       } else await playTokens(type == 0 ? 1 : 0, 0);
     } catch (error) {
       setPlayIndex(-1);
