@@ -98,6 +98,8 @@ const AudioText = forwardRef(({ text, subject, items, myIndex,onPage }, ref) => 
         type == 0 ? subjectTokens : tokens,
         (index) => {
           setPlayIndex(index);
+          scrollToCenter(index);
+
         },
         index
       );
@@ -128,26 +130,37 @@ const AudioText = forwardRef(({ text, subject, items, myIndex,onPage }, ref) => 
   const subjectItemRefs = useRef([]);
   const itemRefs = useRef([]);
 
+  const tokenTypeRef = useRef();
+  useEffect(()=>{
+    tokenTypeRef.current = tokenType;
+
+  },[tokenType]);
+
   const scrollToCenter = (index) => {
     const container = document.getElementById("container");
-    const element = (tokenType == 0 ? subjectItemRefs : itemRefs).current[
-      index
-    ];
-
+    const element = (tokenTypeRef.current === 0 ? subjectItemRefs : itemRefs).current[index];
+  
     if (container && element) {
       const rect = element.getBoundingClientRect();
       const containerRect = container.getBoundingClientRect();
-      const elementHeight = rect.height;
-
-      // Calculate the scroll position to center the item in the container
-      const scrollPosition =
-        container.scrollTop +
-        rect.top -
-        containerRect.top -
-        containerRect.height / 2 +
-        elementHeight / 2;
-
-      container.scrollTo({ top: scrollPosition, behavior: "smooth" });
+  
+      // Check if the element is out of the container's viewport
+      const isOutOfView =
+        rect.top < containerRect.top || rect.bottom > containerRect.bottom;
+  
+      if (isOutOfView) {
+        const elementHeight = rect.height;
+  
+        // Calculate the scroll position to center the item in the container
+        const scrollPosition =
+          container.scrollTop +
+          rect.top -
+          containerRect.top -
+          containerRect.height / 2 +
+          elementHeight / 2;
+  
+        container.scrollTo({ top: scrollPosition, behavior: "smooth" });
+      }
     }
   };
 
