@@ -9,7 +9,10 @@ export function tokenize(str) {
             currentWord += char; // Build the current word
             if(/[a-zA-Z']/.test(char)&&i<str.length-2&&str[i+1]=='.'&&/[a-zA-Z']/.test(str[i+2])){
                 currentWord += str[++i];
+            }else if(/[0-9']/.test(char)&&i<str.length-2&&str[i+1]=='.'&&/[0-9']/.test(str[i+2])){
+                currentWord += str[++i];
             }
+
         } else {
             // If we have a current word, push it to the words array
             if (currentWord) {
