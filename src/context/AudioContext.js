@@ -155,7 +155,7 @@ export const AudioProvider = ({ children }) => {
     });
     remap = remap.replace(/^-|-$/g, '');
     if(text.length>1&&text.replace(/[^A-Z]/g,'').length==text.length){
-	remp='$'+text+'$';
+	remap='$'+text+'$';
 
 }
    return (prefix.length<4?'':prefix+'/')+remap;
