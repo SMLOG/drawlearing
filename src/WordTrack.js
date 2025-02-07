@@ -89,7 +89,7 @@ const WordTrack = ({}) => {
       for (let c of str.split("")) {
         try {
           let t = c.charCodeAt(0).toString(16).toUpperCase();
-          const response = await fetch(`/api/stroke/${t}.json`);
+          const response = await fetch(`/data/api/stroke/${t}.json`);
           const cdata = await response.json();
 
           cdata.stroke.map((s) => {
