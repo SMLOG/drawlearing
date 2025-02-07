@@ -17,7 +17,7 @@ const WordCardList = () => {
   useEffect(() => {
     const fetchTypes = async () => {
       try {
-        const response = await fetch("/api/types.json");
+        const response = await fetch("/data/api/types.json");
         const data = await response.json();
         setTypes(data.sort((a, b) => a.type.localeCompare(b.type)));
         if (!selectedType) {
