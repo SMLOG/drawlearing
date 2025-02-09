@@ -110,7 +110,7 @@ export const AudioProvider = ({ children }) => {
     setIsShow(!isShow);
   };
 
-  const [minBtn, setMinBtn] = useState(true);
+  const [minBtn, setMinBtn] = useState(false);
 
 
   const [curSource, setCurSource] = useState(localStorage.getItem("curSource"));

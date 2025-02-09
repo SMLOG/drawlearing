@@ -343,7 +343,7 @@ const Books = () => {
             
             
             {/* Pagination Controls */}
-            {(minBtn&&<PaginationContainer>
+            {(!minBtn&&<PaginationContainer>
                 <div>
                 <PageButton 
                     onClick={() => handlePageChange(currentPage - 1)} 
@@ -382,7 +382,7 @@ const Books = () => {
                              
                             </div>
                         </BookContent>
-                        {minBtn&&<ButtonGroup>
+                        {!minBtn&&<ButtonGroup>
                         <div style={{display:'flex'}}>
                         <PlayButton onClick={() => playAudioSequentially(book,bookIndex)}>
                                  <FontAwesomeIcon icon={curBookIndex==bookIndex?faVolumeUp:faPlay} />
