@@ -110,6 +110,9 @@ export const AudioProvider = ({ children }) => {
     setIsShow(!isShow);
   };
 
+  const [minBtn, setMinBtn] = useState(true);
+
+
   const [curSource, setCurSource] = useState(localStorage.getItem("curSource"));
 
   useEffect(() => {
@@ -215,7 +218,7 @@ export const AudioProvider = ({ children }) => {
         getTextAudioUrl,
         looplay,
         getSentenceSource,showAudio,
-        isPlayingToken,togglePlayingToken
+        isPlayingToken,togglePlayingToken,minBtn
       }}
     >
       {children}
@@ -236,6 +239,12 @@ export const AudioProvider = ({ children }) => {
             right: "10px",
           }}
         >
+         <span><input
+                  type="checkbox"
+                  checked={minBtn}
+                  onChange={() => setMinBtn(!minBtn)}
+                />
+          Text only </span> <span> | </span>
           <a onClick={toggleShow}>Show</a>
         </div>
 
@@ -272,6 +281,7 @@ export const AudioProvider = ({ children }) => {
                   onChange={() => setShowAudio(!showAudio)}
                 />
                 A
+
               </div>
             )}
           </div>

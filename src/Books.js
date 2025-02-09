@@ -34,7 +34,7 @@ const Books = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentLineIndex, setCurrentLineIndex] = useState(-1);
-    const { playAudio,togglePlayAudio,getSentenceSource,showAudio,isPlayingToken } = useAudio();
+    const { playAudio,togglePlayAudio,getSentenceSource,showAudio,isPlayingToken,minBtn } = useAudio();
 
     // Pagination states
     const { pageNo } = useParams();
@@ -343,7 +343,7 @@ const Books = () => {
             
             
             {/* Pagination Controls */}
-            <PaginationContainer>
+            {(minBtn&&<PaginationContainer>
                 <div>
                 <PageButton 
                     onClick={() => handlePageChange(currentPage - 1)} 
@@ -369,7 +369,7 @@ const Books = () => {
                  <button> {currentPage}/{totalPages}  </button> 
                  </div>
                  <AddButton onClick={() => setIsModalOpen(true)}>New Book</AddButton>      
-                </PaginationContainer>
+                </PaginationContainer>)}
 
             
             <List> 
@@ -382,7 +382,7 @@ const Books = () => {
                              
                             </div>
                         </BookContent>
-                        <ButtonGroup>
+                        {minBtn&&<ButtonGroup>
                         <div style={{display:'flex'}}>
                         <PlayButton onClick={() => playAudioSequentially(book,bookIndex)}>
                                  <FontAwesomeIcon icon={curBookIndex==bookIndex?faVolumeUp:faPlay} />
@@ -397,7 +397,7 @@ const Books = () => {
                                     <FontAwesomeIcon icon={faTrash} /> Delete
                                 </DeleteButton>
                             </div>
-                        </ButtonGroup>
+                        </ButtonGroup>}
                     </ListItem>
                 ))}
             </List>
