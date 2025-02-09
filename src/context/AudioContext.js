@@ -156,11 +156,10 @@ export const AudioProvider = ({ children }) => {
    let remap = text.replace(/[^a-zA-Z0-9-.]/g, (match) => {
     return `-${match.charCodeAt(0)}-`;
     });
-    remap = remap.replace(/^-|-$/g, '');
-    if(text.length>1&&text.replace(/[^A-Z]/g,'').length==text.length){
-	remap='$'+text+'$';
+    remap = remap.replace(/^-|-$/g, '').replace(/[A-Z]/g, (match) => {
+      return `$${match}`;
+      });
 
-}
    return (prefix.length<4?'':prefix+'/')+remap;
 
   }
