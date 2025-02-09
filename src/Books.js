@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlay, faTrash, faVolumeUp,faMusic } from '@fortawesome/free-solid-svg-icons';
+import { faPlay, faTrash, faVolumeUp,faMusic,faEdit } from '@fortawesome/free-solid-svg-icons';
 import { useAudio } from './context/AudioContext';
 import AudioText from './components/AudioText';
 import AudioTextContainer from './components/AudioTextContainer';
@@ -339,7 +339,7 @@ const Books = () => {
     },[currentPage]);
     return (
 
-        <Container id="container">
+        <Container id="container" >
             
             
             {/* Pagination Controls */}
@@ -358,14 +358,14 @@ const Books = () => {
                     Next
                 </PageButton>
                 </div>
-                <div>
+                <div><span onClick={()=>setBooksPerPage(booksPerPage-1>0?booksPerPage-1:1)}>- </span>
                 <input
                 type="number"
-                style={{ width: '25px' }}
+                style={{ width: '25px',userSelect:'none' }}
                 value={booksPerPage}
                 min={1}
                 onChange={(event) => setBooksPerPage(parseInt(event.target.value) || 1)}
-                />
+                /><span onClick={()=>setBooksPerPage(booksPerPage+1<totalPages?booksPerPage+1:totalPages)}> +</span>
                  <button> {currentPage}/{totalPages}  </button> 
                  </div>
                  <AddButton onClick={() => setIsModalOpen(true)}>New Book</AddButton>      
@@ -392,9 +392,11 @@ const Books = () => {
                         </PlayButton>)}
                         </div>
                             <div>
-                                <EditButton onClick={() => { editBook(book); setIsModalOpen(true); }}>Edit</EditButton>
+                                <EditButton onClick={() => { editBook(book); setIsModalOpen(true); }}>
+                                <FontAwesomeIcon icon={faEdit} />
+                                </EditButton>
                                 <DeleteButton onClick={() => deleteBook(book.id)}>
-                                    <FontAwesomeIcon icon={faTrash} /> Delete
+                                    <FontAwesomeIcon icon={faTrash} /> 
                                 </DeleteButton>
                             </div>
                         </ButtonGroup>}
