@@ -69,7 +69,7 @@ export const AudioProvider = ({ children }) => {
   const [score,setScore] = useState(0);
   const [testing,setTesing] = useState(0);
   const [isTesting,setIsTesting] = useState(false);
-  const scoreThresh=100;
+  const scoreThresh=10;
 
   useEffect(()=>{
     if(scoreThresh>score)setIsTesting(false)
@@ -230,34 +230,113 @@ export const AudioProvider = ({ children }) => {
     // Create a copy of the tokens array
     const tokensCopy = [...tokens];
     const shuffled = tokensCopy.sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, numberOfWords);
+    return shuffled.slice(0, numberOfWords).map(e=>(e.yes=false)||e);
 }
 
-
+useEffect(()=>{
+  //isTesting&& playAudio("");
+  isTesting&&startTesting();
+},[isTesting]);
   const tokensRef = useRef();
+  const [pass,setPass] = useState(false);
   useEffect(()=>{
     tokensRef.current=tokens;
   },[tokens]);
+
+  const [randoms,setRandoms] = useState([]);
+  const [testingIndex,setTestingIndex] = useState(-1);
   const startTesting= async ()=>{
-
-    fetch('http://localhost:5001/disable').then(r=>{
-      alert('ok');
+   
+    /*setIsTesting(false);
+    fetch('http://192.168.3.10:5001/disable').then(r=>{
       setScore(0);
-    })
-/*
+      setPass(true);
+      window.close();
+    });*/
+   
     let rs = getRandomWords(tokensRef.current,10);
-    for (const word of rs) {
-      const isPlayable = getTextAudioUrl(word);
+    setRandoms(rs);
+    setTestingIndex(0);
+  
+  }
 
-        if (isPlayable) {
+  const confirmOK = ()=>{
+    setScore(0);
+    setIsTesting(false);
+    fetch('http://192.168.3.10:5001/disable').then(r=>{
+      setScore(0);
+      setPass(true);
+      window.close();
+    });
+  }
+
+  const cheefRef=useRef(0);
+  const checkTesting = async (token,index,randoms,i)=>{
+    if(!token)return;
+      if(token.c==randoms[i].c){
+        randoms[i].yes=true;
+        setRandoms((randoms)=>{
+          randoms[i].yes=true;
+          return randoms;
+        });
+        setTestingIndex(i+1);
+        if(i+1>=randoms.length){
+          confirmOK();
+        }
+        cheefRef.current = 0;
+        
+      }else{
+        try{
+          const isPlayable = getTextAudioUrl(token);
+
           await new Promise((resolve, reject) => {
             playAudio(isPlayable, resolve, reject);
           });
-        }
-    }
-*/
+  
+          await playTestingNextTips(randoms[i]);
 
+          cheefRef.current++;
+          if(cheefRef.current>5)startTesting();
+
+        }catch(e){
+          console.log(e);
+        }
+
+        
+      }
   }
+
+ const playTestingNextTips= async (word)=>{
+  try{
+    while(word){
+      const isPlayable = getTextAudioUrl(word);
+      
+      if (isPlayable) {
+  
+        await new Promise((resolve, reject) => {
+          playAudio(isPlayable, resolve, reject);
+        });
+      }
+    }
+  }catch(e){
+    console.error(e);
+  }
+
+ }
+  useEffect(()=>{
+    const playTest = async ()=>{
+      try{
+        if(testingIndex>=randoms.length) playAudio("");
+        await playTestingNextTips( randoms[testingIndex]);
+  
+      }catch(e){
+
+      }
+
+    }
+
+    playTest();
+  },[testingIndex,randoms]);
 
   return (
     <AudioContext.Provider
@@ -302,11 +381,21 @@ export const AudioProvider = ({ children }) => {
           Text only </span> <span> | </span>
           <a onClick={toggleShow}>Show</a>
         </div>
-        {isTesting&&<div style={{margin:'10px',wordWrap:'break-word'}}>
+        {isTesting&&<div style={{margin:'10px',wordWrap:'break-word',fontSize:'2em'}}>
           <div><button onClick={startTesting}>Start Testing</button></div>
+          <div>
+          
+        {randoms.map((token, index) => (
+        <button key={index} style={{ marginRight: '5px',fontSize:'24px' }} className={testingIndex==index?"cur":''}>
+          {index+1},
+          {token.yes&&<span>{token.c} ✓</span>}
+          {!token.yes&&<span>?</span>}
+        </button>
+      ))}
+          </div>
         <div>
-      {false&&tokens.map((token, index) => (
-        <span key={index} style={{ marginRight: '5px' }}>
+      {tokens.map((token, index) => (
+        <span onClick={()=>checkTesting(token,index,randoms,testingIndex)} key={index} style={{ marginRight: '5px',display:'inline-block' }}>
           {token.c}
         </span>
       ))}
