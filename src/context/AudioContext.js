@@ -69,7 +69,7 @@ export const AudioProvider = ({ children }) => {
   const [score,setScore] = useState(0);
   const [testing,setTesing] = useState(0);
   const [isTesting,setIsTesting] = useState(false);
-  const scoreThresh=10;
+  const scoreThresh=50;
 
   useEffect(()=>{
     if(scoreThresh>score)setIsTesting(false)
