@@ -5,6 +5,8 @@ import React, {
   useState,
   useEffect,
 } from "react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
 const AudioContext = createContext();
 
 export const AudioProvider = ({ children }) => {
@@ -64,7 +66,14 @@ export const AudioProvider = ({ children }) => {
   const handleLoopToggle = () => {
     setIsLooping(!isLooping);
   };
+  const [score,setScore] = useState(0);
+  const [testing,setTesing] = useState(0);
+  const [isTesting,setIsTesting] = useState(false);
+  const scoreThresh=100;
 
+  useEffect(()=>{
+    if(scoreThresh>score)setIsTesting(false)
+  },[score]);
   const handleProgressClick = (event) => {
     const totalWidth = event.currentTarget.offsetWidth;
     const offsetX = event.nativeEvent.offsetX;
@@ -72,8 +81,15 @@ export const AudioProvider = ({ children }) => {
     audioRef.current.currentTime = percentage * audioRef.current.duration;
   };
 
-  const playAudio = (src, resolve, reject) => {
+  const [tokens,setTokens] = useState([]); 
+  const playAudio = (src, resolve, reject,token) => {
     const audio = audioRef.current;
+    if(token&&token.c){
+      console.log('score',tokens)
+      setScore((s)=>s+1);
+      setTokens((tokens)=>[...tokens,token]);
+    }
+
     if (!audio.onended)
       audio.onended = () => {
         lastResolveRef.current && lastResolveRef.current();
@@ -87,6 +103,8 @@ export const AudioProvider = ({ children }) => {
     lastResolveRef.current = resolve;
     audio.src = src;
     audio.play().catch(() => lastRejectRef.current && lastRejectRef.current());
+
+   
   };
   const togglePlayAudio = (src, resolve, reject) => {
     const audio = audioRef.current;
@@ -207,6 +225,39 @@ export const AudioProvider = ({ children }) => {
   };
   
   const [showAudio,setShowAudio] = useState(false);
+
+  function getRandomWords(tokens, numberOfWords) {
+    // Create a copy of the tokens array
+    const tokensCopy = [...tokens];
+    const shuffled = tokensCopy.sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, numberOfWords);
+}
+
+
+  const tokensRef = useRef();
+  useEffect(()=>{
+    tokensRef.current=tokens;
+  },[tokens]);
+  const startTesting= async ()=>{
+
+    fetch('http://localhost:5001/disable').then(r=>{
+      alert('ok');
+    })
+/*
+    let rs = getRandomWords(tokensRef.current,10);
+    for (const word of rs) {
+      const isPlayable = getTextAudioUrl(word);
+
+        if (isPlayable) {
+          await new Promise((resolve, reject) => {
+            playAudio(isPlayable, resolve, reject);
+          });
+        }
+    }
+*/
+
+  }
+
   return (
     <AudioContext.Provider
       value={{
@@ -236,8 +287,12 @@ export const AudioProvider = ({ children }) => {
             width: "100%",
             textAlign: "right",
             right: "10px",
+            background:'powderblue'
           }}
         >
+          {score>=scoreThresh&&<span><input type="checkbox"    onChange={() => setIsTesting(!isTesting)} checked={isTesting}/> isTesting </span>}
+          <span>Balance:{score}</span><FontAwesomeIcon style={{color:'gold'}} icon={faStar} className="gold-icon" />
+        
          <span><input
                   type="checkbox"
                   checked={minBtn}
@@ -246,6 +301,16 @@ export const AudioProvider = ({ children }) => {
           Text only </span> <span> | </span>
           <a onClick={toggleShow}>Show</a>
         </div>
+        {isTesting&&<div style={{margin:'10px',wordWrap:'break-word'}}>
+          <div><button onClick={startTesting}>Start Testing</button></div>
+        <div>
+      {false&&tokens.map((token, index) => (
+        <span key={index} style={{ marginRight: '5px' }}>
+          {token.c}
+        </span>
+      ))}
+    </div>
+    </div>}
 
         <div style={{ margin: "10px", display: isShow ? "" : "none" }}>
           <div>

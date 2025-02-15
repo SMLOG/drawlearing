@@ -61,7 +61,7 @@ const AudioText = forwardRef(({ text, subject, items, myIndex,onPage }, ref) => 
 
       if (isPlayable) {
         await new Promise((resolve, reject) => {
-          playAudio(isPlayable, resolve, reject);
+          playAudio(isPlayable, resolve, reject,tokens[i]);
         });
 
         for (let j = bufIndex + 1; j < tokens.length; j++) {
