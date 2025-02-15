@@ -242,6 +242,7 @@ export const AudioProvider = ({ children }) => {
 
     fetch('http://localhost:5001/disable').then(r=>{
       alert('ok');
+      setScore(0);
     })
 /*
     let rs = getRandomWords(tokensRef.current,10);
