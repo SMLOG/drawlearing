@@ -75,8 +75,9 @@ const Nav = ({ toggleAside }) => {
         <Line />
       </Hamburger>
       <NavList>
-        <NavItem><StyledNavLink  to="/cards">Cards</StyledNavLink></NavItem>
-        <NavItem><StyledNavLink  to="/records">Records</StyledNavLink></NavItem>
+      <NavItem><StyledNavLink  to="/">TV App</StyledNavLink></NavItem>
+      <NavItem><StyledNavLink  to="/cards">Cards</StyledNavLink></NavItem>
+      <NavItem><StyledNavLink  to="/records">Records</StyledNavLink></NavItem>
         <NavItem><StyledNavLink  to="/books">Books</StyledNavLink></NavItem>
         <NavItem><StyledNavLink  to="/draw">Draw</StyledNavLink></NavItem>
         <NavItem><StyledNavLink  to="/stroke/你好" >Stroke</StyledNavLink></NavItem>

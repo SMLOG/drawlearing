@@ -9,6 +9,7 @@ import PrintSheet from './pages/print/PrintSheet';
 import Books from './Books';
 import Records from './pages/record';
 import Layout from './Layout';
+import LearningAppTvPlayer from './LearningAppTvPlayer';
 import { SettingsProvider } from './SettingsContext';
 const App = () => {
 
@@ -21,7 +22,7 @@ const App = () => {
         <Route path="draw" element={<DrawSVG />} />
         <Route path="p" element={<PrintOut />} />
         <Route path="stroke/:sentence" element={<WorkTrack2 />} />
-        <Route path="/" element={<WordCardList />} />
+        <Route path="/" element={<LearningAppTvPlayer />} />
         <Route path="printSheet" element={<PrintSheet />} />
         <Route path="books" element={<Navigate to="/books/1" />} />
          <Route path="books/:pageNo" element={<Books />} />
