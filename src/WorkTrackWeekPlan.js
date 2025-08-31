@@ -265,6 +265,14 @@ const WordTrackWeekPlan = () => {
     playingRef.current = 0;
   };
 
+    useEffect(() => {
+    wordRef.current = null;
+    setPlayedIndex(-1);
+    (async () => {
+      await loadDatas();
+    })();
+  }, [words, txtIndex]);
+  
   useEffect(() => {
     if (wordRef.current && playedIndex >= wordRef.current.stroke.length - 1) {
       (async () => {
@@ -335,13 +343,7 @@ const WordTrackWeekPlan = () => {
     }
   };
 
-  useEffect(() => {
-    wordRef.current = null;
-    setPlayedIndex(-1);
-    (async () => {
-      await loadDatas();
-    })();
-  }, [words, txtIndex]);
+
 
   const svgRef = useRef(null);
   const isDrawingRef = useRef(false);
