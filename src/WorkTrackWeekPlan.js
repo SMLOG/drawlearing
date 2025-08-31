@@ -456,7 +456,21 @@ const WordTrackWeekPlan = ({ }) => {
   return (
     <Container>
       <div>
-        {weeks.map(w => (<div>{w.week}:{w.purpose}{w.days.map(d => <div>{d.day}:{d.characters}</div>)}</div>))}
+
+                <h2 className="text-xl font-semibold mb-4">Learning Plan</h2>
+        {weeks.map((week) => (
+          <div key={week.week} className="mb-4">
+            <h3 className="text-lg font-medium">Week {week.week}: {week.description}</h3>
+            <p className="text-gray-600 mb-2">{week.purpose}</p>
+            <ul className="list-disc pl-5">
+              {week.days.map((day) => (
+                <li key={day.day} className="mb-1">
+                  <strong>Day {day.day}:</strong> {Array.isArray(day.characters) ? day.characters.join(", ") : day.characters} - {day.description}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
       {word && (
         <>
