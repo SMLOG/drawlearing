@@ -469,7 +469,7 @@ const WordTrackWeekPlan = () => {
             <ul className="list-disc pl-5">
               {week.days.map((day) => (
                 <li key={day.day} className="mb-1">
-                  <strong>Day {day.day}:</strong> {Array.isArray(day.characters) ? day.characters.join(", ") : day.characters} - {day.description}
+                  <strong>Day {day.day}:</strong> {Array.isArray(day.characters) ? day.characters.join(", ") : day.characters} - ({day.description})
                 </li>
               ))}
             </ul>
