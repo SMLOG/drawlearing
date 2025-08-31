@@ -426,6 +426,7 @@ const WordTrackWeekPlan = () => {
 
   useEffect(() => {
     let nextIndex = autoTips ? playedIndex + 1 : -1;
+    if(!word?.stroke||!word.stroke.length) return;
     if (nextIndex >= word.stroke.length) nextIndex = 0;
     setTipIndex(nextIndex);
   }, [word, playedIndex, autoTips]);
