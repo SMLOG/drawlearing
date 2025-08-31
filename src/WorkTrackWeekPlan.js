@@ -475,13 +475,19 @@ const WordTrackWeekPlan = () => {
   const handleSaveClick = () => {
     setIsEditing(false);
     setWords(text.split(""));
-    navigate('/stroke/' + encodeURIComponent(text));
+    navigate('/weekplan/' + encodeURIComponent(text));
   };
   const handleCancelClick = () => {
     setIsEditing(false);
     setText(sentence);
   };
 
+    const handleDayClick = (character) => {
+    setText(character);
+    setWords(character.split(""));
+    setTxtIndex(0);
+    navigate('/weekplan/' + encodeURIComponent(character));
+  };
   return (
     <Container className="min-h-screen">
       <WeekPlanContainer>
@@ -492,7 +498,7 @@ const WordTrackWeekPlan = () => {
             <p className="text-gray-600 mb-2">{week.purpose}</p>
             <ul className="list-disc pl-5">
               {week.days.map((day) => (
-                <li key={day.day} className="mb-1">
+                <li key={day.day} className="mb-1" onClick={() => handleDayClick(Array.isArray(day.characters) ? day.characters.join('') : day.characters)} style={{cursor: 'pointer'} }>
                   <strong>Day {day.day}:</strong> {Array.isArray(day.characters) ? day.characters.join(", ") : day.characters} - ({day.description})
                 </li>
               ))}
