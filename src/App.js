@@ -4,6 +4,7 @@ import DrawSVG from './DrawSVG';
 import './App.css';
 import PrintOut from "./PrintOut";
 import WorkTrack2 from "./WorkTrack2";
+import WorkTrackWeekPlan from "./WorkTrackWeekPlan";
 import WordCardList from "./pages/card/WordCardList";
 import PrintSheet from './pages/print/PrintSheet';
 import Books from './Books';
@@ -20,6 +21,7 @@ const App = () => {
       <Route path="/" element={<Layout />} >
         <Route path="draw" element={<DrawSVG />} />
         <Route path="p" element={<PrintOut />} />
+        <Route path="weekplan/:sentence" element={<WorkTrackWeekPlan />} />
         <Route path="stroke/:sentence" element={<WorkTrack2 />} />
         <Route path="/" element={<WordCardList />} />
         <Route path="printSheet" element={<PrintSheet />} />
@@ -30,7 +32,7 @@ const App = () => {
         <Route path="./"  element={<Navigate to="/cards" />} />
         <Route path="cards/:type?" element={<WordCardList />}  />
         
-        <Route path="*" element={<Navigate to="/cards" />} />
+        <Route path="*" element={<Navigate to="/weekplan" />} />
         </Route>
       </Routes>
     </div>

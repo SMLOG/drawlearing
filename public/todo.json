@@ -1,0 +1,38 @@
+{
+    "cols": [
+        {
+            "id": "f2023462-ffba-46b0-bb37-d65a17f62deb",
+            "field": {},
+            "cp": "ColSeq",
+            "width": 40,
+            "name": "#",
+            "fn": 0,
+            "show": true,
+            "sticky": true
+        },
+        {
+            "id": "60c5a99c-6bb5-4038-a9e5-8f5e32f889ce",
+            "field": {},
+            "cp": "ColTitle",
+            "width": 80,
+            "name": "Title",
+            "fn": 1,
+            "show": true,
+            "sticky": true
+        },
+        {
+            "id": "204745c6-725d-4e32-92a4-49a4fa3bf105",
+            "field": {},
+            "cp": "ColDropText",
+            "width": 40,
+            "name": "Completed",
+            "fn": 2,
+            "show": true,
+            "sticky": false,
+            "options": "Y,N"
+        }
+    ],
+    "title": "Tab 1",
+    "startDate": "2025-06-11T12:28:43.726Z",
+    "weekCount": 5
+}

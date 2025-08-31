@@ -315,7 +315,7 @@ const WordTrack2 = ({}) => {
     },
     { icon: faRedo, label: "Reset", onClick: resetStrokes },
     { icon: faPlay, label: "Play", onClick: playStokes },
-    { icon: faVolumeUp, label: "Play Sound", onClick: playSounds },
+    { icon: faVolumeUp, label: "Play Sound3", onClick: playSounds },
   ];
 
   const [trackPoints, setTrackPoints] = useState([]);
