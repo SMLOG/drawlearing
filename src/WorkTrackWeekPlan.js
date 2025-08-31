@@ -18,7 +18,8 @@ import {
   faQuestionCircle,
   faEdit,
   faSave,
-  faTimes
+  faTimes,
+  faForward
 } from "@fortawesome/free-solid-svg-icons";
 
 export const weeksplan = [
@@ -189,6 +190,21 @@ const Button = styled.button`
   }
 `;
 
+const CheckboxLabel = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: ${props => props.selected ? '#ef4444' : '#e5e7eb'};
+  color: ${props => props.selected ? '#ffffff' : '#1f2937'};
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  &:hover {
+    background-color: ${props => props.selected ? '#dc2626' : '#d1d5db'};
+  }
+`;
+
 const WeekPlanContainer = styled.div`
   margin-bottom: 16px;
   padding: 16px;
@@ -208,6 +224,7 @@ const WordTrackWeekPlan = () => {
   const [points, setPoints] = useState([]);
   const wordRef = useRef(null);
   const playingRef = useRef(0);
+  const [autoPlayNext, setAutoPlayNext] = useState(false);
 
   const playStroke = async (w, stroke, curTime) => {
     await new Promise((resolve) => setTimeout(resolve, 70));
@@ -253,10 +270,16 @@ const WordTrackWeekPlan = () => {
       (async () => {
         await playSounds();
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        setTxtIndex((prev) => prev + 1 >= words.length ? prev : prev + 1);
+        if (autoPlayNext && txtIndex + 1 < words.length) {
+          setTxtIndex((prev) => prev + 1);
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          await playStrokes();
+        } else {
+          setTxtIndex((prev) => prev + 1 >= words.length ? prev : prev + 1);
+        }
       })();
     }
-  }, [wordRef.current, playedIndex]);
+  }, [wordRef.current, playedIndex, autoPlayNext, words.length, txtIndex]);
 
   const resetStrokes = () => {
     setPoints([]);
@@ -491,6 +514,16 @@ const WordTrackWeekPlan = () => {
                   <span>{button.label}</span>
                 </Button>
               ))}
+              <CheckboxLabel selected={autoPlayNext}>
+                <FontAwesomeIcon icon={faForward} />
+                <span>Auto Play Next</span>
+                <input
+                  type="checkbox"
+                  checked={autoPlayNext}
+                  onChange={() => setAutoPlayNext(!autoPlayNext)}
+                  className="ml-2"
+                />
+              </CheckboxLabel>
               <select
                 onChange={(e) => setSelectedLanguage(e.target.value)}
                 value={selectedLanguage}
