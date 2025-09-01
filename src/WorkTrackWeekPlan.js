@@ -544,7 +544,7 @@ const startPlay = async () => {
           margin: fullScreen ? '0' : '0 auto',
           background: fullScreen ? 'rgba(0, 0, 0, 0.5)' : 'transparent', // optional: dim background
           zIndex: fullScreen ? 1000 : 'auto',
-          overflowY: fullScreen ? 'auto' : 'visible', // optional: allow scrolling if content is tall
+          display: fullScreen ? 'none' : '', // optional: allow scrolling if content is tall
         }}
       >
         <WeekPlanContainer className="week-plan-container bg-white shadow-md rounded-lg p-6">
@@ -580,7 +580,7 @@ const startPlay = async () => {
           ))}
         </WeekPlanContainer>
         <div className="flex justify-center items-center mb-4">
-          <CollapsibleItemsContainer direction="w" className="flex flex-wrap gap-2">
+          <div direction="w" className="flex flex-wrap gap-2">
             <Button onClick={handleFullScreen}>
               <span>FullScreen</span>
             </Button>
@@ -594,16 +594,7 @@ const startPlay = async () => {
                 <span>{button.label}</span>
               </Button>
             ))}
-            <CheckboxLabel selected={autoPlayNext}>
-              <FontAwesomeIcon icon={faForward} />
-              <span>Auto Play Next</span>
-              <input
-                type="checkbox"
-                checked={autoPlayNext}
-                onChange={() => setAutoPlayNext(!autoPlayNext)}
-                className="ml-2"
-              />
-            </CheckboxLabel>
+  
             <select
               onChange={(e) => setSelectedLanguage(e.target.value)}
               value={selectedLanguage}
@@ -612,7 +603,7 @@ const startPlay = async () => {
               <option value="Cantonese">Cantonese</option>
               <option value="zh">Mandarin</option>
             </select>
-          </CollapsibleItemsContainer>
+          </div>
         </div>
       </div>
       {word && (
@@ -621,7 +612,7 @@ const startPlay = async () => {
           <div >
             <ScreenBox className="flex-col-reverse">
               <div className="w-full flex justify-center">
-                <div className="min-h-[500px] min-w-[500px] mb-4" style={{ width: '500px', height: '500px' }}>
+                <div className="min-h-[500px] min-w-[500px] mb-8" style={{ width: '500px', height: '500px' }}>
                   <svg
                     viewBox={`0 0 ${word.viewBoxWidth} 100`}
                     className="max-h-full max-w-[350px] min-w-[300px] border border-gray-300 rounded-md border-black"
