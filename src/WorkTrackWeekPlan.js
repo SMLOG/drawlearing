@@ -226,7 +226,7 @@ const WordTrackWeekPlan = () => {
     for (let j = 0; j < spoints.length; j++) {
       setPoints((prev) => [...prev, spoints[j]]);
       if (j != spoints.length - 1) {
-        await new Promise((resolve) => setTimeout(resolve, 70));
+        await new Promise((resolve) => setTimeout(resolve, 100));
         if (curTime !== playingRef.current) return;
       }
     }
@@ -250,6 +250,8 @@ const WordTrackWeekPlan = () => {
           await playStroke(w, stroke, curTime);
           if (curTime !== playingRef.current) return;
           setPlayedIndex(i);
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+
         }
         await playSound(`/data/audio/${selectedLanguage}/${encodeURIComponent(w.ch.toLowerCase())}.mp3`);
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -478,9 +480,15 @@ const playSound = async (url) => {
   }, [word, playedIndex, autoTips]);
 
 
+const [curWeek, setCurWeek] = useState(-1);
+const [curDay, setCurDay] = useState(-1);
+const [weekData, setWeekData] = useState(weeksplan);
+
 const startPlay = async () => {
   for (let i=0;i< weeksplan.length;i++) {
+    setCurWeek(i);
       for (let j=0;j< weeksplan[i].days.length;j++) {
+        setCurDay(j);
         await playDays(weeksplan[i].days[j]);
   }
 }
@@ -531,7 +539,7 @@ const startPlay = async () => {
   }
 
   return (
-    <Container className="min-h-screen" id="screens">
+    <Container className="min-h-screen" id="screens" style={{ cursor: fullScreen ? 'none' : 'pointer' }}>
       <div
         id="cinfo"
         style={{
@@ -713,6 +721,24 @@ const startPlay = async () => {
               <LineWordList className="w-full">
                 <div className="h-full overflow-auto">
                   <div className="flex items-center gap-4 justify-between mb-4 mx-5">
+                     {curWeek >= 0 &&curDay >= 0 && (
+                      <div className="text-lg font-semibold text-gray-700">
+                        {weekData[curWeek] && weekData[curWeek].days[curDay] && Array.isArray(weekData[curWeek].days[curDay].characters)? (
+                          weekData[curWeek].days[curDay].characters.map((ch, idx) => (
+                            <span
+                              key={idx}
+                              className="inline-block bg-blue-100 text-blue-800 rounded-full px-3 py-1 text-sm font-semibold mr-2 mb-2 cursor-pointer hover:bg-blue-200"
+                              onClick={() => handleDayClick(ch)}
+                            >
+                              {ch}
+                            </span>
+                          ))
+                        ) :  (
+                          <></>
+                        )}
+                      </div>
+                    )}
+
                     {words.map((ch, index) => (
                       <span
                         key={index}
