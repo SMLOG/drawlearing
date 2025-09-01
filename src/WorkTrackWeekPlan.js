@@ -235,20 +235,20 @@ const WordTrackWeekPlan = () => {
     setPoints([]);
   };
 
-  const playWordStrokes = async () => {
+  const playWordStrokes = async (word) => {
 
-     await loadDatas();
-    const word = wordRef.current;
+    const wordStrok = await loadDatas(word);
     playingRef.current = +new Date();
     let curTime = playingRef.current;
     setPlayedIndex(-1);
     setPoints([]);
+    setWord(wordStrok)
 
-    if (word?.stroke) {
-      for (let w of word.chs) {
+    if (wordStrok?.stroke) {
+      for (let w of wordStrok.chs) {
         for (let i = w.begin; i < w.end; i++) {
           setPoints([]);
-          let stroke = word.stroke[i];
+          let stroke = wordStrok.stroke[i];
           await playStroke(w, stroke, curTime);
           if (curTime !== playingRef.current) return;
           setPlayedIndex(i);
@@ -267,12 +267,12 @@ const playDays = async (day) => {
     return;
   }
 
-  for (let i=0;i<day.characters.length;i++) {
+  let chs = day.characters.join('').split('');
+  for (let i=0;i<chs.length;i++) {
     try {
       // Update state for the current character
-      const characterString = day.characters.join('');
-      setText(characterString); 
-      setWords([characterString.split('')]); // Presumably setting words based on the full character string
+      setText(chs[i]); 
+      setWords(chs); // Presumably setting words based on the full character string
       setTxtIndex(0);
 
       // Navigate to the character's page
@@ -282,7 +282,8 @@ const playDays = async (day) => {
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       // Play strokes and sounds sequentially
-      await playWordStrokes();
+      await playWordStrokes(chs[i]);
+      console.log('Finished playing character:', chs[i]);
     } catch (error) {
       console.error(`Error processing character "${day.characters[i]}":`, error);
       // Continue to the next character
@@ -313,13 +314,12 @@ const playDays = async (day) => {
     setPlayedIndex(-1);
   };
 
-  const loadDatas = async () => {
+  const loadDatas = async (str) => {
     try {
       let word = { stroke: [], chs: [] };
       let i = 0;
       let tranX = 0;
 
-      let str = words[txtIndex];
       for (let c of str.split("")) {
         try {
           let t = c.charCodeAt(0).toString(16).toUpperCase();
@@ -357,6 +357,8 @@ const playDays = async (day) => {
 
       setWord(word);
       wordRef.current = word;
+      return word;
+
     } catch (error) {
       console.error("Error fetching paths:", error);
     }
