@@ -22,7 +22,7 @@ import {
   faForward
 } from "@fortawesome/free-solid-svg-icons";
 
-import  './word-animation.css';
+import './word-animation.css';
 
 export const weeksplan = [
   {
@@ -262,14 +262,14 @@ const WordTrackWeekPlan = () => {
     playingRef.current = 0;
   };
 
-    useEffect(() => {
+  useEffect(() => {
     wordRef.current = null;
     setPlayedIndex(-1);
     (async () => {
       await loadDatas();
     })();
   }, [words, txtIndex]);
-  
+
   useEffect(() => {
     if (wordRef.current && playedIndex >= wordRef.current.stroke.length - 1) {
       (async () => {
@@ -448,7 +448,7 @@ const WordTrackWeekPlan = () => {
 
   useEffect(() => {
     let nextIndex = autoTips ? playedIndex + 1 : -1;
-    if(!word?.stroke||!word.stroke.length) return;
+    if (!word?.stroke || !word.stroke.length) return;
     if (nextIndex >= word.stroke.length) nextIndex = 0;
     setTipIndex(nextIndex);
   }, [word, playedIndex, autoTips]);
@@ -481,7 +481,7 @@ const WordTrackWeekPlan = () => {
     setText(sentence);
   };
 
-    const handleDayClick = (character) => {
+  const handleDayClick = (character) => {
     setText(character);
     setWords(character.split(""));
     setTxtIndex(0);
@@ -490,7 +490,7 @@ const WordTrackWeekPlan = () => {
 
   const [fullScreen, setFullScreen] = useState(false);
 
-    const handleExitFullScreen = () => {
+  const handleExitFullScreen = () => {
     setFullScreen(false);
   };
 
@@ -508,203 +508,206 @@ const WordTrackWeekPlan = () => {
     };
   }, []);
 
-  const handleFullScreen = () => {  
+  const handleFullScreen = () => {
     setFullScreen(true);
     document.querySelector('#screens').requestFullscreen();
-  
+
   }
 
   return (
     <Container className="min-h-screen" id="screens">
-      <div id="cinfo" style={{position: fullScreen ? 'fixed' : 'static' }}>
-<WeekPlanContainer className="bg-white shadow-md rounded-lg p-6">
-  <h2 className="text-2xl font-bold text-center mb-6 flex items-center justify-center gap-2">
-    <i className="fas fa-book text-blue-600"></i> Learning Plan
-  </h2>
-  {weeks.map((week) => (
-    <div key={week.week} className="mb-6 border-b last:border-0 pb-4">
-      <h3 className="text-xl font-semibold text-blue-600 flex items-center gap-2">
-        <i className="fas fa-calendar-week text-blue-500"></i> Week {week.week}: {week.description}
-      </h3>
-      <p className="text-gray-700 mb-2 italic flex items-center gap-2">
-        <i className="fas fa-info-circle text-gray-500"></i> {week.purpose}
-      </p>
-      <ul className="list-none pl-5">
-        {week.days.map((day) => (
-          <li
-            key={day.day}
-            className="mb-2 transition-colors duration-200 hover:text-blue-500 cursor-pointer flex items-center gap-2 group"
-            onClick={() => handleDayClick(Array.isArray(day.characters) ? day.characters.join('') : day.characters)}
-          >
-            <i className="fas fa-book-open text-gray-600 group-hover:text-blue-500 transition-colors duration-200"></i>
-            <span>
-              <strong>Day {day.day}:</strong> {Array.isArray(day.characters) ? day.characters.join(", ") : day.characters} - ({day.description})
-            </span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  ))}
-</WeekPlanContainer>
-               <div className="flex justify-center items-center mb-4">
-            <CollapsibleItemsContainer direction="w" className="flex flex-wrap gap-2">
-                        <Button
-                  onClick={handleFullScreen}
-                >
-                  <span>FullScreen</span>
-                </Button>
-              {buttons.map((button, index) => (
-                <Button
-                  key={index}
-                  onClick={button.onClick}
-                  selected={button.selected}
-                >
-                  <FontAwesomeIcon icon={button.icon} />
-                  <span>{button.label}</span>
-                </Button>
-              ))}
-              <CheckboxLabel selected={autoPlayNext}>
-                <FontAwesomeIcon icon={faForward} />
-                <span>Auto Play Next</span>
-                <input
-                  type="checkbox"
-                  checked={autoPlayNext}
-                  onChange={() => setAutoPlayNext(!autoPlayNext)}
-                  className="ml-2"
-                />
-              </CheckboxLabel>
-              <select
-                onChange={(e) => setSelectedLanguage(e.target.value)}
-                value={selectedLanguage}
-                className="p-2 border rounded-md"
+      <div id="cinfo" style={{ position: fullScreen ? 'fixed' : 'static' }}>
+        <WeekPlanContainer className="bg-white shadow-md rounded-lg p-6">
+          <h2 className="text-2xl font-bold text-center mb-6 flex items-center justify-center gap-2">
+            <i className="fas fa-book text-blue-600"></i> Learning Plan
+          </h2>
+          {weeks.map((week) => (
+            <div key={week.week} className="mb-6 border-b last:border-0 pb-4">
+              <h3 className="text-xl font-semibold text-blue-600 flex items-center gap-2">
+                <i className="fas fa-calendar-week text-blue-500"></i> Week {week.week}: {week.description}
+              </h3>
+              <p className="text-gray-700 mb-2 italic flex items-center gap-2">
+                <i className="fas fa-info-circle text-gray-500"></i> {week.purpose}
+              </p>
+              <ul className="list-none pl-5">
+                {week.days.map((day) => (
+                  <li
+                    key={day.day}
+                    className="mb-2 transition-colors duration-200 hover:text-blue-500 cursor-pointer flex items-center gap-2 group"
+                    onClick={() => handleDayClick(Array.isArray(day.characters) ? day.characters.join('') : day.characters)}
+                  >
+                    <i className="fas fa-book-open text-gray-600 group-hover:text-blue-500 transition-colors duration-200"></i>
+                    <span>
+                      <strong>Day {day.day}:</strong> {Array.isArray(day.characters) ? day.characters.join(", ") : day.characters} - (
+                      <span className="inline-flex items-center gap-1 bg-gray-100 text-blue-400 rounded px-1.5 py-0.5 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200">
+                        <i className="fas fa-quote-left text-sm"></i> {day.description}
+                      </span>)
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </WeekPlanContainer>
+        <div className="flex justify-center items-center mb-4">
+          <CollapsibleItemsContainer direction="w" className="flex flex-wrap gap-2">
+            <Button
+              onClick={handleFullScreen}
+            >
+              <span>FullScreen</span>
+            </Button>
+            {buttons.map((button, index) => (
+              <Button
+                key={index}
+                onClick={button.onClick}
+                selected={button.selected}
               >
-                <option value="Cantonese">Cantonese</option>
-                <option value="zh">Mandarin</option>
-              </select>
-            </CollapsibleItemsContainer>
-          </div>
-          </div>
+                <FontAwesomeIcon icon={button.icon} />
+                <span>{button.label}</span>
+              </Button>
+            ))}
+            <CheckboxLabel selected={autoPlayNext}>
+              <FontAwesomeIcon icon={faForward} />
+              <span>Auto Play Next</span>
+              <input
+                type="checkbox"
+                checked={autoPlayNext}
+                onChange={() => setAutoPlayNext(!autoPlayNext)}
+                className="ml-2"
+              />
+            </CheckboxLabel>
+            <select
+              onChange={(e) => setSelectedLanguage(e.target.value)}
+              value={selectedLanguage}
+              className="p-2 border rounded-md"
+            >
+              <option value="Cantonese">Cantonese</option>
+              <option value="zh">Mandarin</option>
+            </select>
+          </CollapsibleItemsContainer>
+        </div>
+      </div>
       {word && (
         <>
- 
+
           <div >
-          <ScreenBox className="flex-col-reverse">
-            <div className="w-full flex justify-center">
-            <div className="min-h-[500px] min-w-[500px] mb-4" style={{width: '500px', height: '500px'}}>
-            <svg
-              viewBox={`0 0 ${word.viewBoxWidth} 100`}
-              className="max-h-full max-w-[350px] min-w-[300px] border border-gray-300 rounded-md border-black"
-              style={{ border: "10px solid black",boarderBox: 'border-box', touchAction: 'none' }}
-              ref={svgRef}
-              onMouseDown={startDrawing}
-              onMouseMove={moveDraw}
-              onMouseUp={stopDrawing}
-              
-            >
-              <g>
-                <rect x="0" y="0" width="100%" height="100%" stroke="black" strokeWidth="1" fill="#e5e7eb" />
-                <line x1="2" y1="50%" x2="100%" y2="50%" strokeDasharray="5,5" stroke="#ffffff" strokeWidth="1" />
-                <line x1="50%" y1="2" x2="50%" y2="100%" strokeDasharray="5,5" stroke="#ffffff" strokeWidth="1" />
-                {word.chs.map((ch, index) => (
-                  <g key={index}>
-                    <line
-                      x1={ch.tranX}
-                      y1="0"
-                      x2={ch.tranX}
-                      y2="100%"
-                      stroke="black"
-                      strokeWidth="1"
-                      vectorEffect="non-scaling-stroke"
-                    />
-                  </g>
-                ))}
-              </g>
-              <g>
-                {word.stroke.map((stroke, index) => (
-                  <path
-                    key={index}
-                    d={stroke.d}
-                    stroke="#FFF"
-                    strokeWidth="1"
-                    fill={stroke.nf ? "none" : "#FFF"}
-                    strokeLinejoin="round"
-                  />
-                ))}
-              </g>
-              <g>
-                {word.stroke.map((stroke, index) => playedIndex >= index && (
-                  <path
-                    key={index}
-                    d={stroke.d}
-                    stroke="#000000"
-                    strokeWidth="2"
-                    fill={stroke.nf ? "none" : "#000"}
-                    strokeLinejoin="round"
-                  />
-                ))}
-              </g>
-              <g>
-                {word.stroke.map((stroke, index) => tipIndex === index && (
-                  <path
-                    key={index}
-                    d={stroke.d}
-                    stroke="#F00"
-                    strokeWidth="2"
-                    fill={stroke.nf ? "none" : "#F00"}
-                  />
-                ))}
-              </g>
-              <g>
-                <defs>
-                  <mask id="mask">
-                    {word.stroke.map((stroke, index) => playedIndex + 1 === index && (
-                      <path
+            <ScreenBox className="flex-col-reverse">
+              <div className="w-full flex justify-center">
+                <div className="min-h-[500px] min-w-[500px] mb-4" style={{ width: '500px', height: '500px' }}>
+                  <svg
+                    viewBox={`0 0 ${word.viewBoxWidth} 100`}
+                    className="max-h-full max-w-[350px] min-w-[300px] border border-gray-300 rounded-md border-black"
+                    style={{ border: "10px solid black", boarderBox: 'border-box', touchAction: 'none' }}
+                    ref={svgRef}
+                    onMouseDown={startDrawing}
+                    onMouseMove={moveDraw}
+                    onMouseUp={stopDrawing}
+
+                  >
+                    <g>
+                      <rect x="0" y="0" width="100%" height="100%" stroke="black" strokeWidth="1" fill="#e5e7eb" />
+                      <line x1="2" y1="50%" x2="100%" y2="50%" strokeDasharray="5,5" stroke="#ffffff" strokeWidth="1" />
+                      <line x1="50%" y1="2" x2="50%" y2="100%" strokeDasharray="5,5" stroke="#ffffff" strokeWidth="1" />
+                      {word.chs.map((ch, index) => (
+                        <g key={index}>
+                          <line
+                            x1={ch.tranX}
+                            y1="0"
+                            x2={ch.tranX}
+                            y2="100%"
+                            stroke="black"
+                            strokeWidth="1"
+                            vectorEffect="non-scaling-stroke"
+                          />
+                        </g>
+                      ))}
+                    </g>
+                    <g>
+                      {word.stroke.map((stroke, index) => (
+                        <path
+                          key={index}
+                          d={stroke.d}
+                          stroke="#FFF"
+                          strokeWidth="1"
+                          fill={stroke.nf ? "none" : "#FFF"}
+                          strokeLinejoin="round"
+                        />
+                      ))}
+                    </g>
+                    <g>
+                      {word.stroke.map((stroke, index) => playedIndex >= index && (
+                        <path
+                          key={index}
+                          d={stroke.d}
+                          stroke="#000000"
+                          strokeWidth="2"
+                          fill={stroke.nf ? "none" : "#000"}
+                          strokeLinejoin="round"
+                        />
+                      ))}
+                    </g>
+                    <g>
+                      {word.stroke.map((stroke, index) => tipIndex === index && (
+                        <path
+                          key={index}
+                          d={stroke.d}
+                          stroke="#F00"
+                          strokeWidth="2"
+                          fill={stroke.nf ? "none" : "#F00"}
+                        />
+                      ))}
+                    </g>
+                    <g>
+                      <defs>
+                        <mask id="mask">
+                          {word.stroke.map((stroke, index) => playedIndex + 1 === index && (
+                            <path
+                              key={index}
+                              d={stroke.d}
+                              stroke="white"
+                              strokeWidth="2"
+                              fill={stroke.nf ? "none" : "#FFF"}
+                            />
+                          ))}
+                        </mask>
+                      </defs>
+                      <g mask="url(#mask)">
+                        {points.map((point, index) => (
+                          <circle key={index} cx={point.x} cy={point.y} r={point.r} fill="#000000" />
+                        ))}
+                      </g>
+                    </g>
+                    <g>
+                      {trackPoints.map((point, index) => (
+                        <circle
+                          key={index}
+                          cx={point.x}
+                          cy={point.y}
+                          r={1}
+                          fill={index <= points.length - 1 ? "green" : "yellow"}
+                        />
+                      ))}
+                    </g>
+                  </svg>
+                </div>
+              </div>
+              <LineWordList className="w-full">
+                <div className="h-full overflow-auto">
+                  <div className="flex items-center gap-4 justify-between mb-4 mx-5">
+                    {words.map((ch, index) => (
+                      <span
                         key={index}
-                        d={stroke.d}
-                        stroke="white"
-                        strokeWidth="2"
-                        fill={stroke.nf ? "none" : "#FFF"}
-                      />
+                        className={`flex flex-col items-center cursor-pointer word-animation ${txtIndex > index ? "text-red-500" : txtIndex === index ? "active" : "text-black"}`}
+                        onClick={() => setTxtIndex(index)}
+                      >
+                        {ch}
+                        {txtIndex === index && <i className="fa-solid fa-hand-pointer mt-1"></i>}
+                      </span>
                     ))}
-                  </mask>
-                </defs>
-                <g mask="url(#mask)">
-                  {points.map((point, index) => (
-                    <circle key={index} cx={point.x} cy={point.y} r={point.r} fill="#000000" />
-                  ))}
-                </g>
-              </g>
-              <g>
-                {trackPoints.map((point, index) => (
-                  <circle
-                    key={index}
-                    cx={point.x}
-                    cy={point.y}
-                    r={1}
-                    fill={index <= points.length - 1 ? "green" : "yellow"}
-                  />
-                ))}
-              </g>
-            </svg>
-            </div>
-            </div>
-            <LineWordList className="w-full">
-<div className="h-full overflow-auto">
-  <div className="flex items-center gap-4 justify-between mb-4 mx-5">
-    {words.map((ch, index) => (
-      <span
-        key={index}
-        className={`flex flex-col items-center cursor-pointer word-animation ${txtIndex > index ? "text-red-500" : txtIndex === index ? "active" : "text-black"}`}
-        onClick={() => setTxtIndex(index)}
-      >
-        {ch}
-        {txtIndex === index && <i className="fa-solid fa-hand-pointer mt-1"></i>}
-      </span>
-    ))}
-  </div>
-</div>
-            </LineWordList>
-          </ScreenBox>
+                  </div>
+                </div>
+              </LineWordList>
+            </ScreenBox>
           </div>
           <audio ref={audioRef} controls src={`/data/sound/3s.mp3`} className={errorMsg ? '' : 'hidden'} />
           {errorMsg && <div className="text-red-500 mt-2">{errorMsg}</div>}
