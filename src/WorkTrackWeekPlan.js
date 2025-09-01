@@ -9,7 +9,7 @@ import {
 import { useParams, useNavigate } from "react-router-dom";
 import styled from 'styled-components';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {weeksplan} from "./weeksplan";
+import { weeksplan } from "./weeksplan";
 import {
   faPlay,
   faRedo,
@@ -19,10 +19,28 @@ import {
   faForward
 } from "@fortawesome/free-solid-svg-icons";
 import Watermark from './Watermark';
-
 import './word-animation.css';
 
+// Updated ScreenBox with fade animation
+const ScreenBox = styled.div`
+  display: flex;
+  flex-grow: 1;
+  align-items: flex-start;
+  opacity: 0; /* Start with opacity 0 */
+  transition: opacity 0.5s ease-in-out; /* Smooth transition for opacity */
+  &.fade-in {
+    opacity: 1; /* Fade in to full opacity */
+  }
+  &.fade-out {
+    opacity: 0; /* Fade out to zero opacity */
+  }
+  @media (max-width: 800px) {
+    flex-direction: column;
+    align-items: center;
+  }
+`;
 
+// Rest of your styled components remain unchanged
 const Container = styled.div`
   position: absolute;
   top: 0;
@@ -32,16 +50,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   background-color: #f9fafb;
-`;
-
-const ScreenBox = styled.div`
-  display: flex;
-  flex-grow: 1;
-  align-items: flex-start;
-  @media (max-width: 800px) {
-    flex-direction: column;
-    align-items: center;
-  }
 `;
 
 const LineWordList = styled.div`
@@ -102,6 +110,7 @@ const WordTrackWeekPlan = () => {
   const wordRef = useRef(null);
   const playingRef = useRef(0);
   const [autoPlayNext, setAutoPlayNext] = useState(true);
+  const [animationState, setAnimationState] = useState(''); // New state for animation
 
   const playStroke = async (w, stroke, curTime) => {
     await new Promise((resolve) => setTimeout(resolve, 70));
@@ -119,13 +128,14 @@ const WordTrackWeekPlan = () => {
   };
 
   const playWordStrokes = async (word) => {
+    setPlayedIndex(-1);
 
     const wordStrok = await loadDatas(word);
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     playingRef.current = +new Date();
     let curTime = playingRef.current;
-    setPlayedIndex(-1);
     setPoints([]);
-    setWord(wordStrok)
+    setWord(wordStrok);
 
     if (wordStrok?.stroke) {
       for (let w of wordStrok.chs) {
@@ -136,7 +146,6 @@ const WordTrackWeekPlan = () => {
           if (curTime !== playingRef.current) return;
           setPlayedIndex(i);
           await new Promise((resolve) => setTimeout(resolve, 2000));
-
         }
         await playSound(`/data/audio/${selectedLanguage}/${encodeURIComponent(w.ch.toLowerCase())}.mp3`);
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -152,59 +161,26 @@ const WordTrackWeekPlan = () => {
       return;
     }
 
-
     for (let k = 0; k < day.characters.length; k++) {
-
       setCurChar(k);
-
       let chs = day.characters[k].split('');
       for (let i = 0; i < chs.length; i++) {
         try {
-          // Update state for the current character
           setText(chs[i]);
-          setWords(chs); // Presumably setting words based on the full character string
+          setWords(chs);
           setTxtIndex(i);
           setCurChari(i);
-
-          // Navigate to the character's page
-          // navigate(`/weekplan/${encodeURIComponent(day.characters[i])}`);
-
-          // Add a delay to allow state updates and navigation to settle
           await new Promise(resolve => setTimeout(resolve, 1000));
-
-          // Play strokes and sounds sequentially
           await playWordStrokes(chs[i]);
           await new Promise(resolve => setTimeout(resolve, 1000));
-
           console.log('Finished playing character:', chs[i]);
         } catch (error) {
           console.error(`Error processing character "${day.characters[i]}":`, error);
-          // Continue to the next character
           continue;
         }
       }
-
     }
-
-
   };
-
-
-  /*useEffect(() => {
-    if (wordRef.current && playedIndex >= wordRef.current.stroke.length - 1) {
-      (async () => {
-        await playSounds();
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        if (autoPlayNext && txtIndex + 1 < words.length) {
-          setTxtIndex((prev) => prev + 1);
-          await new Promise((resolve) => setTimeout(resolve, 500));
-          await playWordStrokes();
-        } else {
-          setTxtIndex((prev) => prev + 1 >= words.length ? prev : prev + 1);
-        }
-      })();
-    }
-  }, [wordRef.current, playedIndex, autoPlayNext, words.length, txtIndex]);*/
 
   const resetStrokes = () => {
     setPoints([]);
@@ -227,7 +203,7 @@ const WordTrackWeekPlan = () => {
             let scale = 100 / (cdata.h || 100);
             cdata.scale = scale;
             s.d = translateAndScaleSvgPath(s.d, tranX, 0, scale, scale);
-            let r = scale * (s.r || cdata.r)*1.1;
+            let r = scale * (s.r || cdata.r) * 1.1;
             const path = scaleSvgPath(s.t || s.d, scale);
             s.track = getPointsOnPath(path, r, s.t ? scale : 1);
             s.track.map((t) => (t.x = (s.t ? tranX : 0) + t.x));
@@ -255,13 +231,10 @@ const WordTrackWeekPlan = () => {
       setWord(word);
       wordRef.current = word;
       return word;
-
     } catch (error) {
       console.error("Error fetching paths:", error);
     }
   };
-
-
 
   const svgRef = useRef(null);
   const isDrawingRef = useRef(false);
@@ -376,53 +349,73 @@ const WordTrackWeekPlan = () => {
     setTipIndex(nextIndex);
   }, [word, playedIndex, autoTips]);
 
-
   const [curWeek, setCurWeek] = useState(-1);
   const [curDay, setCurDay] = useState(-1);
   const [curChar, setCurChar] = useState(-1);
   const [curChari, setCurChari] = useState(-1);
   const [weekData, setWeekData] = useState(weeksplan);
   const [screen, setScreen] = useState("");
-
-  
+  const [isVisible, setIsVisible] = useState(false); // New state for visibility
 
   const startPlay = async () => {
+        setScreen('');
+        setIsVisible(false); // Trigger fade-in
     for (let i = 0; i < weeksplan.length; i++) {
       setCurWeek(i);
       for (let j = 0; j < weeksplan[i].days.length; j++) {
         setCurDay(j);
         setScreen('intro');
+        setIsVisible(true); // Trigger fade-in
+        setAnimationState('fade-in');
         await new Promise((resolve) => setTimeout(resolve, 5000));
+        setAnimationState('fade-out');
+        await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for fade-out
+        setIsVisible(false);
         setScreen('');
         await new Promise((resolve) => setTimeout(resolve, 500));
         setScreen('run');
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        setIsVisible(true); // Trigger fade-in
+        setAnimationState('fade-in');
         await playDays(weeksplan[i].days[j]);
+        setAnimationState('fade-out');
+        await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for fade-out
+        setIsVisible(false);
+        setScreen('');
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        setScreen('retry');
+        setIsVisible(true); // Trigger fade-in
+        setAnimationState('fade-in');
+       await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait for fade-out
+
+        setAnimationState('fade-out');
+        setIsVisible(false); // Trigger fade-in
+          
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        setScreen('run');
+        setIsVisible(true); // Trigger fade-in
+        setAnimationState('fade-in');
+
+        await playDays(weeksplan[i].days[j]);
+
       }
     }
   };
 
-    useEffect(() => {
+  useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.code === 'Space') {
-        event.preventDefault(); 
+        event.preventDefault();
         startPlay();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
-
-    // Cleanup on component unmount
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
 
-
-
-
   const buttons = [
-
     { icon: faPlay, label: "Play", onClick: startPlay },
   ];
 
@@ -443,14 +436,11 @@ const WordTrackWeekPlan = () => {
   };
 
   useEffect(() => {
-    // Listen for fullscreen change events
     document.addEventListener('fullscreenchange', () => {
       if (!document.fullscreenElement) {
         handleExitFullScreen();
       }
     });
-
-    // Clean up the event listener on component unmount
     return () => {
       document.removeEventListener('fullscreenchange', handleExitFullScreen);
     };
@@ -459,8 +449,7 @@ const WordTrackWeekPlan = () => {
   const handleFullScreen = () => {
     setFullScreen(true);
     document.querySelector('#screens').requestFullscreen();
-
-  }
+  };
 
   return (
     <Container className="min-h-screen h-screen" id="screens" style={{ cursor: fullScreen ? 'none' : 'pointer' }}>
@@ -476,7 +465,7 @@ const WordTrackWeekPlan = () => {
           maxWidth: '800px',
           margin: fullScreen ? '0' : '0 auto',
           zIndex: fullScreen ? 1000 : 'auto',
-          display: fullScreen ? 'none' : '', // optional: allow scrolling if content is tall
+          display: fullScreen ? 'none' : '',
         }}
       >
         <WeekPlanContainer className="week-plan-container bg-white shadow-md rounded-lg p-6">
@@ -495,7 +484,7 @@ const WordTrackWeekPlan = () => {
                 {week.days.map((day) => (
                   <li
                     key={day.day}
-                    className="mb-2 transition-colors duration-200 hover:text-blue-500  flex items-center gap-2 group"
+                    className="mb-2 transition-colors duration-200 hover:text-blue-500 flex items-center gap-2 group"
                     onClick={() => handleDayClick(Array.isArray(day.characters) ? day.characters.join('') : day.characters)}
                   >
                     <i className="fas fa-book-open text-gray-600 group-hover:text-blue-500 transition-colors duration-200"></i>
@@ -526,7 +515,6 @@ const WordTrackWeekPlan = () => {
                 <span>{button.label}</span>
               </Button>
             ))}
-
             <select
               onChange={(e) => setSelectedLanguage(e.target.value)}
               value={selectedLanguage}
@@ -538,161 +526,166 @@ const WordTrackWeekPlan = () => {
           </div>
         </div>
       </div>
-  {screen=='intro'&&<ScreenBox className="screenIntro fade-element" style={{fontSize:'50px'}}>
-  {curWeek > -1 && curDay > -1 && weekData[curWeek] && weekData[curWeek].days[curDay] && (
-    <div className="p-4 bg-white bg-yellow-50 rounded-lg mb-4">
-      <h2 className="text-xl font-bold mb-2 text-center"><strong>Week {weekData[curWeek].week} - Day {weekData[curWeek].days[curDay].day}</strong></h2>
-      <p className="text-gray-700 mb-1 text-center"><strong>Description:</strong> {weekData[curWeek].days[curDay].description}</p>
-      <p className="inline-flex items-center gap-1 bg-gray-100 text-blue-400 rounded px-1.5 py-0.5 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200">
-                        <i className="fas fa-quote-left text-sm"></i> {weekData[curWeek].description}
-                      </p>
+      {screen === 'intro' && isVisible && (
+        <ScreenBox className={`screenIntro ${animationState}`} style={{ fontSize: '50px' }}>
+          {curWeek > -1 && curDay > -1 && weekData[curWeek] && weekData[curWeek].days[curDay] && (
+            <div className="p-4 bg-white bg-yellow-50 rounded-lg mb-4">
+              <h2 className="text-xl font-bold mb-2 text-center"><strong>Week {weekData[curWeek].week} - Day {weekData[curWeek].days[curDay].day}</strong></h2>
+              <p className="text-gray-700 mb-1 text-center"><strong>Description:</strong> {weekData[curWeek].days[curDay].description}</p>
+              <p className="inline-flex items-center gap-1 bg-gray-100 text-blue-400 rounded px-1.5 py-0.5 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200">
+                <i className="fas fa-quote-left text-sm"></i> {weekData[curWeek].description}
+              </p>
+            </div>
+          )}
+        </ScreenBox>
+      )}
+      {screen === 'retry' && isVisible && (
+        <ScreenBox className={`screenIntro ${animationState}`} style={{ fontSize: '100px' }}>
+          {curWeek > -1 && curDay > -1 && weekData[curWeek] && weekData[curWeek].days[curDay] && (
+            <div className="p-4 bg-white bg-yellow-50 rounded-lg mb-4">
+              <p className="text-gray-700 mb-1 text-center"><strong>Retry Again...</strong></p>
+   
+            </div>
+          )}
+        </ScreenBox>
+      )}
 
-    </div>
-  )}
-</ScreenBox>}
-
-      {screen=='run'&&word && (
-        <div className="fade-element">
-
-          <div >
-
-            <ScreenBox className="flex-col-reverse">
-              <div className="w-full flex justify-center mt-4">
-                <div className="min-h-[500px] min-w-[500px] mb-8" style={{ width: '500px', height: '500px' }}>
-                  <svg
-                    viewBox={`0 0 ${word.viewBoxWidth} 100`}
-                    className="max-h-full max-w-[350px] min-w-[300px] border border-gray-300 rounded-md border-black"
-                    style={{ border: "10px solid black", boarderBox: 'border-box', touchAction: 'none' }}
-                    ref={svgRef}
-                    onMouseDown={startDrawing}
-                    onMouseMove={moveDraw}
-                    onMouseUp={stopDrawing}
-
-                  >
-                    <g>
-                      <rect x="0" y="0" width="100%" height="100%" stroke="black" strokeWidth="1" fill="#e5e7eb" />
-                      <line x1="2" y1="50%" x2="100%" y2="50%" strokeDasharray="5,5" stroke="#ffffff" strokeWidth="1" />
-                      <line x1="50%" y1="2" x2="50%" y2="100%" strokeDasharray="5,5" stroke="#ffffff" strokeWidth="1" />
-                      {word.chs.map((ch, index) => (
-                        <g key={index}>
-                          <line
-                            x1={ch.tranX}
-                            y1="0"
-                            x2={ch.tranX}
-                            y2="100%"
-                            stroke="black"
-                            strokeWidth="1"
-                            vectorEffect="non-scaling-stroke"
-                          />
-                        </g>
-                      ))}
-                    </g>
-                    <g>
-                      {word.stroke.map((stroke, index) => (
-                        <path
-                          key={index}
-                          d={stroke.d}
-                          stroke="#FFF"
+      {screen === 'run' && word && isVisible && (
+        <div className={animationState}>
+          <ScreenBox className={`flex-col-reverse ${animationState}`}>
+            <div className="w-full flex justify-center mt-4">
+              <div className="min-h-[500px] min-w-[500px] mb-8" style={{ width: '500px', height: '500px' }}>
+                <svg
+                  viewBox={`0 0 ${word.viewBoxWidth} 100`}
+                  className="max-h-full max-w-[350px] min-w-[300px] border border-gray-300 rounded-md border-black"
+                  style={{ border: "10px solid black", boxSizing: 'border-box', touchAction: 'none' }}
+                  ref={svgRef}
+                  onMouseDown={startDrawing}
+                  onMouseMove={moveDraw}
+                  onMouseUp={stopDrawing}
+                >
+                  <g>
+                    <rect x="0" y="0" width="100%" height="100%" stroke="black" strokeWidth="1" fill="#e5e7eb" />
+                    <line x1="2" y1="50%" x2="100%" y2="50%" strokeDasharray="5,5" stroke="#ffffff" strokeWidth="1" />
+                    <line x1="50%" y1="2" x2="50%" y2="100%" strokeDasharray="5,5" stroke="#ffffff" strokeWidth="1" />
+                    {word.chs.map((ch, index) => (
+                      <g key={index}>
+                        <line
+                          x1={ch.tranX}
+                          y1="0"
+                          x2={ch.tranX}
+                          y2="100%"
+                          stroke="black"
                           strokeWidth="1"
-                          fill={stroke.nf ? "none" : "#FFF"}
-                          strokeLinejoin="round"
+                          vectorEffect="non-scaling-stroke"
                         />
-                      ))}
-                    </g>
-                    <g>
-                      {word.stroke.map((stroke, index) => playedIndex >= index && (
-                        <path
-                          key={index}
-                          d={stroke.d}
-                          stroke="#000000"
-                          strokeWidth="2"
-                          fill={stroke.nf ? "none" : "#000"}
-                          strokeLinejoin="round"
-                        />
-                      ))}
-                    </g>
-                    <g>
-                      {word.stroke.map((stroke, index) => tipIndex === index && (
-                        <path
-                          key={index}
-                          d={stroke.d}
-                          stroke="#F00"
-                          strokeWidth="2"
-                          fill={stroke.nf ? "none" : "#F00"}
-                        />
-                      ))}
-                    </g>
-                    <g>
-                      <defs>
-                        <mask id="mask">
-                          {word.stroke.map((stroke, index) => playedIndex + 1 === index && (
-                            <path
-                              key={index}
-                              d={stroke.d}
-                              stroke="white"
-                              strokeWidth="2"
-                              fill={stroke.nf ? "none" : "#FFF"}
-                            />
-                          ))}
-                        </mask>
-                      </defs>
-                      <g mask="url(#mask)">
-                        {points.map((point, index) => (
-                          <circle key={index} cx={point.x} cy={point.y} r={point.r} fill="#000000" />
-                        ))}
                       </g>
-                    </g>
-                    <g>
-                      {trackPoints.map((point, index) => (
-                        <circle
-                          key={index}
-                          cx={point.x}
-                          cy={point.y}
-                          r={1}
-                          fill={index <= points.length - 1 ? "green" : "yellow"}
-                        />
+                    ))}
+                  </g>
+                  <g>
+                    {word.stroke.map((stroke, index) => (
+                      <path
+                        key={index}
+                        d={stroke.d}
+                        stroke="#FFF"
+                        strokeWidth="1"
+                        fill={stroke.nf ? "none" : "#FFF"}
+                        strokeLinejoin="round"
+                      />
+                    ))}
+                  </g>
+                  <g>
+                    {word.stroke.map((stroke, index) => playedIndex >= index && (
+                      <path
+                        key={index}
+                        d={stroke.d}
+                        stroke="#000000"
+                        strokeWidth="2"
+                        fill={stroke.nf ? "none" : "#000"}
+                        strokeLinejoin="round"
+                      />
+                    ))}
+                  </g>
+                  <g>
+                    {word.stroke.map((stroke, index) => tipIndex === index && (
+                      <path
+                        key={index}
+                        d={stroke.d}
+                        stroke="#F00"
+                        strokeWidth="2"
+                        fill={stroke.nf ? "none" : "#F00"}
+                      />
+                    ))}
+                  </g>
+                  <g>
+                    <defs>
+                      <mask id="mask">
+                        {word.stroke.map((stroke, index) => playedIndex + 1 === index && (
+                          <path
+                            key={index}
+                            d={stroke.d}
+                            stroke="white"
+                            strokeWidth="2"
+                            fill={stroke.nf ? "none" : "#FFF"}
+                          />
+                        ))}
+                      </mask>
+                    </defs>
+                    <g mask="url(#mask)">
+                      {points.map((point, index) => (
+                        <circle key={index} cx={point.x} cy={point.y} r={point.r} fill="#000000" />
                       ))}
                     </g>
-                  </svg>
+                  </g>
+                  <g>
+                    {trackPoints.map((point, index) => (
+                      <circle
+                        key={index}
+                        cx={point.x}
+                        cy={point.y}
+                        r={1}
+                        fill={index <= points.length - 1 ? "green" : "yellow"}
+                      />
+                    ))}
+                  </g>
+                </svg>
+              </div>
+            </div>
+            <LineWordList className="w-full">
+              <div className="h-full overflow-auto">
+                <div className="flex items-center justify-center gap-4 mb-4 min-h-full">
+                  {curWeek >= 0 && curDay >= 0 && (
+                    <div className="font-semibold text-gray-700 flex">
+                      {weekData[curWeek] && weekData[curWeek].days[curDay] && Array.isArray(weekData[curWeek].days[curDay].characters) ? (
+                        weekData[curWeek].days[curDay].characters.map((ch, idx) => (
+                          <span
+                            key={idx}
+                            className={`inline-block flex rounded-full px-3 py-1 font-semibold mr-4 mb-2 word-animation`}
+                          >
+                            {ch.split("").map((c, i) => (
+                              <span
+                                key={i}
+                                className={`flex flex-col items-center mr-2 word-animation ${curChar === idx && curChari === i ? "active" : curChar > idx || (idx <= curChar && i <= curChari) ? "actived" : "text-black"}`}
+                              >
+                                {c}
+                                {curChar === idx && curChari === i && <i className="fa-solid fa-hand-pointer mt-1"></i>}
+                              </span>
+                            ))}
+                          </span>
+                        ))
+                      ) : (
+                        <></>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
-              <LineWordList className="w-full">
-                <div className="h-full overflow-auto">
-                  <div className="flex items-center justify-center gap-4 mb-4  min-h-full">
-                    {curWeek >= 0 && curDay >= 0 && (
-                      <div className="font-semibold text-gray-700 flex">
-                        {weekData[curWeek] && weekData[curWeek].days[curDay] && Array.isArray(weekData[curWeek].days[curDay].characters) ? (
-                          weekData[curWeek].days[curDay].characters.map((ch, idx) => (
-                            <span
-                              key={idx}
-                              className={`inline-block flex rounded-full px-3 py-1 font-semibold mr-4 mb-2  word-animation `}
-                            >
-                              {ch.split("").map((c, i) => (
-                                <span
-                                  key={i}
-                                  className={`flex flex-col items-center mr-2  word-animation ${curChar === idx && curChari === i ? "active" : curChar > idx || idx<=curChar && i<= curChari  ? "actived" : "text-black"
-                                    }`}
-                                >
-                                  {c}
-                                  {curChar === idx && curChari === i && <i className="fa-solid fa-hand-pointer mt-1"></i>}
-                                </span>
-                              ))}
-                            </span>
-                          ))
-                        ) : (
-                          <></>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </LineWordList>
-            </ScreenBox>
-          </div>
-          <audio ref={audioRef} controls src={`/data/sound/3s.mp3`} className={errorMsg ? '' : 'hidden'} />
-          {errorMsg && <div className="text-red-500 mt-2">{errorMsg}</div>}
+            </LineWordList>
+          </ScreenBox>
         </div>
       )}
+      <audio ref={audioRef} controls src={`/data/sound/3s.mp3`} className={errorMsg ? '' : 'hidden'} />
+      {errorMsg && <div className="text-red-500 mt-2">{errorMsg}</div>}
     </Container>
   );
 };

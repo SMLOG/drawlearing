@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Watermark = ({ text = 'AlearningApp.com' }) => {
+const Watermark = ({ text = '' }) => {
   const watermarkStyle = {
     position: 'fixed',
     top: '50%',
