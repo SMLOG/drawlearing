@@ -9,7 +9,7 @@ import {
 import { useParams, useNavigate } from "react-router-dom";
 import styled from 'styled-components';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import CollapsibleItemsContainer from "./CollapsibleItemsContainer";
+import {weeksplan} from "./weeksplan";
 import {
   faPlay,
   faRedo,
@@ -21,119 +21,6 @@ import {
 
 import './word-animation.css';
 
-export const weeksplan = [
-  {
-    "week": 1,
-    "description": "基础汉字与常用字的学习，帮助学生建立书写信心。",
-    "purpose": "通过学习常用基础字，增强学生的书写能力和对汉字的理解。",
-    "days": [
-      {
-        "day": 1,
-        "characters": ["一", "二", "三", "口", "日", "月", "山"],
-        "repetitions": 5,
-        "description": "这些字是生活中常用的基础字，帮助学生建立信心。"
-      },
-      {
-        "day": 2,
-        "characters": ["田", "水", "火", "木", "土", "风", "雨"],
-        "repetitions": 5,
-        "description": "通过这些字，学生可以了解自然元素及其书写方式。"
-      },
-      {
-        "day": 3,
-        "characters": ["人", "手", "耳", "眼", "心", "口", "足"],
-        "repetitions": 5,
-        "description": "这些字有助于学生描述自己和他人。"
-      },
-      {
-        "day": 4,
-        "characters": ["家", "学校", "书", "老师", "朋友", "游戏", "玩具"],
-        "repetitions": 5,
-        "description": "这些字对学生的日常生活非常重要。"
-      },
-      {
-        "day": 5,
-        "characters": ["爱", "快乐", "跑", "跳", "说", "听", "看"],
-        "repetitions": 5,
-        "description": "增强学生的表达能力和沟通技巧。"
-      }
-    ]
-  },
-  {
-    "week": 2,
-    "description": "学习与自然和环境相关的汉字，增强对周围世界的认识。",
-    "purpose": "通过学习与自然相关的字，帮助学生更好地理解和描述他们的环境。",
-    "days": [
-      {
-        "day": 1,
-        "characters": ["江", "河", "海", "湖", "泉", "潮", "泪"],
-        "repetitions": 5,
-        "description": "通过这些字，学生可以理解水的不同形式。"
-      },
-      {
-        "day": 2,
-        "characters": ["林", "树", "梅", "松", "桥", "桃", "枫"],
-        "repetitions": 5,
-        "description": "帮助学生认识自然界的植物。"
-      },
-      {
-        "day": 3,
-        "characters": ["横", "竖", "撇", "捺", "提", "折", "勾"],
-        "repetitions": 5,
-        "description": "笔画是写字的基础，熟练掌握有助于书写其他汉字。"
-      },
-      {
-        "day": 4,
-        "characters": ["大", "小", "长", "短", "高", "低", "宽"],
-        "repetitions": 5,
-        "description": "这些字有助于学生在日常生活中进行比较和描述。"
-      },
-      {
-        "day": 5,
-        "characters": ["地", "场", "城", "堆", "坟", "塑", "境"],
-        "repetitions": 5,
-        "description": "帮助学生理解地理和环境概念。"
-      }
-    ]
-  },
-  {
-    "week": 3,
-    "description": "学习与情感和社会相关的汉字，增强学生的表达能力。",
-    "purpose": "通过学习与情感、社会和教育相关的字，帮助学生更好地表达自己。",
-    "days": [
-      {
-        "day": 1,
-        "characters": ["心", "情", "思", "念", "想", "愿", "梦"],
-        "repetitions": 5,
-        "description": "增强学生的情感表达能力。"
-      },
-      {
-        "day": 2,
-        "characters": ["家", "乡", "国", "土", "民", "众", "族"],
-        "repetitions": 5,
-        "description": "帮助学生理解家庭和社会的关系。"
-      },
-      {
-        "day": 3,
-        "characters": ["学", "习", "知", "识", "教", "育", "成"],
-        "repetitions": 5,
-        "description": "这些字对学生的学业和未来发展非常重要。"
-      },
-      {
-        "day": 4,
-        "characters": ["美", "丽", "善", "良", "真", "诚", "信"],
-        "repetitions": 5,
-        "description": "帮助学生理解社会价值观。"
-      },
-      {
-        "day": 5,
-        "characters": "用已学字写5个短句",
-        "repetitions": "注意字形和结构",
-        "description": "通过写短句，增强学生的实际运用能力。"
-      }
-    ]
-  }
-];
 
 const Container = styled.div`
   position: absolute;
@@ -144,15 +31,13 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   background-color: #f9fafb;
-  padding: 16px;
 `;
 
 const ScreenBox = styled.div`
   display: flex;
   flex-grow: 1;
-  margin: 16px;
   align-items: flex-start;
-  gap: 16px;
+  position: relative;
   @media (max-width: 800px) {
     flex-direction: column;
     align-items: center;
@@ -342,7 +227,7 @@ const WordTrackWeekPlan = () => {
             let scale = 100 / (cdata.h || 100);
             cdata.scale = scale;
             s.d = translateAndScaleSvgPath(s.d, tranX, 0, scale, scale);
-            let r = scale * (s.r || cdata.r);
+            let r = scale * (s.r || cdata.r)*1.1;
             const path = scaleSvgPath(s.t || s.d, scale);
             s.track = getPointsOnPath(path, r, s.t ? scale : 1);
             s.track.map((t) => (t.x = (s.t ? tranX : 0) + t.x));
@@ -503,10 +388,27 @@ const WordTrackWeekPlan = () => {
       setCurWeek(i);
       for (let j = 0; j < weeksplan[i].days.length; j++) {
         setCurDay(j);
+        await new Promise((resolve) => setTimeout(resolve, 50000));
         await playDays(weeksplan[i].days[j]);
       }
     }
   };
+
+    useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.code === 'Space') {
+        event.preventDefault(); 
+        startPlay();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Cleanup on component unmount
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
 
 
@@ -553,7 +455,7 @@ const WordTrackWeekPlan = () => {
   }
 
   return (
-    <Container className="min-h-screen" id="screens" style={{ cursor: fullScreen ? 'none' : 'pointer' }}>
+    <Container className="min-h-screen h-screen" id="screens" style={{ cursor: fullScreen ? 'none' : 'pointer' }}>
       <div
         id="cinfo"
         style={{
@@ -627,12 +529,23 @@ const WordTrackWeekPlan = () => {
           </div>
         </div>
       </div>
+<ScreenBox className="flex flex-col items-center justify-center min-h-screen" style={{fontSize:'50px'}}>
+  {curWeek > -1 && curDay > -1 && weekData[curWeek] && weekData[curWeek].days[curDay] && (
+    <div className="w-full max-w-lg p-4 bg-white shadow-md m-auto">
+      <h2 className="text-xl font-bold mb-2 text-center">Week {weekData[curWeek].week} - Day {weekData[curWeek].days[curDay].day}</h2>
+      <p className="text-gray-700 mb-1 text-center"><strong>Description:</strong> {weekData[curWeek].days[curDay].description}</p>
+      <p className="text-gray-700 mb-1 text-center"><strong>Purpose:</strong> {weekData[curWeek].description}</p>
+      <p className="text-gray-700 mb-1 text-center"><strong>Repetitions:</strong> {weekData[curWeek].days[curDay].repetitions} times</p>
+    </div>
+  )}
+</ScreenBox>
       {word && (
         <>
 
           <div >
+
             <ScreenBox className="flex-col-reverse">
-              <div className="w-full flex justify-center">
+              <div className="w-full flex justify-center mt-4">
                 <div className="min-h-[500px] min-w-[500px] mb-8" style={{ width: '500px', height: '500px' }}>
                   <svg
                     viewBox={`0 0 ${word.viewBoxWidth} 100`}
@@ -733,19 +646,19 @@ const WordTrackWeekPlan = () => {
               </div>
               <LineWordList className="w-full">
                 <div className="h-full overflow-auto">
-                  <div className="flex items-center justify-center gap-4 mb-4 mx-5 min-h-full">
+                  <div className="flex items-center justify-center gap-4 mb-4  min-h-full">
                     {curWeek >= 0 && curDay >= 0 && (
-                      <div className="font-semibold text-gray-700">
+                      <div className="font-semibold text-gray-700 flex">
                         {weekData[curWeek] && weekData[curWeek].days[curDay] && Array.isArray(weekData[curWeek].days[curDay].characters) ? (
                           weekData[curWeek].days[curDay].characters.map((ch, idx) => (
                             <span
                               key={idx}
-                              className={`inline-block rounded-full px-3 py-1 font-semibold mr-2 mb-2  word-animation `}
+                              className={`inline-block flex rounded-full px-3 py-1 font-semibold mr-4 mb-2  word-animation `}
                             >
                               {ch.split("").map((c, i) => (
                                 <span
                                   key={i}
-                                  className={`flex flex-col items-center  word-animation ${curChar === idx && curChari === i ? "active" : curChar > idx && curChari === i ? "actived" : "text-black"
+                                  className={`flex flex-col items-center mr-2  word-animation ${curChar === idx && curChari === i ? "active" : curChar > idx || idx<=curChar && i<= curChari  ? "actived" : "text-black"
                                     }`}
                                 >
                                   {c}
@@ -762,6 +675,7 @@ const WordTrackWeekPlan = () => {
                   </div>
                 </div>
               </LineWordList>
+              <div className="absolute top-0 right-0">Make By ALearningApp.com</div>
             </ScreenBox>
           </div>
           <audio ref={audioRef} controls src={`/data/sound/3s.mp3`} className={errorMsg ? '' : 'hidden'} />
