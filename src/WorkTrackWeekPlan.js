@@ -16,9 +16,6 @@ import {
   faLightbulb,
   faVolumeUp,
   faQuestionCircle,
-  faEdit,
-  faSave,
-  faTimes,
   faForward
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -238,7 +235,9 @@ const WordTrackWeekPlan = () => {
     setPoints([]);
   };
 
-  const playStrokes = async () => {
+  const playWordStrokes = async () => {
+
+     await loadDatas();
     const word = wordRef.current;
     playingRef.current = +new Date();
     let curTime = playingRef.current;
@@ -254,7 +253,7 @@ const WordTrackWeekPlan = () => {
           if (curTime !== playingRef.current) return;
           setPlayedIndex(i);
         }
-        playSound(`/data/audio/${selectedLanguage}/${encodeURIComponent(w.ch.toLowerCase())}.mp3`);
+        await playSound(`/data/audio/${selectedLanguage}/${encodeURIComponent(w.ch.toLowerCase())}.mp3`);
         await new Promise((resolve) => setTimeout(resolve, 1000));
         if (curTime !== playingRef.current) return;
       }
@@ -262,15 +261,38 @@ const WordTrackWeekPlan = () => {
     playingRef.current = 0;
   };
 
-  useEffect(() => {
-    wordRef.current = null;
-    setPlayedIndex(-1);
-    (async () => {
-      await loadDatas();
-    })();
-  }, [words, txtIndex]);
+const playDays = async (day) => {
+  if (!day?.characters || !Array.isArray(day.characters)) {
+    console.warn('No valid characters array provided');
+    return;
+  }
 
-  useEffect(() => {
+  for (let i=0;i<day.characters.length;i++) {
+    try {
+      // Update state for the current character
+      const characterString = day.characters.join('');
+      setText(characterString); 
+      setWords([characterString.split('')]); // Presumably setting words based on the full character string
+      setTxtIndex(0);
+
+      // Navigate to the character's page
+     // navigate(`/weekplan/${encodeURIComponent(day.characters[i])}`);
+
+      // Add a delay to allow state updates and navigation to settle
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Play strokes and sounds sequentially
+      await playWordStrokes();
+    } catch (error) {
+      console.error(`Error processing character "${day.characters[i]}":`, error);
+      // Continue to the next character
+      continue;
+    }
+  }
+};
+
+
+  /*useEffect(() => {
     if (wordRef.current && playedIndex >= wordRef.current.stroke.length - 1) {
       (async () => {
         await playSounds();
@@ -278,13 +300,13 @@ const WordTrackWeekPlan = () => {
         if (autoPlayNext && txtIndex + 1 < words.length) {
           setTxtIndex((prev) => prev + 1);
           await new Promise((resolve) => setTimeout(resolve, 500));
-          await playStrokes();
+          await playWordStrokes();
         } else {
           setTxtIndex((prev) => prev + 1 >= words.length ? prev : prev + 1);
         }
       })();
     }
-  }, [wordRef.current, playedIndex, autoPlayNext, words.length, txtIndex]);
+  }, [wordRef.current, playedIndex, autoPlayNext, words.length, txtIndex]);*/
 
   const resetStrokes = () => {
     setPoints([]);
@@ -419,15 +441,17 @@ const WordTrackWeekPlan = () => {
 
   const audioRef = useRef(null);
   const [errorMsg, setErrorMsg] = useState('');
-  const playSound = (url) => {
-    if (audioRef.current) {
-      audioRef.current.src = url;
-      audioRef.current.play().catch((error) => {
-        console.error("Error playing sound:", error);
-        setErrorMsg(error.message);
-      });
+const playSound = async (url) => {
+  if (audioRef.current) {
+    audioRef.current.src = url;
+    try {
+      await audioRef.current.play();
+    } catch (error) {
+      console.error("Error playing sound:", error);
+      setErrorMsg(error.message);
     }
-  };
+  }
+};
 
   const [selectedLanguage, setSelectedLanguage] = useState('Cantonese');
   const playSounds = async () => {
@@ -453,17 +477,21 @@ const WordTrackWeekPlan = () => {
     setTipIndex(nextIndex);
   }, [word, playedIndex, autoTips]);
 
+
+const startPlay = async () => {
+  for (let i=0;i< weeksplan.length;i++) {
+      for (let j=0;j< weeksplan[i].days.length;j++) {
+        await playDays(weeksplan[i].days[j]);
+  }
+}
+};
+
+
+
+
   const buttons = [
-    { icon: faQuestionCircle, label: "Next Tip", onClick: tipsNextStroke },
-    {
-      icon: faLightbulb,
-      label: "Auto Tips",
-      onClick: () => setAutoTips(!autoTips),
-      selected: autoTips,
-    },
-    { icon: faRedo, label: "Reset", onClick: resetStrokes },
-    { icon: faPlay, label: "Play", onClick: playStrokes },
-    { icon: faVolumeUp, label: "Sound", onClick: playSounds },
+  
+    { icon: faPlay, label: "Play", onClick: startPlay },
   ];
 
   const [trackPoints, setTrackPoints] = useState([]);
