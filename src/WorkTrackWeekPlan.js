@@ -267,13 +267,19 @@ const playDays = async (day) => {
     return;
   }
 
-  let chs = day.characters.join('').split('');
-  for (let i=0;i<chs.length;i++) {
+
+  for(let k=0;k<day.characters.length;k++) {
+
+    setCurChar(k);
+
+    let  chs = day.characters[k].split('');
+     for (let i=0;i<chs.length;i++) {
     try {
       // Update state for the current character
       setText(chs[i]); 
       setWords(chs); // Presumably setting words based on the full character string
       setTxtIndex(i);
+      setCurChari(i);
 
       // Navigate to the character's page
      // navigate(`/weekplan/${encodeURIComponent(day.characters[i])}`);
@@ -290,6 +296,10 @@ const playDays = async (day) => {
       continue;
     }
   }
+
+  }
+
+ 
 };
 
 
@@ -482,6 +492,8 @@ const playSound = async (url) => {
 
 const [curWeek, setCurWeek] = useState(-1);
 const [curDay, setCurDay] = useState(-1);
+const [curChar, setCurChar] = useState(-1);
+const [curChari, setCurChari] = useState(-1);
 const [weekData, setWeekData] = useState(weeksplan);
 
 const startPlay = async () => {
@@ -727,10 +739,19 @@ const startPlay = async () => {
                           weekData[curWeek].days[curDay].characters.map((ch, idx) => (
                             <span
                               key={idx}
-                              className="inline-block bg-blue-100 text-blue-800 rounded-full px-3 py-1 text-sm font-semibold mr-2 mb-2 cursor-pointer hover:bg-blue-200"
-                              onClick={() => handleDayClick(ch)}
+                              className={`inline-block  rounded-full px-3 py-1 font-semibold mr-2 mb-2 cursor-pointer   word-animation ${curChari > idx ? "text-red-500" : curChari === idx ? "active" : "text-black"}`}
                             >
-                              {ch}
+                              {ch.split('').map((c, i) => (
+                                <span
+                                  key={i}
+                                  className={`flex flex-col items-center cursor-pointer word-animation ${curChari === i && curChar === idx ? "underline" : ""}`}
+                           
+                                >
+                                  {c}
+                                  {curChar === idx  && curChari === i  && <i className="fa-solid fa-hand-pointer mt-1"></i>}
+                                </span>
+                              ))}
+                              
                             </span>
                           ))
                         ) :  (
