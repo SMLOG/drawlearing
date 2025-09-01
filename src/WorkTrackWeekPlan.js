@@ -18,6 +18,7 @@ import {
   faQuestionCircle,
   faForward
 } from "@fortawesome/free-solid-svg-icons";
+import Watermark from './Watermark';
 
 import './word-animation.css';
 
@@ -463,6 +464,7 @@ const WordTrackWeekPlan = () => {
 
   return (
     <Container className="min-h-screen h-screen" id="screens" style={{ cursor: fullScreen ? 'none' : 'pointer' }}>
+      <Watermark text="alearningapp.com" />
       <div
         id="cinfo"
         style={{
@@ -685,7 +687,6 @@ const WordTrackWeekPlan = () => {
                   </div>
                 </div>
               </LineWordList>
-              <div className="absolute top-0 right-0">Make By ALearningApp.com</div>
             </ScreenBox>
           </div>
           <audio ref={audioRef} controls src={`/data/sound/3s.mp3`} className={errorMsg ? '' : 'hidden'} />
