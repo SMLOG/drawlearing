@@ -221,7 +221,7 @@ const WordTrackWeekPlan = () => {
   const [points, setPoints] = useState([]);
   const wordRef = useRef(null);
   const playingRef = useRef(0);
-  const [autoPlayNext, setAutoPlayNext] = useState(false);
+  const [autoPlayNext, setAutoPlayNext] = useState(true);
 
   const playStroke = async (w, stroke, curTime) => {
     await new Promise((resolve) => setTimeout(resolve, 70));
@@ -468,18 +468,6 @@ const WordTrackWeekPlan = () => {
 
   const [trackPoints, setTrackPoints] = useState([]);
   const [text, setText] = useState(sentence);
-  const [isEditing, setIsEditing] = useState(false);
-
-  const handleEditClick = () => setIsEditing(true);
-  const handleSaveClick = () => {
-    setIsEditing(false);
-    setWords(text.split(""));
-    navigate('/weekplan/' + encodeURIComponent(text));
-  };
-  const handleCancelClick = () => {
-    setIsEditing(false);
-    setText(sentence);
-  };
 
   const handleDayClick = (character) => {
     setText(character);
@@ -516,8 +504,22 @@ const WordTrackWeekPlan = () => {
 
   return (
     <Container className="min-h-screen" id="screens">
-      <div id="cinfo" style={{ position: fullScreen ? 'fixed' : 'static' }}>
-        <WeekPlanContainer className="bg-white shadow-md rounded-lg p-6">
+      <div
+        id="cinfo"
+        style={{
+          position: fullScreen ? 'fixed' : 'static',
+          top: fullScreen ? '50%' : 'auto',
+          left: fullScreen ? '50%' : 'auto',
+          transform: fullScreen ? 'translate(-50%, -50%)' : 'none',
+          width: '100%',
+          maxWidth: '800px',
+          margin: fullScreen ? '0' : '0 auto',
+          background: fullScreen ? 'rgba(0, 0, 0, 0.5)' : 'transparent', // optional: dim background
+          zIndex: fullScreen ? 1000 : 'auto',
+          overflowY: fullScreen ? 'auto' : 'visible', // optional: allow scrolling if content is tall
+        }}
+      >
+        <WeekPlanContainer className="week-plan-container bg-white shadow-md rounded-lg p-6">
           <h2 className="text-2xl font-bold text-center mb-6 flex items-center justify-center gap-2">
             <i className="fas fa-book text-blue-600"></i> 笔顺练习计划 (Week Plan)
           </h2>
@@ -551,9 +553,7 @@ const WordTrackWeekPlan = () => {
         </WeekPlanContainer>
         <div className="flex justify-center items-center mb-4">
           <CollapsibleItemsContainer direction="w" className="flex flex-wrap gap-2">
-            <Button
-              onClick={handleFullScreen}
-            >
+            <Button onClick={handleFullScreen}>
               <span>FullScreen</span>
             </Button>
             {buttons.map((button, index) => (
