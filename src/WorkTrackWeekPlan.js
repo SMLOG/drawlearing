@@ -261,46 +261,46 @@ const WordTrackWeekPlan = () => {
     playingRef.current = 0;
   };
 
-const playDays = async (day) => {
-  if (!day?.characters || !Array.isArray(day.characters)) {
-    console.warn('No valid characters array provided');
-    return;
-  }
-
-
-  for(let k=0;k<day.characters.length;k++) {
-
-    setCurChar(k);
-
-    let  chs = day.characters[k].split('');
-     for (let i=0;i<chs.length;i++) {
-    try {
-      // Update state for the current character
-      setText(chs[i]); 
-      setWords(chs); // Presumably setting words based on the full character string
-      setTxtIndex(i);
-      setCurChari(i);
-
-      // Navigate to the character's page
-     // navigate(`/weekplan/${encodeURIComponent(day.characters[i])}`);
-
-      // Add a delay to allow state updates and navigation to settle
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Play strokes and sounds sequentially
-      await playWordStrokes(chs[i]);
-      console.log('Finished playing character:', chs[i]);
-    } catch (error) {
-      console.error(`Error processing character "${day.characters[i]}":`, error);
-      // Continue to the next character
-      continue;
+  const playDays = async (day) => {
+    if (!day?.characters || !Array.isArray(day.characters)) {
+      console.warn('No valid characters array provided');
+      return;
     }
-  }
 
-  }
 
- 
-};
+    for (let k = 0; k < day.characters.length; k++) {
+
+      setCurChar(k);
+
+      let chs = day.characters[k].split('');
+      for (let i = 0; i < chs.length; i++) {
+        try {
+          // Update state for the current character
+          setText(chs[i]);
+          setWords(chs); // Presumably setting words based on the full character string
+          setTxtIndex(i);
+          setCurChari(i);
+
+          // Navigate to the character's page
+          // navigate(`/weekplan/${encodeURIComponent(day.characters[i])}`);
+
+          // Add a delay to allow state updates and navigation to settle
+          await new Promise(resolve => setTimeout(resolve, 1000));
+
+          // Play strokes and sounds sequentially
+          await playWordStrokes(chs[i]);
+          console.log('Finished playing character:', chs[i]);
+        } catch (error) {
+          console.error(`Error processing character "${day.characters[i]}":`, error);
+          // Continue to the next character
+          continue;
+        }
+      }
+
+    }
+
+
+  };
 
 
   /*useEffect(() => {
@@ -453,17 +453,17 @@ const playDays = async (day) => {
 
   const audioRef = useRef(null);
   const [errorMsg, setErrorMsg] = useState('');
-const playSound = async (url) => {
-  if (audioRef.current) {
-    audioRef.current.src = url;
-    try {
-      await audioRef.current.play();
-    } catch (error) {
-      console.error("Error playing sound:", error);
-      setErrorMsg(error.message);
+  const playSound = async (url) => {
+    if (audioRef.current) {
+      audioRef.current.src = url;
+      try {
+        await audioRef.current.play();
+      } catch (error) {
+        console.error("Error playing sound:", error);
+        setErrorMsg(error.message);
+      }
     }
-  }
-};
+  };
 
   const [selectedLanguage, setSelectedLanguage] = useState('Cantonese');
   const playSounds = async () => {
@@ -490,27 +490,27 @@ const playSound = async (url) => {
   }, [word, playedIndex, autoTips]);
 
 
-const [curWeek, setCurWeek] = useState(-1);
-const [curDay, setCurDay] = useState(-1);
-const [curChar, setCurChar] = useState(-1);
-const [curChari, setCurChari] = useState(-1);
-const [weekData, setWeekData] = useState(weeksplan);
+  const [curWeek, setCurWeek] = useState(-1);
+  const [curDay, setCurDay] = useState(-1);
+  const [curChar, setCurChar] = useState(-1);
+  const [curChari, setCurChari] = useState(-1);
+  const [weekData, setWeekData] = useState(weeksplan);
 
-const startPlay = async () => {
-  for (let i=0;i< weeksplan.length;i++) {
-    setCurWeek(i);
-      for (let j=0;j< weeksplan[i].days.length;j++) {
+  const startPlay = async () => {
+    for (let i = 0; i < weeksplan.length; i++) {
+      setCurWeek(i);
+      for (let j = 0; j < weeksplan[i].days.length; j++) {
         setCurDay(j);
         await playDays(weeksplan[i].days[j]);
-  }
-}
-};
+      }
+    }
+  };
 
 
 
 
   const buttons = [
-  
+
     { icon: faPlay, label: "Play", onClick: startPlay },
   ];
 
@@ -614,7 +614,7 @@ const startPlay = async () => {
                 <span>{button.label}</span>
               </Button>
             ))}
-  
+
             <select
               onChange={(e) => setSelectedLanguage(e.target.value)}
               value={selectedLanguage}
@@ -732,35 +732,32 @@ const startPlay = async () => {
               </div>
               <LineWordList className="w-full">
                 <div className="h-full overflow-auto">
-                  <div className="flex items-center gap-4 justify-between mb-4 mx-5">
-                     {curWeek >= 0 &&curDay >= 0 && (
+                  <div className="flex items-center justify-center gap-4 mb-4 mx-5 min-h-full">
+                    {curWeek >= 0 && curDay >= 0 && (
                       <div className="text-lg font-semibold text-gray-700">
-                        {weekData[curWeek] && weekData[curWeek].days[curDay] && Array.isArray(weekData[curWeek].days[curDay].characters)? (
+                        {weekData[curWeek] && weekData[curWeek].days[curDay] && Array.isArray(weekData[curWeek].days[curDay].characters) ? (
                           weekData[curWeek].days[curDay].characters.map((ch, idx) => (
                             <span
                               key={idx}
-                              className={`inline-block  rounded-full px-3 py-1 font-semibold mr-2 mb-2 cursor-pointer   word-animation ${curChari > idx ? "text-red-500" : curChari === idx ? "active" : "text-black"}`}
+                              className={`inline-block rounded-full px-3 py-1 font-semibold mr-2 mb-2 cursor-pointer word-animation `}
                             >
-                              {ch.split('').map((c, i) => (
+                              {ch.split("").map((c, i) => (
                                 <span
                                   key={i}
-                                  className={`flex flex-col items-center cursor-pointer word-animation ${curChari === i && curChar === idx ? "underline" : ""}`}
-                           
+                                  className={`flex flex-col items-center cursor-pointer word-animation ${curChar === idx && curChari === i ? "text-red-500" : curChar > idx && curChari === i ? "active" : "text-black"
+                                    }`}
                                 >
                                   {c}
-                                  {curChar === idx  && curChari === i  && <i className="fa-solid fa-hand-pointer mt-1"></i>}
+                                  {curChar === idx && curChari === i && <i className="fa-solid fa-hand-pointer mt-1"></i>}
                                 </span>
                               ))}
-                              
                             </span>
                           ))
-                        ) :  (
+                        ) : (
                           <></>
                         )}
                       </div>
                     )}
-
-         
                   </div>
                 </div>
               </LineWordList>
