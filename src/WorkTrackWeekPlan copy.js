@@ -160,13 +160,18 @@ const ScreenBox = styled.div`
   }
 `;
 
-const LineWordList = styled.div`
+const LineText = styled.div`
   flex-grow: 1;
   padding: 16px;
   font-size: 2.5rem;
   text-align: left;
+  min-width: 300px;
   background-color: #ffffff;
+  border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  @media (min-width: 800px) {
+    min-height: 300px;
+  }
 `;
 
 const Button = styled.button`
@@ -538,22 +543,18 @@ const WordTrackWeekPlan = () => {
             </CollapsibleItemsContainer>
           </div>
           <ScreenBox className="flex-col-reverse">
-            <div className="w-full flex justify-center">
-            <div className="min-h-[500px] min-w-[500px] mb-4" style={{width: '500px', height: '500px'}}>
             <svg
               viewBox={`0 0 ${word.viewBoxWidth} 100`}
-              className="max-h-full max-w-[350px] min-w-[300px] border border-gray-300 rounded-md border-black"
-              style={{ border: "10px solid black",boarderBox: 'border-box', touchAction: 'none' }}
+              className="max-h-full max-w-[350px] min-w-[300px] border border-gray-300 rounded-md"
               ref={svgRef}
               onMouseDown={startDrawing}
               onMouseMove={moveDraw}
               onMouseUp={stopDrawing}
-              
             >
               <g>
                 <rect x="0" y="0" width="100%" height="100%" stroke="black" strokeWidth="1" fill="#e5e7eb" />
-                <line x1="2" y1="50%" x2="100%" y2="50%" strokeDasharray="5,5" stroke="#ffffff" strokeWidth="1" />
-                <line x1="50%" y1="2" x2="50%" y2="100%" strokeDasharray="5,5" stroke="#ffffff" strokeWidth="1" />
+                <line x1="0" y1="50%" x2="100%" y2="50%" strokeDasharray="5,5" stroke="#ffffff" strokeWidth="1" />
+                <line x1="50%" y1="0" x2="50%" y2="100%" strokeDasharray="5,5" stroke="#ffffff" strokeWidth="1" />
                 {word.chs.map((ch, index) => (
                   <g key={index}>
                     <line
@@ -635,11 +636,28 @@ const WordTrackWeekPlan = () => {
                 ))}
               </g>
             </svg>
-            </div>
-            </div>
-            <LineWordList className="w-full">
+            <LineText>
               <div className="h-full overflow-auto">
-                  <div className="flex items-center gap-4 justify-between mb-4 mx-5">
+                {isEditing ? (
+                  <div className="space-y-4">
+                    <textarea
+                      rows={4}
+                      value={text}
+                      onChange={(e) => setText(e.target.value)}
+                      className="w-full p-2 border rounded-md"
+                      placeholder="Enter text to practice"
+                    />
+                    <div className="flex gap-2">
+                      <Button onClick={handleSaveClick}>
+                        <FontAwesomeIcon icon={faSave} /> Save
+                      </Button>
+                      <Button onClick={handleCancelClick}>
+                        <FontAwesomeIcon icon={faTimes} /> Cancel
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
                     {words.map((ch, index) => (
                       <span
                         key={index}
@@ -651,8 +669,9 @@ const WordTrackWeekPlan = () => {
                     ))}
 
                   </div>
+                )}
               </div>
-            </LineWordList>
+            </LineText>
           </ScreenBox>
           <audio ref={audioRef} controls src={`/data/sound/3s.mp3`} className={errorMsg ? '' : 'hidden'} />
           {errorMsg && <div className="text-red-500 mt-2">{errorMsg}</div>}
