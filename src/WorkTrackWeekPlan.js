@@ -519,7 +519,7 @@ const WordTrackWeekPlan = () => {
       <div id="cinfo" style={{ position: fullScreen ? 'fixed' : 'static' }}>
         <WeekPlanContainer className="bg-white shadow-md rounded-lg p-6">
           <h2 className="text-2xl font-bold text-center mb-6 flex items-center justify-center gap-2">
-            <i className="fas fa-book text-blue-600"></i> Learning Plan
+            <i className="fas fa-book text-blue-600"></i> 笔顺练习计划 (Week Plan)
           </h2>
           {weeks.map((week) => (
             <div key={week.week} className="mb-6 border-b last:border-0 pb-4">
