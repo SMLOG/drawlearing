@@ -273,7 +273,7 @@ const playDays = async (day) => {
       // Update state for the current character
       setText(chs[i]); 
       setWords(chs); // Presumably setting words based on the full character string
-      setTxtIndex(0);
+      setTxtIndex(i);
 
       // Navigate to the character's page
      // navigate(`/weekplan/${encodeURIComponent(day.characters[i])}`);
