@@ -162,7 +162,7 @@ const ScreenBox = styled.div`
 const LineWordList = styled.div`
   flex-grow: 1;
   padding: 16px;
-  font-size: 2.5rem;
+  font-size: 100px;
   text-align: left;
 `;
 
@@ -289,6 +289,8 @@ const WordTrackWeekPlan = () => {
 
           // Play strokes and sounds sequentially
           await playWordStrokes(chs[i]);
+          await new Promise(resolve => setTimeout(resolve, 1000));
+
           console.log('Finished playing character:', chs[i]);
         } catch (error) {
           console.error(`Error processing character "${day.characters[i]}":`, error);
@@ -562,7 +564,6 @@ const WordTrackWeekPlan = () => {
           width: '100%',
           maxWidth: '800px',
           margin: fullScreen ? '0' : '0 auto',
-          background: fullScreen ? 'rgba(0, 0, 0, 0.5)' : 'transparent', // optional: dim background
           zIndex: fullScreen ? 1000 : 'auto',
           display: fullScreen ? 'none' : '', // optional: allow scrolling if content is tall
         }}
@@ -583,7 +584,7 @@ const WordTrackWeekPlan = () => {
                 {week.days.map((day) => (
                   <li
                     key={day.day}
-                    className="mb-2 transition-colors duration-200 hover:text-blue-500 cursor-pointer flex items-center gap-2 group"
+                    className="mb-2 transition-colors duration-200 hover:text-blue-500  flex items-center gap-2 group"
                     onClick={() => handleDayClick(Array.isArray(day.characters) ? day.characters.join('') : day.characters)}
                   >
                     <i className="fas fa-book-open text-gray-600 group-hover:text-blue-500 transition-colors duration-200"></i>
@@ -734,17 +735,17 @@ const WordTrackWeekPlan = () => {
                 <div className="h-full overflow-auto">
                   <div className="flex items-center justify-center gap-4 mb-4 mx-5 min-h-full">
                     {curWeek >= 0 && curDay >= 0 && (
-                      <div className="text-lg font-semibold text-gray-700">
+                      <div className="font-semibold text-gray-700">
                         {weekData[curWeek] && weekData[curWeek].days[curDay] && Array.isArray(weekData[curWeek].days[curDay].characters) ? (
                           weekData[curWeek].days[curDay].characters.map((ch, idx) => (
                             <span
                               key={idx}
-                              className={`inline-block rounded-full px-3 py-1 font-semibold mr-2 mb-2 cursor-pointer word-animation `}
+                              className={`inline-block rounded-full px-3 py-1 font-semibold mr-2 mb-2  word-animation `}
                             >
                               {ch.split("").map((c, i) => (
                                 <span
                                   key={i}
-                                  className={`flex flex-col items-center cursor-pointer word-animation ${curChar === idx && curChari === i ? "text-red-500" : curChar > idx && curChari === i ? "active" : "text-black"
+                                  className={`flex flex-col items-center  word-animation ${curChar === idx && curChari === i ? "active" : curChar > idx && curChari === i ? "actived" : "text-black"
                                     }`}
                                 >
                                   {c}
