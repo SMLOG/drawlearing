@@ -37,7 +37,6 @@ const ScreenBox = styled.div`
   display: flex;
   flex-grow: 1;
   align-items: flex-start;
-  position: relative;
   @media (max-width: 800px) {
     flex-direction: column;
     align-items: center;
@@ -382,13 +381,21 @@ const WordTrackWeekPlan = () => {
   const [curChar, setCurChar] = useState(-1);
   const [curChari, setCurChari] = useState(-1);
   const [weekData, setWeekData] = useState(weeksplan);
+  const [screen, setScreen] = useState("");
+
+  
 
   const startPlay = async () => {
     for (let i = 0; i < weeksplan.length; i++) {
       setCurWeek(i);
       for (let j = 0; j < weeksplan[i].days.length; j++) {
         setCurDay(j);
-        await new Promise((resolve) => setTimeout(resolve, 50000));
+        setScreen('intro');
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+        setScreen('');
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        setScreen('run');
+        await new Promise((resolve) => setTimeout(resolve, 500));
         await playDays(weeksplan[i].days[j]);
       }
     }
@@ -529,18 +536,21 @@ const WordTrackWeekPlan = () => {
           </div>
         </div>
       </div>
-<ScreenBox className="flex flex-col items-center justify-center min-h-screen" style={{fontSize:'50px'}}>
+  {screen=='intro'&&<ScreenBox className="screenIntro fade-element" style={{fontSize:'50px'}}>
   {curWeek > -1 && curDay > -1 && weekData[curWeek] && weekData[curWeek].days[curDay] && (
-    <div className="w-full max-w-lg p-4 bg-white shadow-md m-auto">
-      <h2 className="text-xl font-bold mb-2 text-center">Week {weekData[curWeek].week} - Day {weekData[curWeek].days[curDay].day}</h2>
+    <div className="p-4 bg-white bg-yellow-50 rounded-lg mb-4">
+      <h2 className="text-xl font-bold mb-2 text-center"><strong>Week {weekData[curWeek].week} - Day {weekData[curWeek].days[curDay].day}</strong></h2>
       <p className="text-gray-700 mb-1 text-center"><strong>Description:</strong> {weekData[curWeek].days[curDay].description}</p>
-      <p className="text-gray-700 mb-1 text-center"><strong>Purpose:</strong> {weekData[curWeek].description}</p>
-      <p className="text-gray-700 mb-1 text-center"><strong>Repetitions:</strong> {weekData[curWeek].days[curDay].repetitions} times</p>
+      <p className="inline-flex items-center gap-1 bg-gray-100 text-blue-400 rounded px-1.5 py-0.5 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200">
+                        <i className="fas fa-quote-left text-sm"></i> {weekData[curWeek].description}
+                      </p>
+
     </div>
   )}
-</ScreenBox>
-      {word && (
-        <>
+</ScreenBox>}
+
+      {screen=='run'&&word && (
+        <div className="fade-element">
 
           <div >
 
@@ -680,7 +690,7 @@ const WordTrackWeekPlan = () => {
           </div>
           <audio ref={audioRef} controls src={`/data/sound/3s.mp3`} className={errorMsg ? '' : 'hidden'} />
           {errorMsg && <div className="text-red-500 mt-2">{errorMsg}</div>}
-        </>
+        </div>
       )}
     </Container>
   );
