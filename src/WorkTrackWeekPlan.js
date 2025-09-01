@@ -517,22 +517,26 @@ const WordTrackWeekPlan = () => {
   return (
     <Container className="min-h-screen" id="screens">
       <div id="cinfo" style={{position: fullScreen ? 'fixed' : 'static' }}>
-      <WeekPlanContainer>
-        <h2 className="text-xl font-semibold mb-4">Learning Plan</h2>
-        {weeks.map((week) => (
-          <div key={week.week} className="mb-4">
-            <h3 className="text-lg font-medium">Week {week.week}: {week.description}</h3>
-            <p className="text-gray-600 mb-2">{week.purpose}</p>
-            <ul className="list-disc pl-5">
-              {week.days.map((day) => (
-                <li key={day.day} className="mb-1" onClick={() => handleDayClick(Array.isArray(day.characters) ? day.characters.join('') : day.characters)} style={{cursor: 'pointer'} }>
-                  <strong>Day {day.day}:</strong> {Array.isArray(day.characters) ? day.characters.join(", ") : day.characters} - ({day.description})
-                </li>
-              ))}
-            </ul>
-          </div>
+<WeekPlanContainer className="bg-white shadow-md rounded-lg p-6">
+  <h2 className="text-2xl font-bold text-center mb-6">Learning Plan</h2>
+  {weeks.map((week) => (
+    <div key={week.week} className="mb-6 border-b last:border-0 pb-4">
+      <h3 className="text-xl font-semibold text-blue-600">Week {week.week}: {week.description}</h3>
+      <p className="text-gray-700 mb-2 italic">{week.purpose}</p>
+      <ul className="list-disc pl-5">
+        {week.days.map((day) => (
+          <li
+            key={day.day}
+            className="mb-2 transition-colors duration-200 hover:text-blue-500 cursor-pointer"
+            onClick={() => handleDayClick(Array.isArray(day.characters) ? day.characters.join('') : day.characters)}
+          >
+            <strong>Day {day.day}:</strong> {Array.isArray(day.characters) ? day.characters.join(", ") : day.characters} - ({day.description})
+          </li>
         ))}
-      </WeekPlanContainer>
+      </ul>
+    </div>
+  ))}
+</WeekPlanContainer>
                <div className="flex justify-center items-center mb-4">
             <CollapsibleItemsContainer direction="w" className="flex flex-wrap gap-2">
                         <Button
