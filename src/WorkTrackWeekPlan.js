@@ -164,8 +164,6 @@ const LineWordList = styled.div`
   padding: 16px;
   font-size: 2.5rem;
   text-align: left;
-  background-color: #ffffff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const Button = styled.button`
