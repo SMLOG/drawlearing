@@ -22,6 +22,8 @@ import {
   faForward
 } from "@fortawesome/free-solid-svg-icons";
 
+import  './word-animation.css';
+
 export const weeksplan = [
   {
     "week": 1,
@@ -485,8 +487,36 @@ const WordTrackWeekPlan = () => {
     setTxtIndex(0);
     navigate('/weekplan/' + encodeURIComponent(character));
   };
+
+  const [fullScreen, setFullScreen] = useState(false);
+
+    const handleExitFullScreen = () => {
+    setFullScreen(false);
+  };
+
+  useEffect(() => {
+    // Listen for fullscreen change events
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement) {
+        handleExitFullScreen();
+      }
+    });
+
+    // Clean up the event listener on component unmount
+    return () => {
+      document.removeEventListener('fullscreenchange', handleExitFullScreen);
+    };
+  }, []);
+
+  const handleFullScreen = () => {  
+    setFullScreen(true);
+    document.querySelector('#screens').requestFullscreen();
+  
+  }
+
   return (
-    <Container className="min-h-screen">
+    <Container className="min-h-screen" id="screens">
+      <div id="cinfo" style={{position: fullScreen ? 'fixed' : 'static' }}>
       <WeekPlanContainer>
         <h2 className="text-xl font-semibold mb-4">Learning Plan</h2>
         {weeks.map((week) => (
@@ -503,10 +533,13 @@ const WordTrackWeekPlan = () => {
           </div>
         ))}
       </WeekPlanContainer>
-      {word && (
-        <>
-          <div className="flex justify-center items-center mb-4">
+               <div className="flex justify-center items-center mb-4">
             <CollapsibleItemsContainer direction="w" className="flex flex-wrap gap-2">
+                        <Button
+                  onClick={handleFullScreen}
+                >
+                  <span>FullScreen</span>
+                </Button>
               {buttons.map((button, index) => (
                 <Button
                   key={index}
@@ -537,6 +570,11 @@ const WordTrackWeekPlan = () => {
               </select>
             </CollapsibleItemsContainer>
           </div>
+          </div>
+      {word && (
+        <>
+ 
+          <div >
           <ScreenBox className="flex-col-reverse">
             <div className="w-full flex justify-center">
             <div className="min-h-[500px] min-w-[500px] mb-4" style={{width: '500px', height: '500px'}}>
@@ -638,22 +676,23 @@ const WordTrackWeekPlan = () => {
             </div>
             </div>
             <LineWordList className="w-full">
-              <div className="h-full overflow-auto">
-                  <div className="flex items-center gap-4 justify-between mb-4 mx-5">
-                    {words.map((ch, index) => (
-                      <span
-                        key={index}
-                        className={`cursor-pointer ${txtIndex > index ? "text-red-500" : txtIndex === index ? "text-green-500" : "text-black"}`}
-                        onClick={() => setTxtIndex(index)}
-                      >
-                        {ch}
-                      </span>
-                    ))}
-
-                  </div>
-              </div>
+<div className="h-full overflow-auto">
+  <div className="flex items-center gap-4 justify-between mb-4 mx-5">
+    {words.map((ch, index) => (
+      <span
+        key={index}
+        className={`flex flex-col items-center cursor-pointer word-animation ${txtIndex > index ? "text-red-500" : txtIndex === index ? "active" : "text-black"}`}
+        onClick={() => setTxtIndex(index)}
+      >
+        {ch}
+        {txtIndex === index && <i className="fa-solid fa-hand-pointer mt-1"></i>}
+      </span>
+    ))}
+  </div>
+</div>
             </LineWordList>
           </ScreenBox>
+          </div>
           <audio ref={audioRef} controls src={`/data/sound/3s.mp3`} className={errorMsg ? '' : 'hidden'} />
           {errorMsg && <div className="text-red-500 mt-2">{errorMsg}</div>}
         </>
