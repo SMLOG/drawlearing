@@ -518,19 +518,28 @@ const WordTrackWeekPlan = () => {
     <Container className="min-h-screen" id="screens">
       <div id="cinfo" style={{position: fullScreen ? 'fixed' : 'static' }}>
 <WeekPlanContainer className="bg-white shadow-md rounded-lg p-6">
-  <h2 className="text-2xl font-bold text-center mb-6">Learning Plan</h2>
+  <h2 className="text-2xl font-bold text-center mb-6 flex items-center justify-center gap-2">
+    <i className="fas fa-book text-blue-600"></i> Learning Plan
+  </h2>
   {weeks.map((week) => (
     <div key={week.week} className="mb-6 border-b last:border-0 pb-4">
-      <h3 className="text-xl font-semibold text-blue-600">Week {week.week}: {week.description}</h3>
-      <p className="text-gray-700 mb-2 italic">{week.purpose}</p>
-      <ul className="list-disc pl-5">
+      <h3 className="text-xl font-semibold text-blue-600 flex items-center gap-2">
+        <i className="fas fa-calendar-week text-blue-500"></i> Week {week.week}: {week.description}
+      </h3>
+      <p className="text-gray-700 mb-2 italic flex items-center gap-2">
+        <i className="fas fa-info-circle text-gray-500"></i> {week.purpose}
+      </p>
+      <ul className="list-none pl-5">
         {week.days.map((day) => (
           <li
             key={day.day}
-            className="mb-2 transition-colors duration-200 hover:text-blue-500 cursor-pointer"
+            className="mb-2 transition-colors duration-200 hover:text-blue-500 cursor-pointer flex items-center gap-2 group"
             onClick={() => handleDayClick(Array.isArray(day.characters) ? day.characters.join('') : day.characters)}
           >
-            <strong>Day {day.day}:</strong> {Array.isArray(day.characters) ? day.characters.join(", ") : day.characters} - ({day.description})
+            <i className="fas fa-book-open text-gray-600 group-hover:text-blue-500 transition-colors duration-200"></i>
+            <span>
+              <strong>Day {day.day}:</strong> {Array.isArray(day.characters) ? day.characters.join(", ") : day.characters} - ({day.description})
+            </span>
           </li>
         ))}
       </ul>
