@@ -760,16 +760,7 @@ const startPlay = async () => {
                       </div>
                     )}
 
-                    {words.map((ch, index) => (
-                      <span
-                        key={index}
-                        className={`flex flex-col items-center cursor-pointer word-animation ${txtIndex > index ? "text-red-500" : txtIndex === index ? "active" : "text-black"}`}
-                        onClick={() => setTxtIndex(index)}
-                      >
-                        {ch}
-                        {txtIndex === index && <i className="fa-solid fa-hand-pointer mt-1"></i>}
-                      </span>
-                    ))}
+         
                   </div>
                 </div>
               </LineWordList>
