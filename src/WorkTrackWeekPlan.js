@@ -32,9 +32,12 @@ position: relative;
 const Screen = styled.div`
   display: flex;
   flex-grow: 1;
+  position: absolute;
+  inset: 0;
+
   align-items: flex-start;
   opacity: 0; /* Start with opacity 0 */
-  transition: opacity 0.5s ease-in-out; /* Smooth transition for opacity */
+  transition: opacity 3s ease-in-out; /* Smooth transition for opacity */
   &.fade-in {
     opacity: 1; /* Fade in to full opacity */
   }
@@ -416,8 +419,15 @@ audioElement.play();
     }
 };
 
-const showScreen = async (screen, duration) => {
-    setScreen(screen);
+const curScreenRef = useRef(screen);
+const prevScreenRef = useRef(prevScreen);
+
+const showScreen = async (s, duration) => {
+  prevScreenRef.current = curScreenRef.current;
+  curScreenRef.current = s;
+
+    setPrevScreen( prevScreenRef.current);
+    setScreen(s);
     setPrevAnimationState('fade-out');
     setCurAnimationState('fade-in');
 
@@ -426,7 +436,7 @@ const showScreen = async (screen, duration) => {
     }else if(typeof duration =='function'){ 
         await duration(); // Wait for the function to complete
     }
-
+    console.log('Screen shown:', screen,prevScreen);
 };
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -566,19 +576,19 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
         </div>
       </div>
           <ScreenContainer>
-        {screen === 'end'  && (
+        {(screen === 'end' || prevScreen === 'end')  && (
         <Screen className={`screen ${getAnimationClass('end')}`} >
            <VideoEndScreen />
         </Screen>
       )}
 
-        {screen === 'conver'  && (
+        {(screen === 'conver'|| prevScreen === 'conver')  && (
         <Screen className={`screen ${getAnimationClass('conver')}`} >
            <VideoCover />
         </Screen>
       )}
 
-      {screen === 'intro'  && (
+      {(screen === 'intro'|| prevScreen === 'intro')  && (
         <Screen className={`${getAnimationClass('intro')}`} style={{ fontSize: '50px' }}>
           <FunnyIntro title={`Week ${weekData[curWeek].week} - Day ${weekData[curWeek].days[curDay].day}`} 
           description={`${weekData[curWeek].days[curDay].description}`}
@@ -587,7 +597,7 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
         </Screen>
       )}
-      {screen === 'retry'  && (
+      {(screen === 'retry'|| prevScreen === 'retry')  && (
         <Screen className={`${getAnimationClass('retry')}`} >
           <div className="screenIntro" style={{ fontSize: '100px' }}>
           {curWeek > -1 && curDay > -1 && weekData[curWeek] && weekData[curWeek].days[curDay] && (
@@ -601,7 +611,7 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
         </Screen>
       )}
 
-      {screen === 'run'  && (
+      {(screen === 'run'|| prevScreen === 'run')  && (
           <Screen className={`flex-col-reverse ${getAnimationClass('run')}`}>
       <div className="w-full flex justify-center mt-4 flex-1">
               <div className="min-h-[500px] min-w-[500px] mb-8  border border-gray-300 rounded-md border-black" style={{ width: '500px', height: '500px', border: "10px solid black", boxSizing: 'border-box', touchAction: 'none'  }}>
