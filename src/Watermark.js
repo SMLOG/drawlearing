@@ -1,6 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 const Watermark = ({ text = '' }) => {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setShow(!show);
+    }, 60000); // Update every minute
+
+    return () => clearInterval(intervalId); // Cleanup on unmount
+  }, [show]);
+
   const watermarkStyle = {
     position: 'fixed',
     top: '50%',
@@ -14,10 +24,10 @@ const Watermark = ({ text = '' }) => {
     pointerEvents: 'none',
     zIndex: 1000,
     whiteSpace: 'nowrap',
-    opacity: 0.5,
+    opacity: 0.6,
   };
 
-  return <div style={watermarkStyle}>{text}</div>;
+  return <> {show&&<div style={watermarkStyle}>{`${text}`}</div>}</>;
 };
 
 export default Watermark;
