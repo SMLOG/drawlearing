@@ -37,7 +37,7 @@ const Screen = styled.div`
 
   align-items: flex-start;
   opacity: 0; /* Start with opacity 0 */
-  transition: opacity 3s ease-in-out; /* Smooth transition for opacity */
+  transition: opacity 1s ease-in-out; /* Smooth transition for opacity */
   &.fade-in {
     opacity: 1; /* Fade in to full opacity */
   }
@@ -389,6 +389,8 @@ audioElement.play();
     setScreen('');
     setIsVisible(false); // Initial fade-out
    // await delay(500); // Allow for initial fade-out duration
+    setCurAnimationState('fade-in');
+    setPrevAnimationState('fade-out');
 
     for (let i = 1; i < weeksplan.length; i++) {
         setCurWeek(i);
@@ -398,7 +400,7 @@ audioElement.play();
 
             await showScreen('conver', 3000); // Show intro for 5 seconds
             playSound('/mixkit-player-jumping-in-a-video-game-2043.wav',0.5);
-            await showScreen('intro', 2000); // Show intro for 5 seconds
+            await showScreen('intro', 3000); // Show intro for 5 seconds
 
             await showScreen('run', ()=>{
               return playDays(weeksplan[i].days[j]);
@@ -426,16 +428,20 @@ const showScreen = async (s, duration) => {
   prevScreenRef.current = curScreenRef.current;
   curScreenRef.current = s;
 
-    setPrevScreen( prevScreenRef.current);
+
+
     setScreen(s);
-    setPrevAnimationState('fade-out');
-    setCurAnimationState('fade-in');
 
     if (typeof duration =='number' &&  duration > 0) {
         await delay(duration); // Wait for specified duration
     }else if(typeof duration =='function'){ 
         await duration(); // Wait for the function to complete
     }
+
+    setPrevScreen(s);
+    setScreen('');
+    await delay(1000); // Wait for specified duration
+
     console.log('Screen shown:', screen,prevScreen);
 };
 
