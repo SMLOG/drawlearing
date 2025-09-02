@@ -24,6 +24,7 @@ const ScreenContainer = styled.div`
 width: 100vw;
 height: 100vh;
 position: relative;
+
 `
 // Updated ScreenBox with fade animation
 
@@ -488,7 +489,7 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
       <div
         id="cinfo"
         style={{
-          position: fullScreen ? 'fixed' : 'static',
+          position: fullScreen ? 'absolute' : 'static',
           top: fullScreen ? '50%' : 'auto',
           left: fullScreen ? '50%' : 'auto',
           transform: fullScreen ? 'translate(-50%, -50%)' : 'none',
@@ -558,19 +559,19 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
         </div>
       </div>
           <ScreenContainer>
-        {screen === 'end' && isVisible && (
+        {screen === 'end'  && (
         <Screen className={`screen ${animationState}`} >
            <VideoEndScreen />
         </Screen>
       )}
 
-        {screen === 'conver' && isVisible && (
+        {screen === 'conver'  && (
         <Screen className={`screen ${animationState}`} >
            <VideoCover />
         </Screen>
       )}
 
-      {screen === 'intro' && isVisible && (
+      {screen === 'intro'  && (
         <Screen className={`${animationState}`} style={{ fontSize: '50px' }}>
           <FunnyIntro title={`Week ${weekData[curWeek].week} - Day ${weekData[curWeek].days[curDay].day}`} 
           description={`${weekData[curWeek].days[curDay].description}`}
@@ -579,7 +580,7 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
         </Screen>
       )}
-      {screen === 'retry' && isVisible && (
+      {screen === 'retry'  && (
         <Screen className={`${animationState}`} >
           <div className="screenIntro" style={{ fontSize: '100px' }}>
           {curWeek > -1 && curDay > -1 && weekData[curWeek] && weekData[curWeek].days[curDay] && (
@@ -593,9 +594,9 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
         </Screen>
       )}
 
-      {screen === 'run' && word && isVisible && (
+      {screen === 'run'  && (
           <Screen className={`flex-col-reverse ${animationState}`}>
-            <div className="w-full flex justify-center mt-4 flex-1">
+      {word&&<div className="w-full flex justify-center mt-4 flex-1">
               <div className="min-h-[500px] min-w-[500px] mb-8" style={{ width: '500px', height: '500px' }}>
                 <svg
                   viewBox={`0 0 ${word.viewBoxWidth} 100`}
@@ -692,7 +693,7 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
                   </g>
                 </svg>
               </div>
-            </div>
+            </div>}
             <LineWordList className="w-full flex-0" style={{maxHeight:'400px'}}>
               <div className="h-full">
                 <div className="flex items-center justify-center gap-4 mb-4 min-h-full">
