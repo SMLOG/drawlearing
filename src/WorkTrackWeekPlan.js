@@ -596,12 +596,11 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
       {screen === 'run'  && (
           <Screen className={`flex-col-reverse ${animationState}`}>
-      {word&&<div className="w-full flex justify-center mt-4 flex-1">
-              <div className="min-h-[500px] min-w-[500px] mb-8" style={{ width: '500px', height: '500px' }}>
-                <svg
+      <div className="w-full flex justify-center mt-4 flex-1">
+              <div className="min-h-[500px] min-w-[500px] mb-8  border border-gray-300 rounded-md border-black" style={{ width: '500px', height: '500px', border: "10px solid black", boxSizing: 'border-box', touchAction: 'none'  }}>
+                {word&&<svg
                   viewBox={`0 0 ${word.viewBoxWidth} 100`}
-                  className="max-h-full max-w-[350px] min-w-[300px] border border-gray-300 rounded-md border-black"
-                  style={{ border: "10px solid black", boxSizing: 'border-box', touchAction: 'none' }}
+                  className="max-h-full max-w-[350px] min-w-[300px]"
                   ref={svgRef}
                   onMouseDown={startDrawing}
                   onMouseMove={moveDraw}
@@ -691,9 +690,9 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
                       />
                     ))}
                   </g>
-                </svg>
+                </svg>}
               </div>
-            </div>}
+            </div>
             <LineWordList className="w-full flex-0" style={{maxHeight:'400px'}}>
               <div className="h-full">
                 <div className="flex items-center justify-center gap-4 mb-4 min-h-full">
