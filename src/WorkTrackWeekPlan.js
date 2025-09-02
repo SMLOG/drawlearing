@@ -124,7 +124,7 @@ const WordTrackWeekPlan = () => {
 
   const playWordStrokes = async (word) => {
     setPlayedIndex(-1);
-
+    await playSound('/mixkit-casino-bling-achievement-2067.wav',0.8);
     const wordStrok = await loadDatas(word);
     await new Promise((resolve) => setTimeout(resolve, 2000));
     playingRef.current = +new Date();
@@ -140,9 +140,9 @@ const WordTrackWeekPlan = () => {
           await playStroke(w, stroke, curTime);
           if (curTime !== playingRef.current) return;
           setPlayedIndex(i);
-          await new Promise((resolve) => setTimeout(resolve, 2000));
+          await new Promise((resolve) => setTimeout(resolve, 1000));
         }
-        await playSound(`/data/audio/${selectedLanguage}/${encodeURIComponent(w.ch.toLowerCase())}.mp3`);
+        await playSound(`/data/audio/${selectedLanguage}/${encodeURIComponent(w.ch.toLowerCase())}.mp3`,10);
         await new Promise((resolve) => setTimeout(resolve, 1000));
         if (curTime !== playingRef.current) return;
       }
@@ -308,8 +308,27 @@ const WordTrackWeekPlan = () => {
 
   const audioRef = useRef(null);
   const [errorMsg, setErrorMsg] = useState('');
-  const playSound = async (url) => {
-    if (audioRef.current) {
+
+
+
+
+
+
+  const playSound = async (url,volume=1) => {
+
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+const gainNode = audioContext.createGain();
+gainNode.gain.value = volume; // Increase volume (1 is normal, 2 is double)
+
+const audioElement = new Audio(url);
+const source = audioContext.createMediaElementSource(audioElement);
+source.connect(gainNode);
+gainNode.connect(audioContext.destination);
+
+// Play audio
+audioElement.play();
+
+    /*if (audioRef.current) {
       audioRef.current.src = url;
       try {
         await audioRef.current.play();
@@ -317,7 +336,7 @@ const WordTrackWeekPlan = () => {
         console.error("Error playing sound:", error);
         setErrorMsg(error.message);
       }
-    }
+    }*/
   };
 
   const [selectedLanguage, setSelectedLanguage] = useState('Cantonese');
@@ -357,24 +376,29 @@ const WordTrackWeekPlan = () => {
     setIsVisible(false); // Initial fade-out
    // await delay(500); // Allow for initial fade-out duration
 
-    for (let i = 0; i < weeksplan.length; i++) {
+    for (let i = 1; i < weeksplan.length; i++) {
         setCurWeek(i);
         
-        for (let j = 0; j < weeksplan[i].days.length; j++) {
+        for (let j = 1; j < weeksplan[i].days.length; j++) {
             setCurDay(j);
-            await showScreen('conver', 3000); // Show intro for 5 seconds
 
             await showScreen('conver', 3000); // Show intro for 5 seconds
-            await showScreen('intro', 3000); // Show intro for 5 seconds
+            playSound('/mixkit-player-jumping-in-a-video-game-2043.wav',0.5);
+            await showScreen('intro', 2000); // Show intro for 5 seconds
+
             await showScreen('run', ()=>{
               return playDays(weeksplan[i].days[j]);
             }); // Show run screen
+            playSound('/mixkit-player-jumping-in-a-video-game-2043.wav',0.5);
 
             await showScreen('retry', 2000); // Show retry for 2 seconds
+            playSound('/mixkit-player-jumping-in-a-video-game-2043.wav',0.5);
+
             await showScreen('run', ()=>{
               return playDays(weeksplan[i].days[j]);
             }); // Show run screen
-
+           
+            playSound('/mixkit-game-bonus-reached-2065.wav',0.5);
             await showScreen('end', 8000); // Show intro for 5 seconds
 
         }

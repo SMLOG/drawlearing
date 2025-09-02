@@ -40,13 +40,13 @@ const styles = {
         padding: '20px',
     },
     title: {
-        fontSize: '36px',
+        fontSize: '60px',
         margin: 0,
         lineHeight: 1.2,
         textShadow: '2px 2px 8px rgba(0, 0, 0, 0.7)', // Shadow for visibility
     },
     description: {
-        fontSize: '22px',
+        fontSize: '30px',
         margin: '10px 0 20px',
         textShadow: '1px 1px 4px rgba(0, 0, 0, 0.5)',
     },
