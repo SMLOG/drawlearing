@@ -16,17 +16,16 @@ const bounce = keyframes`
 const Container = styled.div`
     padding: 40px;
     border-radius: 15px;
-    background-color: #ffffff; /* White background for the content */
+    background: linear-gradient(135deg, #f0e68c, #ff99cc); /* Softer gradient background */
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Deeper shadow for fun effect */
     width: 100%; /* Full width on smaller screens */
-    height:100vh;
+    height: 100vh;
     display: flex;
     align-items: center;
     flex-direction: column;
     justify-content: center;
     animation: ${fadeIn} 1s; /* Fade-in animation */
     font-size: 80px; /* Slightly larger font size for readability */
-
 `;
 
 const Title = styled.h1`
@@ -52,7 +51,6 @@ const Blockquote = styled.blockquote`
     padding: 10px; /* Padding around highlighted text */
     border-radius: 5px; /* Rounded corners */
     position: relative; /* For positioning the icon */
-    animation: ${bounce} 1s infinite; /* Bounce animation */
 `;
 
 const QuoteIcon = styled.i`
@@ -60,17 +58,15 @@ const QuoteIcon = styled.i`
     color: #ff5722; /* Icon color */
 `;
 
-const FunnyIntro = ({title,description,description2}) => {
+const FunnyIntro = ({ title, description, description2 }) => {
     return (
         <Container>
             <Title>{title}</Title>
-            <Description>
+            <Description>{description2}</Description>
+            <Blockquote>
+                <QuoteIcon className="fas fa-quote-left" />
                 {description}
-            </Description>
-      
-            <Description>
-                {description2}
-            </Description>
+            </Blockquote>
         </Container>
     );
 };
