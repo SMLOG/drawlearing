@@ -18,7 +18,9 @@
 .screenIntro{
   position: fixed; top: 20.33%; left: 50%; transform: translateX(-50%);
 }
-
+.screen{
+  position: fixed; inset: 0;
+}
 .fade-element {
   transition: opacity 0.5s ease-in-out; /* Smooth transition for opacity */
 }

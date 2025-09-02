@@ -11,15 +11,13 @@ import styled from 'styled-components';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { weeksplan } from "./weeksplan";
 import {
-  faPlay,
-  faRedo,
-  faLightbulb,
-  faVolumeUp,
-  faQuestionCircle,
-  faForward
+  faPlay
 } from "@fortawesome/free-solid-svg-icons";
 import Watermark from './Watermark';
 import './word-animation.css';
+import VideoCover from "./VideoCover";
+import VideoEndScreen from "./VideoEndScreen";
+import FunnyIntro from "./FunnyIntro";
 
 // Updated ScreenBox with fade animation
 const ScreenBox = styled.div`
@@ -34,10 +32,7 @@ const ScreenBox = styled.div`
   &.fade-out {
     opacity: 0; /* Fade out to zero opacity */
   }
-  @media (max-width: 800px) {
-    flex-direction: column;
-    align-items: center;
-  }
+
 `;
 
 // Rest of your styled components remain unchanged
@@ -357,49 +352,53 @@ const WordTrackWeekPlan = () => {
   const [screen, setScreen] = useState("");
   const [isVisible, setIsVisible] = useState(false); // New state for visibility
 
-  const startPlay = async () => {
-        setScreen('');
-        setIsVisible(false); // Trigger fade-in
+ const startPlay = async () => {
+    setScreen('');
+    setIsVisible(false); // Initial fade-out
+    await delay(500); // Allow for initial fade-out duration
+
     for (let i = 0; i < weeksplan.length; i++) {
-      setCurWeek(i);
-      for (let j = 0; j < weeksplan[i].days.length; j++) {
-        setCurDay(j);
-        setScreen('intro');
-        setIsVisible(true); // Trigger fade-in
-        setAnimationState('fade-in');
-        await new Promise((resolve) => setTimeout(resolve, 5000));
-        setAnimationState('fade-out');
-        await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for fade-out
-        setIsVisible(false);
-        setScreen('');
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        setScreen('run');
-        setIsVisible(true); // Trigger fade-in
-        setAnimationState('fade-in');
-        await playDays(weeksplan[i].days[j]);
-        setAnimationState('fade-out');
-        await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for fade-out
-        setIsVisible(false);
-        setScreen('');
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        setScreen('retry');
-        setIsVisible(true); // Trigger fade-in
-        setAnimationState('fade-in');
-       await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait for fade-out
+        setCurWeek(i);
+        
+        for (let j = 0; j < weeksplan[i].days.length; j++) {
+            setCurDay(j);
+            await showScreen('intro', 30000000); // Show intro for 5 seconds
 
-        setAnimationState('fade-out');
-        setIsVisible(false); // Trigger fade-in
-          
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        setScreen('run');
-        setIsVisible(true); // Trigger fade-in
-        setAnimationState('fade-in');
+            await showScreen('conver', 3000); // Show intro for 5 seconds
+            await showScreen('intro', 3000); // Show intro for 5 seconds
+            await showScreen('run', ()=>{
+              return playDays(weeksplan[i].days[j]);
+            }); // Show run screen
 
-        await playDays(weeksplan[i].days[j]);
+            await showScreen('retry', 2000); // Show retry for 2 seconds
+            await showScreen('run', ()=>{
+              return playDays(weeksplan[i].days[j]);
+            }); // Show run screen
 
-      }
+            await showScreen('end', 5000); // Show intro for 5 seconds
+
+        }
     }
-  };
+};
+
+const showScreen = async (screen, duration) => {
+    setScreen(screen);
+    setIsVisible(true); // Trigger fade-in
+    setAnimationState('fade-in');
+    
+    if (typeof duration =='number' &&  duration > 0) {
+        await delay(duration); // Wait for specified duration
+    }else if(typeof duration =='function'){ 
+        await duration(); // Wait for the function to complete
+    }
+    
+    setAnimationState('fade-out');
+    await delay(500); // Wait for fade-out
+    setIsVisible(false);
+    setScreen(''); // Clear screen after fade-out
+};
+
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -526,34 +525,45 @@ const WordTrackWeekPlan = () => {
           </div>
         </div>
       </div>
+
+        {screen === 'end' && isVisible && (
+        <ScreenBox className={`screen ${animationState}`} >
+           <VideoEndScreen />
+        </ScreenBox>
+      )}
+
+        {screen === 'conver' && isVisible && (
+        <ScreenBox className={`screen ${animationState}`} >
+           <VideoCover />
+        </ScreenBox>
+      )}
+
       {screen === 'intro' && isVisible && (
-        <ScreenBox className={`screenIntro ${animationState}`} style={{ fontSize: '50px' }}>
-          {curWeek > -1 && curDay > -1 && weekData[curWeek] && weekData[curWeek].days[curDay] && (
-            <div className="p-4 bg-white bg-yellow-50 rounded-lg mb-4">
-              <h2 className="text-xl font-bold mb-2 text-center"><strong>Week {weekData[curWeek].week} - Day {weekData[curWeek].days[curDay].day}</strong></h2>
-              <p className="text-gray-700 mb-1 text-center"><strong>Description:</strong> {weekData[curWeek].days[curDay].description}</p>
-              <p className="inline-flex items-center gap-1 bg-gray-100 text-blue-400 rounded px-1.5 py-0.5 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200">
-                <i className="fas fa-quote-left text-sm"></i> {weekData[curWeek].description}
-              </p>
-            </div>
-          )}
+        <ScreenBox className={`${animationState}`} style={{ fontSize: '50px' }}>
+          <FunnyIntro title={`Week ${weekData[curWeek].week} - Day ${weekData[curWeek].days[curDay].day}`} 
+          description={`${weekData[curWeek].days[curDay].description}`}
+          description2={`${weekData[curWeek].description}`}
+          />
+
         </ScreenBox>
       )}
       {screen === 'retry' && isVisible && (
-        <ScreenBox className={`screenIntro ${animationState}`} style={{ fontSize: '100px' }}>
+        <ScreenBox className={`${animationState}`} >
+          <div className="screenIntro" style={{ fontSize: '100px' }}>
           {curWeek > -1 && curDay > -1 && weekData[curWeek] && weekData[curWeek].days[curDay] && (
             <div className="p-4 bg-white bg-yellow-50 rounded-lg mb-4">
               <p className="text-gray-700 mb-1 text-center"><strong>Retry Again...</strong></p>
    
             </div>
           )}
+          </div>
+
         </ScreenBox>
       )}
 
       {screen === 'run' && word && isVisible && (
-        <div className={animationState}>
           <ScreenBox className={`flex-col-reverse ${animationState}`}>
-            <div className="w-full flex justify-center mt-4">
+            <div className="w-full flex justify-center mt-4 flex-1">
               <div className="min-h-[500px] min-w-[500px] mb-8" style={{ width: '500px', height: '500px' }}>
                 <svg
                   viewBox={`0 0 ${word.viewBoxWidth} 100`}
@@ -651,8 +661,8 @@ const WordTrackWeekPlan = () => {
                 </svg>
               </div>
             </div>
-            <LineWordList className="w-full">
-              <div className="h-full overflow-auto">
+            <LineWordList className="w-full flex-0" style={{maxHeight:'400px'}}>
+              <div className="h-full">
                 <div className="flex items-center justify-center gap-4 mb-4 min-h-full">
                   {curWeek >= 0 && curDay >= 0 && (
                     <div className="font-semibold text-gray-700 flex">
@@ -682,7 +692,6 @@ const WordTrackWeekPlan = () => {
               </div>
             </LineWordList>
           </ScreenBox>
-        </div>
       )}
       <audio ref={audioRef} controls src={`/data/sound/3s.mp3`} className={errorMsg ? '' : 'hidden'} />
       {errorMsg && <div className="text-red-500 mt-2">{errorMsg}</div>}

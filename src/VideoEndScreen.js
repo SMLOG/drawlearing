@@ -18,6 +18,15 @@ const styles = {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+                margin: 0,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        backgroundPosition: 'center',
+        color: 'white',
+        width:'100%',
+        textAlign: 'center',
     },
     title: {
         fontSize: '48px', // Larger font size
