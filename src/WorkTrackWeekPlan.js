@@ -114,7 +114,8 @@ const WordTrackWeekPlan = () => {
   const wordRef = useRef(null);
   const playingRef = useRef(0);
   const [autoPlayNext, setAutoPlayNext] = useState(true);
-  const [animationState, setAnimationState] = useState(''); // New state for animation
+  const [curAnimationState, setCurAnimationState] = useState(''); // New state for animation
+  const [prevAnimationState, setPrevAnimationState] = useState(''); // New state for animation
 
   const playStroke = async (w, stroke, curTime) => {
     await new Promise((resolve) => setTimeout(resolve, 70));
@@ -378,6 +379,7 @@ audioElement.play();
   const [curChari, setCurChari] = useState(-1);
   const [weekData, setWeekData] = useState(weeksplan);
   const [screen, setScreen] = useState("");
+  const [prevScreen, setPrevScreen] = useState("");
   const [isVisible, setIsVisible] = useState(false); // New state for visibility
 
  const startPlay = async () => {
@@ -416,19 +418,15 @@ audioElement.play();
 
 const showScreen = async (screen, duration) => {
     setScreen(screen);
-    setIsVisible(true); // Trigger fade-in
-    setAnimationState('fade-in');
-    
+    setPrevAnimationState('fade-out');
+    setCurAnimationState('fade-in');
+
     if (typeof duration =='number' &&  duration > 0) {
         await delay(duration); // Wait for specified duration
     }else if(typeof duration =='function'){ 
         await duration(); // Wait for the function to complete
     }
-    
-    setAnimationState('fade-out');
-    await delay(500); // Wait for fade-out
-    setIsVisible(false);
-    setScreen(''); // Clear screen after fade-out
+
 };
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -483,6 +481,15 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
     document.querySelector('#screens').requestFullscreen();
   };
 
+  const getAnimationClass = (screenName) => {
+
+    if (screen === screenName) {
+      return curAnimationState;
+    }else if (prevScreen === screenName) {
+      return prevAnimationState;
+    }
+    
+  }
   return (
     <Container className="min-h-screen h-screen" id="screens" style={{ cursor: fullScreen ? 'none' : 'pointer' }}>
       <Watermark text="alearningapp.com" />
@@ -560,19 +567,19 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
       </div>
           <ScreenContainer>
         {screen === 'end'  && (
-        <Screen className={`screen ${animationState}`} >
+        <Screen className={`screen ${getAnimationClass('end')}`} >
            <VideoEndScreen />
         </Screen>
       )}
 
         {screen === 'conver'  && (
-        <Screen className={`screen ${animationState}`} >
+        <Screen className={`screen ${getAnimationClass('conver')}`} >
            <VideoCover />
         </Screen>
       )}
 
       {screen === 'intro'  && (
-        <Screen className={`${animationState}`} style={{ fontSize: '50px' }}>
+        <Screen className={`${getAnimationClass('intro')}`} style={{ fontSize: '50px' }}>
           <FunnyIntro title={`Week ${weekData[curWeek].week} - Day ${weekData[curWeek].days[curDay].day}`} 
           description={`${weekData[curWeek].days[curDay].description}`}
           description2={`${weekData[curWeek].description}`}
@@ -581,7 +588,7 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
         </Screen>
       )}
       {screen === 'retry'  && (
-        <Screen className={`${animationState}`} >
+        <Screen className={`${getAnimationClass('retry')}`} >
           <div className="screenIntro" style={{ fontSize: '100px' }}>
           {curWeek > -1 && curDay > -1 && weekData[curWeek] && weekData[curWeek].days[curDay] && (
             <div className="p-4 bg-white bg-yellow-50 rounded-lg mb-4">
@@ -595,7 +602,7 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
       )}
 
       {screen === 'run'  && (
-          <Screen className={`flex-col-reverse ${animationState}`}>
+          <Screen className={`flex-col-reverse ${getAnimationClass('run')}`}>
       <div className="w-full flex justify-center mt-4 flex-1">
               <div className="min-h-[500px] min-w-[500px] mb-8  border border-gray-300 rounded-md border-black" style={{ width: '500px', height: '500px', border: "10px solid black", boxSizing: 'border-box', touchAction: 'none'  }}>
                 {word&&<svg
