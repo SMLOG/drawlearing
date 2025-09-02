@@ -19,8 +19,16 @@ import VideoCover from "./VideoCover";
 import VideoEndScreen from "./VideoEndScreen";
 import FunnyIntro from "./FunnyIntro";
 
+
+const ScreenContainer = styled.div`
+width: 100vw;
+height: 100vh;
+position: relative;
+`
 // Updated ScreenBox with fade animation
-const ScreenBox = styled.div`
+
+
+const Screen = styled.div`
   display: flex;
   flex-grow: 1;
   align-items: flex-start;
@@ -549,30 +557,30 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
           </div>
         </div>
       </div>
-
+          <ScreenContainer>
         {screen === 'end' && isVisible && (
-        <ScreenBox className={`screen ${animationState}`} >
+        <Screen className={`screen ${animationState}`} >
            <VideoEndScreen />
-        </ScreenBox>
+        </Screen>
       )}
 
         {screen === 'conver' && isVisible && (
-        <ScreenBox className={`screen ${animationState}`} >
+        <Screen className={`screen ${animationState}`} >
            <VideoCover />
-        </ScreenBox>
+        </Screen>
       )}
 
       {screen === 'intro' && isVisible && (
-        <ScreenBox className={`${animationState}`} style={{ fontSize: '50px' }}>
+        <Screen className={`${animationState}`} style={{ fontSize: '50px' }}>
           <FunnyIntro title={`Week ${weekData[curWeek].week} - Day ${weekData[curWeek].days[curDay].day}`} 
           description={`${weekData[curWeek].days[curDay].description}`}
           description2={`${weekData[curWeek].description}`}
           />
 
-        </ScreenBox>
+        </Screen>
       )}
       {screen === 'retry' && isVisible && (
-        <ScreenBox className={`${animationState}`} >
+        <Screen className={`${animationState}`} >
           <div className="screenIntro" style={{ fontSize: '100px' }}>
           {curWeek > -1 && curDay > -1 && weekData[curWeek] && weekData[curWeek].days[curDay] && (
             <div className="p-4 bg-white bg-yellow-50 rounded-lg mb-4">
@@ -582,11 +590,11 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
           )}
           </div>
 
-        </ScreenBox>
+        </Screen>
       )}
 
       {screen === 'run' && word && isVisible && (
-          <ScreenBox className={`flex-col-reverse ${animationState}`}>
+          <Screen className={`flex-col-reverse ${animationState}`}>
             <div className="w-full flex justify-center mt-4 flex-1">
               <div className="min-h-[500px] min-w-[500px] mb-8" style={{ width: '500px', height: '500px' }}>
                 <svg
@@ -715,8 +723,10 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
                 </div>
               </div>
             </LineWordList>
-          </ScreenBox>
+          </Screen>
       )}
+      </ScreenContainer>
+
       <audio ref={audioRef} controls src={`/data/sound/3s.mp3`} className={errorMsg ? '' : 'hidden'} />
       {errorMsg && <div className="text-red-500 mt-2">{errorMsg}</div>}
     </Container>
