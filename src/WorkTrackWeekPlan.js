@@ -355,14 +355,14 @@ const WordTrackWeekPlan = () => {
  const startPlay = async () => {
     setScreen('');
     setIsVisible(false); // Initial fade-out
-    await delay(500); // Allow for initial fade-out duration
+   // await delay(500); // Allow for initial fade-out duration
 
     for (let i = 0; i < weeksplan.length; i++) {
         setCurWeek(i);
         
         for (let j = 0; j < weeksplan[i].days.length; j++) {
             setCurDay(j);
-            await showScreen('intro', 30000000); // Show intro for 5 seconds
+            await showScreen('conver', 3000); // Show intro for 5 seconds
 
             await showScreen('conver', 3000); // Show intro for 5 seconds
             await showScreen('intro', 3000); // Show intro for 5 seconds
@@ -375,7 +375,7 @@ const WordTrackWeekPlan = () => {
               return playDays(weeksplan[i].days[j]);
             }); // Show run screen
 
-            await showScreen('end', 5000); // Show intro for 5 seconds
+            await showScreen('end', 8000); // Show intro for 5 seconds
 
         }
     }
@@ -552,7 +552,7 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
           <div className="screenIntro" style={{ fontSize: '100px' }}>
           {curWeek > -1 && curDay > -1 && weekData[curWeek] && weekData[curWeek].days[curDay] && (
             <div className="p-4 bg-white bg-yellow-50 rounded-lg mb-4">
-              <p className="text-gray-700 mb-1 text-center"><strong>Retry Again...</strong></p>
+              <p className="text-gray-700 mb-1 text-center"><strong>Again...</strong></p>
    
             </div>
           )}

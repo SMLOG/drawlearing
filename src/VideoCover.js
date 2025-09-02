@@ -2,13 +2,13 @@ import React from 'react';
 
 const VideoCover = () => {
     return (
-        <div style={styles.container}>
-            <div style={styles.overlay}>
-                <h1 style={styles.title}>Welcome to ALearnigApp<br />每日学习书写汉字</h1>
-                <p style={styles.description}>轻松掌握汉字，从基础到进阶，每日练习助你提升！</p>
-                <button style={styles.playButton}>▶</button>
-            </div>
-        </div>
+<div style={styles.container}>
+    <div style={styles.overlay}>
+        <h1 style={styles.title}>Welcome to ALearnigApp<br />每日學習書寫漢字</h1>
+        <p style={styles.description}>輕鬆掌握漢字，從基礎到進階，每日練習助你提升！</p>
+        <button style={styles.playButton}>▶</button>
+    </div>
+</div>
     );
 };
 
