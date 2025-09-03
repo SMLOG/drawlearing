@@ -384,6 +384,7 @@ audioElement.play();
   const [screen, setScreen] = useState("");
   const [prevScreen, setPrevScreen] = useState("");
   const [isVisible, setIsVisible] = useState(false); // New state for visibility
+  const [dayNum, setDayNum] = useState(0);
 
  const startPlay = async () => {
     setScreen('');
@@ -397,7 +398,7 @@ audioElement.play();
         
         for (let j = 1; j < weeksplan[i].days.length; j++) {
             setCurDay(j);
-
+            setDayNum(5*i+j+1);
             await showScreen('conver', 3000); // Show intro for 5 seconds
             playSound('/mixkit-player-jumping-in-a-video-game-2043.wav',0.5);
             await showScreen('intro', 3000); // Show intro for 5 seconds
@@ -620,6 +621,9 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
       {(screen === 'run'|| prevScreen === 'run')  && (
           <Screen className={`flex-col-reverse ${getAnimationClass('run')}`}>
       <div className="w-full flex justify-center mt-4 flex-1">
+              <div className="absolute top-2 left-2 p-2 font-bold rounded bg-green-200">
+                Day {dayNum}
+              </div>
               <div className="min-h-[500px] min-w-[500px] mb-8  border border-gray-300 rounded-md border-black" style={{ width: '500px', height: '500px', border: "10px solid black", boxSizing: 'border-box', touchAction: 'none'  }}>
                 {word&&<svg
                   viewBox={`0 0 ${word.viewBoxWidth} 100`}

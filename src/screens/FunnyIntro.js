@@ -10,7 +10,6 @@ const fadeIn = keyframes`
 // Styled components
 const Container = styled.div`
     padding: 40px;
-    border-radius: 15px;
     background: url('path/to/pattern.png'), linear-gradient(135deg, #ffcc80, #80deea); /* Add a fun pattern */
     background-size: cover, cover; /* Ensure both the pattern and gradient cover the area */
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Light shadow for fun effect */
