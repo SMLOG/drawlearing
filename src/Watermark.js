@@ -1,15 +1,9 @@
 import React, { useEffect, useState } from 'react';
 
 const Watermark = ({ text = '' }) => {
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(true);
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setShow(!show);
-    }, 60000); // Update every minute
 
-    return () => clearInterval(intervalId); // Cleanup on unmount
-  }, [show]);
 
   const watermarkStyle = {
     position: 'fixed',
@@ -40,13 +34,13 @@ const Watermark = ({ text = '' }) => {
                   transform: translate(-50%, -50%) rotate(0deg) scale(1.5);
                 }
                 25% {
-                  transform: translate(-50%, -50%) rotate(45deg) scale(1);
+                  transform: translate(-50%, -50%) rotate(0deg) scale(1);
                 }
               50% {
                   transform: translate(-50%, -50%) rotate(0deg) scale(1.5);
                 }
              75% {
-                  transform: translate(-50%, -50%) rotate(-45deg) scale(1);
+                  transform: translate(-50%, -50%) rotate(0deg) scale(1);
                 }
                 100% {
                   transform: translate(-50%, -50%) rotate(0deg) scale(1.5);

@@ -162,15 +162,18 @@ const WordTrackWeekPlan = () => {
     setPoints([]);
   };
 
+  const [loadedWord, setLoadedWord] = useState(false);
   const playWordStrokes = async (word) => {
     setPlayedIndex(-1);
     await playSound('/mixkit-casino-bling-achievement-2067.wav',0.8);
     const wordStrok = await loadDatas(word);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
     playingRef.current = +new Date();
     let curTime = playingRef.current;
     setPoints([]);
     setWord(wordStrok);
+    setLoadedWord(true)
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    setLoadedWord(false)
 
     if (wordStrok?.stroke) {
       for (let w of wordStrok.chs) {
@@ -420,10 +423,10 @@ audioElement.play();
     setPrevAnimationState('fade-out');
          //  await showScreen('end', 80000); // Show intro for 5 seconds
 
-    for (let i = 1; i < weeksplan.length; i++) {
+    for (let i = 2; i < weeksplan.length; i++) {
         setCurWeek(i);
         
-        for (let j = 4; j < weeksplan[i].days.length; j++) {
+        for (let j = 1; j < weeksplan[i].days.length; j++) {
             setCurDay(j);
             setDayNum(5*i+j+1);
             await showScreen('conver', 3000,(p)=>{
@@ -552,7 +555,7 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
   }
   return (
     <Container className="min-h-screen h-screen" id="screens" style={{ cursor: fullScreen ? 'none' : 'pointer' }}>
-      {screen=='run'&&<Watermark text="ALearningApp.com"  />}
+      {screen=='run' && loadedWord &&<Watermark text="ALearningApp.com"  />}
       <div
         id="cinfo"
         style={{
