@@ -391,12 +391,12 @@ audioElement.play();
     setIsVisible(false); // Initial fade-out
     setCurAnimationState('fade-in');
     setPrevAnimationState('fade-out');
-         //   await showScreen('end', 80000); // Show intro for 5 seconds
+         //  await showScreen('end', 80000); // Show intro for 5 seconds
 
     for (let i = 1; i < weeksplan.length; i++) {
         setCurWeek(i);
         
-        for (let j = 1; j < weeksplan[i].days.length; j++) {
+        for (let j = 2; j < weeksplan[i].days.length; j++) {
             setCurDay(j);
             setDayNum(5*i+j+1);
             await showScreen('conver', 3000); // Show intro for 5 seconds
