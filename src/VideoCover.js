@@ -4,8 +4,8 @@ const VideoCover = () => {
     return (
 <div style={styles.container}>
     <div style={styles.overlay}>
-        <h1 style={styles.title}>Welcome to ALearnigApp<br />每日學習書寫漢字</h1>
-        <p style={styles.description}>輕鬆掌握漢字，從基礎到進階，每日練習助你提升！</p>
+        <h1 style={styles.title}><div>Welcome to ALearnigApp</div><div>每日筆順學習書寫漢字<b>（繁體中文粵語系列）</b></div></h1>
+        <p style={styles.description}><i class="fas fa-pencil-alt"></i>輕鬆掌握漢字書寫，從簡單基礎到高級進階，日日進步！</p>
         <button style={styles.playButton}>▶</button>
     </div>
 </div>
