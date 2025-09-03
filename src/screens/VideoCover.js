@@ -6,7 +6,8 @@ const VideoCover = () => {
             <div style={styles.overlay}>
                 <h1 style={styles.title}>
                     <div>Welcome to ALearningApp</div>
-                    <div>每日筆順學習書寫漢字<b>（繁體中文粵語系列）</b></div>
+                    <div>《每日筆順學習書寫漢字系列》</div>
+                    <div><b>（繁體中文粵語）</b></div>
                 </h1>
                 <p style={styles.description}>
                     <i className="fas fa-pencil-alt"></i>
@@ -25,7 +26,6 @@ const styles = {
         justifyContent: 'center',
         alignItems: 'center',
         height: '100vh',
-        backgroundImage: 'url(https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0)', // Nature scene
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         color: '#333', // Softer text color
