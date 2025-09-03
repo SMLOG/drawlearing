@@ -422,13 +422,20 @@ audioElement.play();
     setCurAnimationState('fade-in');
     setPrevAnimationState('fade-out');
          //  await showScreen('end', 80000); // Show intro for 5 seconds
-
-    for (let i = 2; i < weeksplan.length; i++) {
-        setCurWeek(i);
+    const mergedDays = weeksplan.flatMap(week => 
+      week.days.map(day => ({
+        week: week.week,
+        day: day.day,
+        characters: day.characters,
+        repetitions: day.repetitions,
+        description: day.description
+      }))
+    );
         
-        for (let j = 4; j < weeksplan[i].days.length; j++) {
-            setCurDay(j);
-            setDayNum(5*i+j+1);
+        for (let j = 0; j < mergedDays.length; j++) {
+            setCurDay(mergedDays[j].day-1);
+            setCurWeek(mergedDays[j].week-1)
+            setDayNum(j+1);
             await showScreen('conver', 3000,(p)=>{
                 setPrevScreen(p);
                 setScreen('');
@@ -446,7 +453,7 @@ audioElement.play();
             setCurAnimationState('scale-in');
 
             await showScreen('run', ()=>{
-              return playDays(weeksplan[i].days[j]);
+              return playDays(mergedDays[j]);
             }); // Show run screen
             playSound('/mixkit-player-jumping-in-a-video-game-2043.wav',0.5);
             setCurAnimationState('fade-in');
@@ -455,14 +462,14 @@ audioElement.play();
             playSound('/mixkit-player-jumping-in-a-video-game-2043.wav',0.5);
 
             await showScreen('run', ()=>{
-              return playDays(weeksplan[i].days[j]);
+              return playDays(mergedDays.days[j]);
             }); // Show run screen
            
             playSound('/mixkit-game-bonus-reached-2065.wav',0.5);
             await showScreen('end', 8000); // Show intro for 5 seconds
 
         }
-    }
+    
 };
 
 const curScreenRef = useRef(screen);
@@ -643,7 +650,7 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
       {(screen === 'intro'|| prevScreen === 'intro')  && (
         <Screen className={`${getAnimationClass('intro')}`} style={{ fontSize: '50px' }}>
-          <FunnyIntro title={`Week ${weekData[curWeek].week} - Day ${weekData[curWeek].days[curDay].day}`} 
+          <FunnyIntro title={`Day ${dayNum}`} 
           description={`${weekData[curWeek].days[curDay].description}`}
           description2={`${weekData[curWeek].description}`}
           />
