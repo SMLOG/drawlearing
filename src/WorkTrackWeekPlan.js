@@ -44,7 +44,34 @@ const Screen = styled.div`
   &.fade-out {
     opacity: 0; /* Fade out to zero opacity */
   }
+ &.scale-out {
+    animation: scale-out 1s forwards; /* Apply scale-out animation */
+  }
 
+  @keyframes scale-out {
+    0% {
+      opacity: 1; /* Start fully visible */
+      transform: scale(1); /* Start at full size */
+    }
+    100% {
+      opacity: 0; /* Fade out to zero opacity */
+      transform: scale(0.1); /* Scale down slightly */
+    }
+  }
+  &.scale-in {
+    animation: scale-in 1s forwards; /
+  }
+
+  @keyframes scale-in {
+    0% {
+      opacity: 0; /* Start invisible */
+      transform: scale(0.1); /* Start slightly scaled down */
+    }
+    100% {
+      opacity: 1; /* Fade in to full opacity */
+      transform: scale(1); /* Scale to original size */
+    }
+  }
 `;
 
 // Rest of your styled components remain unchanged
@@ -396,15 +423,23 @@ audioElement.play();
     for (let i = 1; i < weeksplan.length; i++) {
         setCurWeek(i);
         
-        for (let j = 3; j < weeksplan[i].days.length; j++) {
+        for (let j = 4; j < weeksplan[i].days.length; j++) {
             setCurDay(j);
             setDayNum(5*i+j+1);
-            await showScreen('conver', 3000,()=>{
-                          playSound('/mixkit-player-jumping-in-a-video-game-2043.wav',0.5);
+            await showScreen('conver', 3000,(p)=>{
+                setPrevScreen(p);
+                setScreen('');
+                playSound('/mixkit-player-jumping-in-a-video-game-2043.wav',0.5);
             }); // Show intro for 5 seconds
 
-            await showScreen('intro', 3000); // Show intro for 5 seconds
+            await showScreen('intro', 3000,async (p)=>{
+                setPrevAnimationState('scale-out');
+                setPrevScreen(p);
+                setScreen('');
 
+            }); // Show intro for 5 seconds
+
+            setPrevAnimationState('fade-out');
 
             await showScreen('run', ()=>{
               return playDays(weeksplan[i].days[j]);
@@ -428,7 +463,10 @@ audioElement.play();
 const curScreenRef = useRef(screen);
 const prevScreenRef = useRef(prevScreen);
 
-const showScreen = async (s, duration,startTra=()=>{}) => {
+const showScreen = async (s, duration,startTra=async(p)=>{     
+  setPrevScreen(p);
+    setScreen('');
+  }) => {
   prevScreenRef.current = curScreenRef.current;
   curScreenRef.current = s;
 
@@ -442,9 +480,8 @@ const showScreen = async (s, duration,startTra=()=>{}) => {
         await duration(); // Wait for the function to complete
     }
 
-    setPrevScreen(s);
-    setScreen('');
-    if(startTra) startTra();
+
+    if(startTra) await startTra(s);
     await delay(1000); // Wait for specified duration
 
     console.log('Screen shown:', screen,prevScreen);

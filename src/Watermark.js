@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
 const Watermark = ({ text = '' }) => {
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(true);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      setShow(!show);
+      //setShow(!show);
     }, 60000); // Update every minute
 
     return () => clearInterval(intervalId); // Cleanup on unmount
@@ -24,8 +24,8 @@ const Watermark = ({ text = '' }) => {
     pointerEvents: 'none',
     zIndex: 1000,
     whiteSpace: 'nowrap',
-    opacity: 0.6,
-    animation: show ? 'rotateScale 10s linear infinite' : 'none', // Apply rotation and scale animation
+    opacity: 1,
+    animation: show ? 'rotateScale 20s linear infinite' : 'none', // Apply rotation and scale animation
   };
 
   return (
@@ -37,13 +37,19 @@ const Watermark = ({ text = '' }) => {
             {`
               @keyframes rotateScale {
                 0% {
-                  transform: translate(-50%, -50%) rotate(0deg) scale(1);
+                  transform: translate(-50%, -50%) rotate(0deg) scale(1.5);
                 }
-                50% {
-                  transform: translate(-50%, -50%) rotate(180deg) scale(1.2);
+                25% {
+                  transform: translate(-50%, -50%) rotate(45deg) scale(1);
+                }
+              50% {
+                  transform: translate(-50%, -50%) rotate(0deg) scale(1.5);
+                }
+             75% {
+                  transform: translate(-50%, -50%) rotate(-45deg) scale(1);
                 }
                 100% {
-                  transform: translate(-50%, -50%) rotate(360deg) scale(1);
+                  transform: translate(-50%, -50%) rotate(0deg) scale(1.5);
                 }
               }
             `}
