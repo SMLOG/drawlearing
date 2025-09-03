@@ -388,9 +388,9 @@ audioElement.play();
  const startPlay = async () => {
     setScreen('');
     setIsVisible(false); // Initial fade-out
-   // await delay(500); // Allow for initial fade-out duration
     setCurAnimationState('fade-in');
     setPrevAnimationState('fade-out');
+         //   await showScreen('end', 80000); // Show intro for 5 seconds
 
     for (let i = 1; i < weeksplan.length; i++) {
         setCurWeek(i);
