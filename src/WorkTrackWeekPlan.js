@@ -396,12 +396,15 @@ audioElement.play();
     for (let i = 1; i < weeksplan.length; i++) {
         setCurWeek(i);
         
-        for (let j = 2; j < weeksplan[i].days.length; j++) {
+        for (let j = 3; j < weeksplan[i].days.length; j++) {
             setCurDay(j);
             setDayNum(5*i+j+1);
-            await showScreen('conver', 3000); // Show intro for 5 seconds
-            playSound('/mixkit-player-jumping-in-a-video-game-2043.wav',0.5);
+            await showScreen('conver', 3000,()=>{
+                          playSound('/mixkit-player-jumping-in-a-video-game-2043.wav',0.5);
+            }); // Show intro for 5 seconds
+
             await showScreen('intro', 3000); // Show intro for 5 seconds
+
 
             await showScreen('run', ()=>{
               return playDays(weeksplan[i].days[j]);
@@ -425,7 +428,7 @@ audioElement.play();
 const curScreenRef = useRef(screen);
 const prevScreenRef = useRef(prevScreen);
 
-const showScreen = async (s, duration) => {
+const showScreen = async (s, duration,startTra=()=>{}) => {
   prevScreenRef.current = curScreenRef.current;
   curScreenRef.current = s;
 
@@ -441,6 +444,7 @@ const showScreen = async (s, duration) => {
 
     setPrevScreen(s);
     setScreen('');
+    if(startTra) startTra();
     await delay(1000); // Wait for specified duration
 
     console.log('Screen shown:', screen,prevScreen);
@@ -509,7 +513,7 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
   }
   return (
     <Container className="min-h-screen h-screen" id="screens" style={{ cursor: fullScreen ? 'none' : 'pointer' }}>
-      <Watermark text="ALearningApp.com" />
+      {screen=='run'&&<Watermark text="ALearningApp.com"  />}
       <div
         id="cinfo"
         style={{
