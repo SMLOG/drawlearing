@@ -440,11 +440,13 @@ audioElement.play();
             }); // Show intro for 5 seconds
 
             setPrevAnimationState('fade-out');
+            setCurAnimationState('scale-in');
 
             await showScreen('run', ()=>{
               return playDays(weeksplan[i].days[j]);
             }); // Show run screen
             playSound('/mixkit-player-jumping-in-a-video-game-2043.wav',0.5);
+            setCurAnimationState('fade-in');
 
             await showScreen('retry', 2000); // Show retry for 2 seconds
             playSound('/mixkit-player-jumping-in-a-video-game-2043.wav',0.5);
