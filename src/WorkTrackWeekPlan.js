@@ -211,7 +211,7 @@ const WordTrackWeekPlan = () => {
             let scale = 100 / (cdata.h || 100);
             cdata.scale = scale;
             s.d = translateAndScaleSvgPath(s.d, tranX, 0, scale, scale);
-            let r = scale * (s.r || cdata.r) * 1.1;
+            let r = scale * (s.r || cdata.r) * 1.2;
             const path = scaleSvgPath(s.t || s.d, scale);
             s.track = getPointsOnPath(path, r, s.t ? scale : 1);
             s.track.map((t) => (t.x = (s.t ? tranX : 0) + t.x));
@@ -509,7 +509,7 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
   }
   return (
     <Container className="min-h-screen h-screen" id="screens" style={{ cursor: fullScreen ? 'none' : 'pointer' }}>
-      <Watermark text="alearningapp.com" />
+      <Watermark text="ALearningApp.com" />
       <div
         id="cinfo"
         style={{

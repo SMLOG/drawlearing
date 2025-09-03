@@ -24,10 +24,31 @@ const Watermark = ({ text = '' }) => {
     pointerEvents: 'none',
     zIndex: 1000,
     whiteSpace: 'nowrap',
-    opacity: 0.6,
+    opacity: 0.7,
+    animation: show ? 'rotate 10s linear infinite' : 'none', // Apply rotation animation
   };
 
-  return <> {show&&<div style={watermarkStyle}>{`${text}`}</div>}</>;
+  return (
+    <>
+      {show && (
+        <div style={watermarkStyle}>
+          {text}
+          <style>
+            {`
+              @keyframes rotate {
+                from {
+                  transform: translate(-50%, -50%) rotate(0deg);
+                }
+                to {
+                  transform: translate(-50%, -50%) rotate(360deg);
+                }
+              }
+            `}
+          </style>
+        </div>
+      )}
+    </>
+  );
 };
 
 export default Watermark;
