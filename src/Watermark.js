@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
 const Watermark = ({ text = '' }) => {
-  const [show, setShow] = useState(true);
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      //setShow(!show);
+      setShow(!show);
     }, 60000); // Update every minute
 
     return () => clearInterval(intervalId); // Cleanup on unmount
