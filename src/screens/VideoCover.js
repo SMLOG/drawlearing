@@ -6,8 +6,8 @@ const VideoCover = () => {
             <div style={styles.overlay}>
                 <h1 style={styles.title}>
                     <div>Welcome to ALearningApp</div>
-                    <div>《少兒每日筆順學習書寫漢字系列》</div>
-                    <div><b>（繁體中文+粵語）</b></div>
+                    <div style={styles.subtitle}>《少兒每日筆順學習書寫漢字系列》</div>
+                    <div><b style={styles.boldText}>（繁體中文+粵語）</b></div>
                 </h1>
                 <p style={styles.description}>
                     <i className="fas fa-pencil-alt"></i>
@@ -26,11 +26,10 @@ const styles = {
         justifyContent: 'center',
         alignItems: 'center',
         height: '100vh',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        color: '#333', // Softer text color
+        background: 'linear-gradient(135deg, #ffcc00, #ff6699)', // Bright gradient background
+        color: '#333',
         textAlign: 'center',
-        fontFamily: '"Comic Sans MS", cursive, sans-serif', // Fun font
+        fontFamily: '"Comic Sans MS", cursive, sans-serif',
     },
     overlay: {
         position: 'absolute',
@@ -38,56 +37,60 @@ const styles = {
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(255, 255, 255, 0.9)', // Lighter overlay
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: '15px',
-        padding: '20px',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)', // Shadow for depth
+        borderRadius: '25px',
+        padding: '30px',
+        boxShadow: '0 6px 20px rgba(0, 0, 0, 0.2)',
     },
     title: {
-        fontSize: '48px', // Slightly smaller
+        fontSize: '56px',
         margin: 0,
         lineHeight: 1.3,
-        textShadow: '2px 2px 5px rgba(0, 0, 0, 0.4)', // Softer shadow
-        color: '#FF5722', // Bright title color
+        color: '#ff5722',
+    },
+    subtitle: {
+        fontSize: '40px', // Larger subtitle
+        color: '#007bff', // Different color for contrast
     },
     description: {
-        fontSize: '20px', // Smaller font size
+        fontSize: '28px',
         margin: '10px 0 20px',
-        textShadow: '1px 1px 3px rgba(0, 0, 0, 0.3)',
+        color: '#555',
+    },
+    boldText: {
+        color: '#ff5722',
     },
     playButton: {
-        backgroundColor: '#4caf50', // Softer button color
+        backgroundColor: '#4caf50',
         color: 'white',
         border: 'none',
         borderRadius: '50%',
-        width: '80px',
-        height: '80px',
+        width: '100px',
+        height: '100px',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         cursor: 'pointer',
-        fontSize: '36px',
-        boxShadow: '0 4px 15px rgba(0, 0, 0, 0.3)',
+        fontSize: '40px',
+        boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
         transition: 'transform 0.3s, background-color 0.3s',
     },
 };
 
-// Add hover effect with JavaScript
 const handleMouseEnter = (e) => {
     e.currentTarget.style.transform = 'scale(1.1)';
-    e.currentTarget.style.backgroundColor = '#388e3c'; // Darker on hover
+    e.currentTarget.style.backgroundColor = '#388e3c';
 };
 
 const handleMouseLeave = (e) => {
     e.currentTarget.style.transform = 'scale(1)';
-    e.currentTarget.style.backgroundColor = '#4caf50'; // Reset color
+    e.currentTarget.style.backgroundColor = '#4caf50';
 };
 
-// Attach event handlers to the button
 const PlayButton = () => (
     <button
         style={styles.playButton}
