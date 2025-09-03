@@ -415,6 +415,7 @@ audioElement.play();
   const [prevScreen, setPrevScreen] = useState("");
   const [isVisible, setIsVisible] = useState(false); // New state for visibility
   const [dayNum, setDayNum] = useState(0);
+  const [curTry, setCurTry] = useState(0);
 
  const startPlay = async () => {
     setScreen('');
@@ -452,18 +453,26 @@ audioElement.play();
             setPrevAnimationState('fade-out');
             setCurAnimationState('scale-in');
 
+
+            for(let i=0;i<mergedDays[j].repetitions;i++){
+              setCurTry(i+1);
             await showScreen('run', ()=>{
               return playDays(mergedDays[j]);
             }); // Show run screen
             playSound('/mixkit-player-jumping-in-a-video-game-2043.wav',0.5);
             setCurAnimationState('fade-in');
+            if(i<mergedDays[j].repetitions-1){
+                await showScreen('retry', 2000); // Show retry for 2 seconds
+                playSound('/mixkit-player-jumping-in-a-video-game-2043.wav',0.5);
+            }
 
-            await showScreen('retry', 2000); // Show retry for 2 seconds
-            playSound('/mixkit-player-jumping-in-a-video-game-2043.wav',0.5);
 
-            await showScreen('run', ()=>{
-              return playDays(mergedDays[j]);
-            }); // Show run screen
+            }
+
+
+  
+
+
            
             playSound('/mixkit-game-bonus-reached-2065.wav',0.5);
             await showScreen('end', 8000); // Show intro for 5 seconds
@@ -664,8 +673,8 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
         <Screen className={`${getAnimationClass('retry')}`} >
           <div className="screenIntro" style={{ fontSize: '100px' }}>
           {curWeek > -1 && curDay > -1 && weekData[curWeek] && weekData[curWeek].days[curDay] && (
-            <div className="p-4 bg-white bg-yellow-50 rounded-lg mb-4">
-              <p className="text-gray-700 mb-1 text-center"><strong>Again...</strong></p>
+            <div className="p-4  mb-4">
+              <p className="mb-1 text-center"><strong>Again...({curTry}/{weekData[curWeek].days[curDay].repetitions})</strong></p>
    
             </div>
           )}
@@ -677,8 +686,8 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
       {(screen === 'run'|| prevScreen === 'run')  && (
           <Screen className={`flex-col-reverse ${getAnimationClass('run')}`}>
       <div className="w-full flex justify-center mt-4 flex-1">
-              <div className="absolute top-2 left-2 p-2 font-bold rounded bg-green-200">
-                Day {dayNum}
+              <div className="absolute top-2 left-2 p-2 font-bold ">
+                <span className="rounded bg-green-200 p-1 m-1">Day {dayNum} </span> <span className="rounded bg-green-200 p-1">({curTry}/{weekData[curWeek].days[curDay].repetitions})</span>
               </div>
               <div className="min-h-[500px] min-w-[500px] mb-8  border border-gray-300 rounded-md border-black" style={{ width: '500px', height: '500px', border: "10px solid black", boxSizing: 'border-box', touchAction: 'none'  }}>
                 {word&&<svg
