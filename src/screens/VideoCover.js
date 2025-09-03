@@ -30,6 +30,7 @@ const styles = {
         backgroundPosition: 'center',
         color: '#333', // Softer text color
         textAlign: 'center',
+        fontFamily: '"Comic Sans MS", cursive, sans-serif', // Fun font
     },
     overlay: {
         position: 'absolute',
@@ -37,37 +38,39 @@ const styles = {
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(255, 255, 255, 0.8)', // Lighter overlay
+        backgroundColor: 'rgba(255, 255, 255, 0.9)', // Lighter overlay
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: '15px',
         padding: '20px',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)', // Shadow for depth
     },
     title: {
-        fontSize: '50px', // Slightly smaller
+        fontSize: '48px', // Slightly smaller
         margin: 0,
         lineHeight: 1.3,
-        textShadow: '1px 1px 5px rgba(0, 0, 0, 0.3)', // Softer shadow
+        textShadow: '2px 2px 5px rgba(0, 0, 0, 0.4)', // Softer shadow
+        color: '#FF5722', // Bright title color
     },
     description: {
-        fontSize: '24px', // Smaller font size
+        fontSize: '20px', // Smaller font size
         margin: '10px 0 20px',
-        textShadow: '1px 1px 3px rgba(0, 0, 0, 0.2)',
+        textShadow: '1px 1px 3px rgba(0, 0, 0, 0.3)',
     },
     playButton: {
         backgroundColor: '#4caf50', // Softer button color
         color: 'white',
         border: 'none',
         borderRadius: '50%',
-        width: '90px',
-        height: '90px',
+        width: '80px',
+        height: '80px',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         cursor: 'pointer',
-        fontSize: '32px',
+        fontSize: '36px',
         boxShadow: '0 4px 15px rgba(0, 0, 0, 0.3)',
         transition: 'transform 0.3s, background-color 0.3s',
     },
