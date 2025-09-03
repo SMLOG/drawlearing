@@ -652,7 +652,10 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
         <Screen className={`${getAnimationClass('intro')}`} style={{ fontSize: '50px' }}>
           <FunnyIntro title={`Day ${dayNum}`} 
           description={`${weekData[curWeek].days[curDay].description}`}
-          description2={`${weekData[curWeek].description}`}
+          weekDescription={`${weekData[curWeek].description}`}
+          characters={weekData[curWeek].days[curDay].characters}
+          activity={weekData[curWeek].days[curDay].activity}
+          repetitions={weekData[curWeek].days[curDay].repetitions}
           />
 
         </Screen>

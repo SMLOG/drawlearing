@@ -55,15 +55,16 @@ const QuoteIcon = styled.i`
     color: #ff5722; /* Icon color */
 `;
 
-const FunnyIntro = ({ title, description, description2 }) => {
+const FunnyIntro = ({ title, description, weekDescription,characters,activity,repetitions }) => {
     return (
         <Container>
             <Title>{title}</Title>
-            <Description>{description2}</Description>
+            <Description>{weekDescription}</Description>
             <Blockquote>
                 <QuoteIcon className="fas fa-quote-left" />
                 {description}
             </Blockquote>
+            <div style={{fontSize:'30px'}}>練習字詞：{characters.map((c)=><em style={{display:'inline-block',padding:'10px'}}>{c}</em>)}（重複練習{repetitions}次）</div>
         </Container>
     );
 };
