@@ -24,8 +24,8 @@ const Watermark = ({ text = '' }) => {
     pointerEvents: 'none',
     zIndex: 1000,
     whiteSpace: 'nowrap',
-    opacity: 0.7,
-    animation: show ? 'rotate 10s linear infinite' : 'none', // Apply rotation animation
+    opacity: 0.6,
+    animation: show ? 'rotateScale 10s linear infinite' : 'none', // Apply rotation and scale animation
   };
 
   return (
@@ -35,12 +35,15 @@ const Watermark = ({ text = '' }) => {
           {text}
           <style>
             {`
-              @keyframes rotate {
-                from {
-                  transform: translate(-50%, -50%) rotate(0deg);
+              @keyframes rotateScale {
+                0% {
+                  transform: translate(-50%, -50%) rotate(0deg) scale(1);
                 }
-                to {
-                  transform: translate(-50%, -50%) rotate(360deg);
+                50% {
+                  transform: translate(-50%, -50%) rotate(180deg) scale(1.2);
+                }
+                100% {
+                  transform: translate(-50%, -50%) rotate(360deg) scale(1);
                 }
               }
             `}
