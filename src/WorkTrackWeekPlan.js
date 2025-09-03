@@ -15,9 +15,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Watermark from './Watermark';
 import './word-animation.css';
-import VideoCover from "./VideoCover";
-import VideoEndScreen from "./VideoEndScreen";
-import FunnyIntro from "./FunnyIntro";
+import VideoCover from "./screens/VideoCover";
+import VideoEndScreen from "./screens/VideoEndScreen";
+import FunnyIntro from "./screens/FunnyIntro";
 
 
 const ScreenContainer = styled.div`
