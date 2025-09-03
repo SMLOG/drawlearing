@@ -31,19 +31,19 @@ const Watermark = ({ text = '' }) => {
             {`
               @keyframes rotateScale {
                 0% {
-                  transform: translate(-50%, -50%) rotate(0deg) scale(1.5);
+                  transform: translate(-50%, -50%) rotate(0deg) scale(1.0);
                 }
                 25% {
-                  transform: translate(-50%, -50%) rotate(0deg) scale(1);
+                  transform: translate(-50%, -50%) rotate(0deg) scale(1.5);
                 }
               50% {
-                  transform: translate(-50%, -50%) rotate(0deg) scale(1.5);
+                  transform: translate(-50%, -50%) rotate(0deg) scale(1);
                 }
              75% {
                   transform: translate(-50%, -50%) rotate(0deg) scale(1);
                 }
                 100% {
-                  transform: translate(-50%, -50%) rotate(0deg) scale(1.5);
+                  transform: translate(-50%, -50%) rotate(0deg) scale(1);
                 }
               }
             `}

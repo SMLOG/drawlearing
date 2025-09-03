@@ -426,7 +426,7 @@ audioElement.play();
     for (let i = 2; i < weeksplan.length; i++) {
         setCurWeek(i);
         
-        for (let j = 1; j < weeksplan[i].days.length; j++) {
+        for (let j = 4; j < weeksplan[i].days.length; j++) {
             setCurDay(j);
             setDayNum(5*i+j+1);
             await showScreen('conver', 3000,(p)=>{
