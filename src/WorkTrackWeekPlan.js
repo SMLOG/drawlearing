@@ -462,7 +462,7 @@ audioElement.play();
             playSound('/mixkit-player-jumping-in-a-video-game-2043.wav',0.5);
 
             await showScreen('run', ()=>{
-              return playDays(mergedDays.days[j]);
+              return playDays(mergedDays[j]);
             }); // Show run screen
            
             playSound('/mixkit-game-bonus-reached-2065.wav',0.5);

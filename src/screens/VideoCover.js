@@ -6,8 +6,8 @@ const VideoCover = () => {
             <div style={styles.overlay}>
                 <h1 style={styles.title}>
                     <div>Welcome to ALearningApp</div>
-                    <div>《每日筆順學習書寫漢字系列》</div>
-                    <div><b>（繁體中文粵語）</b></div>
+                    <div>《少兒每日筆順學習書寫漢字系列》</div>
+                    <div><b>（繁體中文+粵語）</b></div>
                 </h1>
                 <p style={styles.description}>
                     <i className="fas fa-pencil-alt"></i>
