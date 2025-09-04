@@ -10,9 +10,9 @@ const fadeIn = keyframes`
 // Styled components
 const Container = styled.div`
     padding: 40px;
-    background: url('path/to/pattern.png'), linear-gradient(135deg, #ffeb3b, #80deea);
+    background: url('/img/blue-sky.jpeg'), linear-gradient(135deg, #ffeb3b, #80deea);
+    background: url('/img/blue-sky.jpeg'), linear-gradient(135deg, #80deea, #7DEFFF);
     background-size: cover, cover;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
     width: 100%;
     height: 100vh;
     display: flex;
@@ -21,6 +21,8 @@ const Container = styled.div`
     justify-content: center;
     animation: ${fadeIn} 1s;
     font-size: 90px;
+    padding-bottom:20%;
+    
 `;
 
 const Title = styled.h1`

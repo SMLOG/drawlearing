@@ -165,7 +165,7 @@ const WordTrackWeekPlan = () => {
   const [loadedWord, setLoadedWord] = useState(false);
   const playWordStrokes = async (word) => {
     setPlayedIndex(-1);
-    await playSound('/mixkit-casino-bling-achievement-2067.wav',0.8);
+    await playSound('/mixkit-casino-bling-achievement-2067.wav', 0.8);
     const wordStrok = await loadDatas(word);
     playingRef.current = +new Date();
     let curTime = playingRef.current;
@@ -185,7 +185,7 @@ const WordTrackWeekPlan = () => {
           setPlayedIndex(i);
           await new Promise((resolve) => setTimeout(resolve, 1000));
         }
-        await playSound(`/data/audio/${selectedLanguage}/${encodeURIComponent(w.ch.toLowerCase())}.mp3`,10);
+        await playSound(`/data/audio/${selectedLanguage}/${encodeURIComponent(w.ch.toLowerCase())}.mp3`, 10);
         await new Promise((resolve) => setTimeout(resolve, 1000));
         if (curTime !== playingRef.current) return;
       }
@@ -357,19 +357,19 @@ const WordTrackWeekPlan = () => {
 
 
 
-  const playSound = async (url,volume=1) => {
+  const playSound = async (url, volume = 1) => {
 
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-const gainNode = audioContext.createGain();
-gainNode.gain.value = volume; // Increase volume (1 is normal, 2 is double)
+    const gainNode = audioContext.createGain();
+    gainNode.gain.value = volume; // Increase volume (1 is normal, 2 is double)
 
-const audioElement = new Audio(url);
-const source = audioContext.createMediaElementSource(audioElement);
-source.connect(gainNode);
-gainNode.connect(audioContext.destination);
+    const audioElement = new Audio(url);
+    const source = audioContext.createMediaElementSource(audioElement);
+    source.connect(gainNode);
+    gainNode.connect(audioContext.destination);
 
-// Play audio
-audioElement.play();
+    // Play audio
+    audioElement.play();
 
     /*if (audioRef.current) {
       audioRef.current.src = url;
@@ -417,13 +417,13 @@ audioElement.play();
   const [dayNum, setDayNum] = useState(0);
   const [curTry, setCurTry] = useState(0);
 
- const startPlay = async () => {
+  const startPlay = async () => {
     setScreen('');
     setIsVisible(false); // Initial fade-out
     setCurAnimationState('fade-in');
     setPrevAnimationState('fade-out');
-         //  await showScreen('end', 80000); // Show intro for 5 seconds
-    const mergedDays = weeksplan.flatMap(week => 
+    //  await showScreen('end', 80000); // Show intro for 5 seconds
+    const mergedDays = weeksplan.flatMap(week =>
       week.days.map(day => ({
         week: week.week,
         day: day.day,
@@ -432,83 +432,83 @@ audioElement.play();
         description: day.description
       }))
     );
-        
-        for (let j = 0; j < mergedDays.length; j++) {
-            setCurDay(mergedDays[j].day-1);
-            setCurWeek(mergedDays[j].week-1)
-            setDayNum(j+1);
-            await showScreen('conver', 3000,(p)=>{
-                setPrevScreen(p);
-                setScreen('');
-                playSound('/mixkit-player-jumping-in-a-video-game-2043.wav',0.5);
-            }); // Show intro for 5 seconds
 
-            await showScreen('intro', 3000,async (p)=>{
-                setPrevAnimationState('scale-out');
-                setPrevScreen(p);
-                setScreen('');
+    for (let j = 0; j < mergedDays.length; j++) {
+      setCurDay(mergedDays[j].day - 1);
+      setCurWeek(mergedDays[j].week - 1)
+      setDayNum(j + 1);
+      await showScreen('conver', 3000, (p) => {
+        setPrevScreen(p);
+        setScreen('');
+        playSound('/mixkit-player-jumping-in-a-video-game-2043.wav', 0.5);
+      }); // Show intro for 5 seconds
 
-            }); // Show intro for 5 seconds
+      await showScreen('intro', 3000, async (p) => {
+        setPrevAnimationState('scale-out');
+        setPrevScreen(p);
+        setScreen('');
 
-            setPrevAnimationState('fade-out');
-            setCurAnimationState('scale-in');
+      }); // Show intro for 5 seconds
 
-
-            for(let i=0;i<mergedDays[j].repetitions;i++){
-              setCurTry(i+1);
-            await showScreen('run', ()=>{
-              return playDays(mergedDays[j]);
-            }); // Show run screen
-            playSound('/mixkit-player-jumping-in-a-video-game-2043.wav',0.5);
-            setCurAnimationState('fade-in');
-            if(i<mergedDays[j].repetitions-1){
-                await showScreen('retry', 2000); // Show retry for 2 seconds
-                playSound('/mixkit-player-jumping-in-a-video-game-2043.wav',0.5);
-            }
+      setPrevAnimationState('fade-out');
+      setCurAnimationState('scale-in');
 
 
-            }
-
-
-  
-
-
-           
-            playSound('/mixkit-game-bonus-reached-2065.wav',0.5);
-            await showScreen('end', 8000); // Show intro for 5 seconds
-
+      for (let i = 0; i < mergedDays[j].repetitions; i++) {
+        setCurTry(i + 1);
+        await showScreen('run', () => {
+          return playDays(mergedDays[j]);
+        }); // Show run screen
+        playSound('/mixkit-player-jumping-in-a-video-game-2043.wav', 0.5);
+        setCurAnimationState('fade-in');
+        if (i < mergedDays[j].repetitions - 1) {
+          await showScreen('retry', 2000); // Show retry for 2 seconds
+          playSound('/mixkit-player-jumping-in-a-video-game-2043.wav', 0.5);
         }
-    
-};
 
-const curScreenRef = useRef(screen);
-const prevScreenRef = useRef(prevScreen);
 
-const showScreen = async (s, duration,startTra=async(p)=>{     
-  setPrevScreen(p);
+      }
+
+
+
+
+
+
+      playSound('/mixkit-game-bonus-reached-2065.wav', 0.5);
+      await showScreen('end', 8000); // Show intro for 5 seconds
+
+    }
+
+  };
+
+  const curScreenRef = useRef(screen);
+  const prevScreenRef = useRef(prevScreen);
+
+  const showScreen = async (s, duration, startTra = async (p) => {
+    setPrevScreen(p);
     setScreen('');
   }) => {
-  prevScreenRef.current = curScreenRef.current;
-  curScreenRef.current = s;
+    prevScreenRef.current = curScreenRef.current;
+    curScreenRef.current = s;
 
 
 
     setScreen(s);
 
-    if (typeof duration =='number' &&  duration > 0) {
-        await delay(duration); // Wait for specified duration
-    }else if(typeof duration =='function'){ 
-        await duration(); // Wait for the function to complete
+    if (typeof duration == 'number' && duration > 0) {
+      await delay(duration); // Wait for specified duration
+    } else if (typeof duration == 'function') {
+      await duration(); // Wait for the function to complete
     }
 
 
-    if(startTra) await startTra(s);
+    if (startTra) await startTra(s);
     await delay(1000); // Wait for specified duration
 
-    console.log('Screen shown:', screen,prevScreen);
-};
+    console.log('Screen shown:', screen, prevScreen);
+  };
 
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+  const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -564,14 +564,14 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
     if (screen === screenName) {
       return curAnimationState;
-    }else if (prevScreen === screenName) {
+    } else if (prevScreen === screenName) {
       return prevAnimationState;
     }
-    
+
   }
   return (
     <Container className="min-h-screen h-screen" id="screens" style={{ cursor: fullScreen ? 'none' : 'pointer' }}>
-      {screen=='run' && loadedWord &&<Watermark text="ALearningApp.com"  />}
+      {screen == 'run' && loadedWord && <Watermark text="ALearningApp.com" />}
       <div
         id="cinfo"
         style={{
@@ -644,53 +644,54 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
           </div>
         </div>
       </div>
-          <ScreenContainer>
-        {(screen === 'end' || prevScreen === 'end')  && (
-        <Screen className={`screen ${getAnimationClass('end')}`} >
-           <VideoEndScreen />
-        </Screen>
-      )}
+      <ScreenContainer>
+        {(screen === 'end' || prevScreen === 'end') && (
+          <Screen className={`screen ${getAnimationClass('end')}`} >
+            <VideoEndScreen />
+          </Screen>
+        )}
 
-        {(screen === 'conver'|| prevScreen === 'conver')  && (
-        <Screen className={`screen ${getAnimationClass('conver')}`} >
-           <VideoCover />
-        </Screen>
-      )}
+        {(screen === 'conver' || prevScreen === 'conver') && (
+          <Screen className={`screen ${getAnimationClass('conver')}`} >
+            <VideoCover />
+          </Screen>
+        )}
 
-      {(screen === 'intro'|| prevScreen === 'intro')  && (
-        <Screen className={`${getAnimationClass('intro')}`} style={{ fontSize: '50px' }}>
-          <FunnyIntro title={`Day ${dayNum}`} 
-          description={`${weekData[curWeek].days[curDay].description}`}
-          weekDescription={`${weekData[curWeek].description}`}
-          characters={weekData[curWeek].days[curDay].characters}
-          activity={weekData[curWeek].days[curDay].activity}
-          repetitions={weekData[curWeek].days[curDay].repetitions}
-          />
+        {(screen === 'intro' || prevScreen === 'intro') && (
+          <Screen className={`${getAnimationClass('intro')}`} style={{ fontSize: '50px' }}>
+            <FunnyIntro title={`Day ${dayNum}`}
+              description={`${weekData[curWeek].days[curDay].description}`}
+              weekDescription={`${weekData[curWeek].description}`}
+              characters={weekData[curWeek].days[curDay].characters}
+              activity={weekData[curWeek].days[curDay].activity}
+              repetitions={weekData[curWeek].days[curDay].repetitions}
+            />
 
-        </Screen>
-      )}
-      {(screen === 'retry'|| prevScreen === 'retry')  && (
-        <Screen className={`${getAnimationClass('retry')}`} >
-          <div className="screenIntro" style={{ fontSize: '100px' }}>
-          {curWeek > -1 && curDay > -1 && weekData[curWeek] && weekData[curWeek].days[curDay] && (
-            <div className="p-4  mb-4">
-              <p className="mb-1 text-center"><strong>Again...({curTry}/{weekData[curWeek].days[curDay].repetitions})</strong></p>
-   
+          </Screen>
+        )}
+        {(screen === 'retry' || prevScreen === 'retry') && (
+          <Screen className={`${getAnimationClass('retry')}`} >
+            <div className="screenIntro" style={{ fontSize: '100px' }}>
+              {curWeek > -1 && curDay > -1 && weekData[curWeek] && weekData[curWeek].days[curDay] && (
+                <div className="p-4  mb-4">
+                  <p className="mb-1 text-center"><strong>Again...({curTry}/{weekData[curWeek].days[curDay].repetitions})</strong></p>
+
+                </div>
+              )}
             </div>
-          )}
-          </div>
 
-        </Screen>
-      )}
+          </Screen>
+        )}
 
-      {(screen === 'run'|| prevScreen === 'run')  && (
-          <Screen className={`flex-col-reverse ${getAnimationClass('run')}`}>
-      <div className="w-full flex justify-center mt-4 flex-1">
+        {(screen === 'run' || prevScreen === 'run') && (
+          <Screen className={` ${getAnimationClass('run')}`}>
+            <div className="runscreen flex flex-col-reverse">
+            <div className="w-full flex justify-center mt-4 flex-1">
               <div className="absolute top-2 left-2 p-2 font-bold ">
                 <span className="rounded bg-green-200 p-1 m-1">Day {dayNum} </span> <span className="rounded bg-green-200 p-1">({curTry}/{weekData[curWeek].days[curDay].repetitions})</span>
               </div>
-              <div className="min-h-[500px] min-w-[500px] mb-8  border border-gray-300 rounded-md border-black" style={{ width: '500px', height: '500px', border: "10px solid black", boxSizing: 'border-box', touchAction: 'none'  }}>
-                {word&&<svg
+              <div className="min-h-[500px] min-w-[500px] mb-8 rounded-md border-black" style={{ width: '500px', height: '500px', boxSizing: 'border-box', touchAction: 'none' }}>
+                {word && <svg
                   viewBox={`0 0 ${word.viewBoxWidth} 100`}
                   className="max-h-full max-w-[350px] min-w-[300px]"
                   ref={svgRef}
@@ -699,7 +700,7 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
                   onMouseUp={stopDrawing}
                 >
                   <g>
-                    <rect x="0" y="0" width="100%" height="100%" stroke="black" strokeWidth="1" fill="#e5e7eb" />
+                    <rect x="0" y="0" width="100%" height="100%" stroke="black" strokeWidth="0" fill="#e5e7eb"  opacity="0.2" />
                     <line x1="2" y1="50%" x2="100%" y2="50%" strokeDasharray="5,5" stroke="#ffffff" strokeWidth="1" />
                     <line x1="50%" y1="2" x2="50%" y2="100%" strokeDasharray="5,5" stroke="#ffffff" strokeWidth="1" />
                     {word.chs.map((ch, index) => (
@@ -711,7 +712,7 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
                           y2="100%"
                           stroke="black"
                           strokeWidth="1"
-                          vectorEffect="non-scaling-stroke"
+                          vectorEffect="non-scaling-stroke" opacity="0"
                         />
                       </g>
                     ))}
@@ -785,7 +786,7 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
                 </svg>}
               </div>
             </div>
-            <LineWordList className="w-full flex-0" style={{maxHeight:'400px'}}>
+            <LineWordList className="w-full flex-0" style={{ maxHeight: '400px' }}>
               <div className="h-full">
                 <div className="flex items-center justify-center gap-4 mb-4 min-h-full">
                   {curWeek >= 0 && curDay >= 0 && (
@@ -815,8 +816,9 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
                 </div>
               </div>
             </LineWordList>
+            </div>
           </Screen>
-      )}
+        )}
       </ScreenContainer>
 
       <audio ref={audioRef} controls src={`/data/sound/3s.mp3`} className={errorMsg ? '' : 'hidden'} />

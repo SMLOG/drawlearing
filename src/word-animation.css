@@ -32,3 +32,17 @@
 .hidden {
   opacity: 0;
 }
+.runscreen{
+    background: url('http://localhost:3000/img/blue-sky2.jpeg'), linear-gradient(135deg, #80deea, #7DEFFF);
+    position: absolute;
+    inset: 0;
+     background: 
+        url(http://localhost:3000/img/blue-sky2.jpeg) no-repeat center center, 
+        linear-gradient(135deg, #80deea, #7DEFFF);
+    background-size: cover; /* Make the image cover the entire area */
+    height: 100vh; /* Full viewport height */
+    width: 100vw; /* Full viewport width */
+}
+#screens{
+      background: #7DEFFF;
+}

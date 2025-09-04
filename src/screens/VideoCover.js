@@ -38,6 +38,8 @@ const styles = {
         right: 0,
         bottom: 0,
         backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        backgroundColor: ' #7DEFFF',
+       
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
