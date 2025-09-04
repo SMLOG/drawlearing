@@ -30,6 +30,7 @@ const styles = {
         color: '#333',
         textAlign: 'center',
         fontFamily: '"Comic Sans MS", cursive, sans-serif',
+        paddingBottom: '10%',
     },
     overlay: {
         position: 'absolute',
@@ -39,17 +40,17 @@ const styles = {
         bottom: 0,
         backgroundColor: 'rgba(255, 255, 255, 0.9)',
         backgroundColor: ' #7DEFFF',
-       
+            background:    'url(http://localhost:3000/img/younggirl-writing.jpeg) no-repeat center center,linear-gradient(135deg, #80deea, #7DEFFF)',
+        backgroundSize: 'cover',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: '25px',
         padding: '30px',
         boxShadow: '0 6px 20px rgba(0, 0, 0, 0.2)',
     },
     title: {
-        fontSize: '56px',
+        fontSize: '80px',
         margin: 0,
         lineHeight: 1.3,
         color: '#ff5722',
@@ -61,7 +62,7 @@ const styles = {
     description: {
         fontSize: '28px',
         margin: '10px 0 20px',
-        color: '#555',
+        color: '#fff',
     },
     boldText: {
         color: '#ff5722',
