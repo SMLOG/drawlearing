@@ -18,7 +18,7 @@ import './word-animation.css';
 import VideoCover from "./screens/VideoCover";
 import VideoEndScreen from "./screens/VideoEndScreen";
 import FunnyIntro from "./screens/FunnyIntro";
-
+import NextAgain from "./screens/NextAgain";
 
 const ScreenContainer = styled.div`
 width: 100vw;
@@ -91,6 +91,7 @@ const LineWordList = styled.div`
   padding: 16px;
   font-size: 100px;
   text-align: left;
+  font-family:cursive, sans-serif;
 `;
 
 const Button = styled.button`
@@ -462,7 +463,7 @@ const WordTrackWeekPlan = () => {
         playSound('/mixkit-player-jumping-in-a-video-game-2043.wav', 0.5);
         setCurAnimationState('fade-in');
         if (i < mergedDays[j].repetitions - 1) {
-          await showScreen('retry', 2000); // Show retry for 2 seconds
+          await showScreen('retry', 3000); // Show retry for 2 seconds
           playSound('/mixkit-player-jumping-in-a-video-game-2043.wav', 0.5);
         }
 
@@ -673,15 +674,7 @@ const WordTrackWeekPlan = () => {
         )}
         {(screen === 'retry' || prevScreen === 'retry') &&(
           <Screen className={`${getAnimationClass('retry')}`} >
-            <div className="screenIntro" style={{ fontSize: '100px' }}>
-              {curWeek > -1 && curDay > -1 && weekData[curWeek] && weekData[curWeek].days[curDay] && (
-                <div className="p-4  mb-4">
-                  <p className="mb-1 text-center"><strong>Again...({curTry}/{weekData[curWeek].days[curDay].repetitions})</strong></p>
-
-                </div>
-              )}
-            </div>
-
+            <NextAgain  message={`Again...(${curTry}/${weekData[curWeek].days[curDay].repetitions})`}/>
           </Screen>
         )}
 
