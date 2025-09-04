@@ -494,6 +494,8 @@ const WordTrackWeekPlan = () => {
 
 
     setScreen(s);
+    await delay(100); // Small delay to ensure visibility change is registered
+    setIsVisible(true); // Fade in
 
     if (typeof duration == 'number' && duration > 0) {
       await delay(duration); // Wait for specified duration
@@ -563,9 +565,9 @@ const WordTrackWeekPlan = () => {
   const getAnimationClass = (screenName) => {
 
     if (screen === screenName) {
-      return curAnimationState;
+      return curAnimationState + (isVisible?' visible':'invisible');
     } else if (prevScreen === screenName) {
-      return prevAnimationState;
+      return prevAnimationState+ (isVisible?' visible':'invisible');
     }
 
   }
@@ -645,19 +647,19 @@ const WordTrackWeekPlan = () => {
         </div>
       </div>
       <ScreenContainer>
-        {(screen === 'end' || prevScreen === 'end') && (
+        {(screen === 'end' || prevScreen === 'end') &&(
           <Screen className={`screen ${getAnimationClass('end')}`} >
             <VideoEndScreen />
           </Screen>
         )}
 
-        {(screen === 'conver' || prevScreen === 'conver') && (
+        {(screen === 'conver' || prevScreen === 'conver')  && (
           <Screen className={`screen ${getAnimationClass('conver')}`} >
             <VideoCover />
           </Screen>
         )}
 
-        {(screen === 'intro' || prevScreen === 'intro') && (
+        {(screen === 'intro' || prevScreen === 'intro') &&(
           <Screen className={`${getAnimationClass('intro')}`} style={{ fontSize: '50px' }}>
             <FunnyIntro title={`Day ${dayNum}`}
               description={`${weekData[curWeek].days[curDay].description}`}
@@ -669,7 +671,7 @@ const WordTrackWeekPlan = () => {
 
           </Screen>
         )}
-        {(screen === 'retry' || prevScreen === 'retry') && (
+        {(screen === 'retry' || prevScreen === 'retry') &&(
           <Screen className={`${getAnimationClass('retry')}`} >
             <div className="screenIntro" style={{ fontSize: '100px' }}>
               {curWeek > -1 && curDay > -1 && weekData[curWeek] && weekData[curWeek].days[curDay] && (
@@ -683,7 +685,7 @@ const WordTrackWeekPlan = () => {
           </Screen>
         )}
 
-        {(screen === 'run' || prevScreen === 'run') && (
+        {(screen === 'run' || prevScreen === 'run') &&(
           <Screen className={` ${getAnimationClass('run')}`}>
             <div className="runscreen flex flex-col-reverse">
             <div className="w-full flex justify-center mt-4 flex-1">
