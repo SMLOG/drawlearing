@@ -446,7 +446,7 @@ const WordTrackWeekPlan = () => {
     );
 
     let started = new Date().getTime();
-    for (let j = 2; j < mergedDays.length; j++) {
+    for (let j = 2; j < mergedDays.length&&j<4; j++) {
           let info = [];
 
       info.start = new Date().getTime() - started ;
@@ -498,7 +498,6 @@ const WordTrackWeekPlan = () => {
 
 
 
-      if(j>0&&j%1==0)break;
 
     }
     console.log('All days completed!');
@@ -506,7 +505,7 @@ const WordTrackWeekPlan = () => {
       const duration = (clip.end - clip.start) / 1000; // Duration in seconds
       
       console.log(`Clip ${index + 1}: ${duration} seconds`);
-       `ffmpeg -noaccurate_seek -i input.mp4 -ss ${formatMilliseconds(clip.start)} -to ${formatMilliseconds(clip.end)} -c copy "《少兒每日筆順學習書寫漢字系列》：從易到難的漢字書寫（繁體中文+粵語）day${index + 1}".mov`;
+      return `ffmpeg -noaccurate_seek -i input.mp4 -ss ${formatMilliseconds(clip.start)} -to ${formatMilliseconds(clip.end)} -c copy "《少兒每日筆順學習書寫漢字系列》：從易到難的漢字書寫（繁體中文+粵語）day${index + 1}".mov`;
       
     }).join('\n'));
 
