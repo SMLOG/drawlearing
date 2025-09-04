@@ -446,10 +446,11 @@ const WordTrackWeekPlan = () => {
     );
 
     let started = new Date().getTime();
-    for (let j = 0; j < mergedDays.length; j++) {
+    for (let j = 2; j < mergedDays.length; j++) {
           let info = [];
 
       info.start = new Date().getTime() - started ;
+      await new Promise((resolve) => setTimeout(resolve, 600));
 
       setCurDay(mergedDays[j].day - 1);
       setCurWeek(mergedDays[j].week - 1)
@@ -490,20 +491,14 @@ const WordTrackWeekPlan = () => {
 
       }
 
-
-
-
-
-
       playSound('/mixkit-game-bonus-reached-2065.wav', 0.5);
       await showScreen('end', 9000); // Show intro for 5 seconds
          info.end = new Date().getTime() - started;
          clipsInfo.current.push(info);
 
 
-    let cmd =  `ffmpeg -i input.mp4 -ss ${formatMilliseconds(info.start)} -to ${formatMilliseconds(info.end)} -c copy "《少兒每日筆順學習書寫漢字系列》：從易到難的漢字書寫（繁體中文+粵語）day${j + 1}".mov`;
 
-      console.log(cmd);
+      if(j>0&&j%1==0)break;
 
     }
     console.log('All days completed!');
@@ -511,7 +506,7 @@ const WordTrackWeekPlan = () => {
       const duration = (clip.end - clip.start) / 1000; // Duration in seconds
       
       console.log(`Clip ${index + 1}: ${duration} seconds`);
-      return `ffmpeg -i input.mp4 -ss ${formatMilliseconds(clip.start)} -to ${formatMilliseconds(clip.start)} -c copy "《少兒每日筆順學習書寫漢字系列》：從易到難的漢字書寫（繁體中文+粵語）day${index + 1}".mov`;
+       `ffmpeg -noaccurate_seek -i input.mp4 -ss ${formatMilliseconds(clip.start)} -to ${formatMilliseconds(clip.end)} -c copy "《少兒每日筆順學習書寫漢字系列》：從易到難的漢字書寫（繁體中文+粵語）day${index + 1}".mov`;
       
     }).join('\n'));
 

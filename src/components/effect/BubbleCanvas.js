@@ -28,6 +28,7 @@ const BubbleCanvas = () => {
     };
 
     const animate = () => {
+        if(canvasRef.current === null) return;
         const ctx = canvasRef.current.getContext('2d');
         drawBubbles(ctx);
         requestAnimationFrame(animate);
