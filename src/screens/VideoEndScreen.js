@@ -1,11 +1,14 @@
 import React from 'react';
+import BubbleCanvas from '../components/effect/BubbleCanvas';
 
 const VideoEndScreen = () => {
     return (
         <div style={styles.container}>
+            <div className='absolute insert-0' style={{zIndex:-1}}><BubbleCanvas/></div>
             <h1 style={styles.title}>🎉 Thank You for Watching! 🎉</h1>
             <p style={styles.description}>We hope you had a blast! 🌟</p>
             <SubscribeButton />
+            
         </div>
     );
 };
@@ -14,7 +17,6 @@ const styles = {
     container: {
         padding: '40px',
         borderRadius: '15px',
-        backgroundColor: '#ffef96', // Light yellow background
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',

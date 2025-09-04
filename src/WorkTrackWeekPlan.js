@@ -420,7 +420,7 @@ const WordTrackWeekPlan = () => {
   const [funnyImageUrl, setFunnyImageUrl] = useState('/img/blue-sky.jpeg');
 
   const randomFunnyImage = () => {  
-    const images = ['blue-sky.jpeg', 'ocean-kid.jpeg','play2.jpeg','play3.jpeg'];
+    const images = ['blue-sky.jpeg', 'ocean-kids.jpeg','play2.jpeg','play3.jpeg','play4.jpeg','play5.jpeg','play6.jpeg'];
     const randomIndex = Math.floor(Math.random() * images.length);
     setFunnyImageUrl('/img/'+images[randomIndex]);
   };
@@ -428,6 +428,7 @@ const WordTrackWeekPlan = () => {
     randomFunnyImage();
   }, []);
 
+  const clipsInfo = useRef([]);
   const startPlay = async () => {
     setScreen('');
     setIsVisible(false); // Initial fade-out
@@ -444,11 +445,16 @@ const WordTrackWeekPlan = () => {
       }))
     );
 
+    let started = new Date().getTime();
     for (let j = 0; j < mergedDays.length; j++) {
+          let info = [];
+
+      info.start = new Date().getTime() - started ;
+
       setCurDay(mergedDays[j].day - 1);
       setCurWeek(mergedDays[j].week - 1)
       setDayNum(j + 1);
-      await showScreen('conver', 3000, (p) => {
+      await showScreen('conver', 4000, (p) => {
         setPrevScreen(p);
         setScreen('');
         playSound('/mixkit-player-jumping-in-a-video-game-2043.wav', 0.5);
@@ -490,9 +496,24 @@ const WordTrackWeekPlan = () => {
 
 
       playSound('/mixkit-game-bonus-reached-2065.wav', 0.5);
-      await showScreen('end', 8000); // Show intro for 5 seconds
+      await showScreen('end', 9000); // Show intro for 5 seconds
+         info.end = new Date().getTime() - started;
+         clipsInfo.current.push(info);
+
+
+    let cmd =  `ffmpeg -i input.mp4 -ss ${formatMilliseconds(info.start)} -to ${formatMilliseconds(info.end)} -c copy "《少兒每日筆順學習書寫漢字系列》：從易到難的漢字書寫（繁體中文+粵語）day${j + 1}".mov`;
+
+      console.log(cmd);
 
     }
+    console.log('All days completed!');
+    console.log(clipsInfo.current.map((clip, index) => {
+      const duration = (clip.end - clip.start) / 1000; // Duration in seconds
+      
+      console.log(`Clip ${index + 1}: ${duration} seconds`);
+      return `ffmpeg -i input.mp4 -ss ${formatMilliseconds(clip.start)} -to ${formatMilliseconds(clip.start)} -c copy "《少兒每日筆順學習書寫漢字系列》：從易到難的漢字書寫（繁體中文+粵語）day${index + 1}".mov`;
+      
+    }).join('\n'));
 
   };
 
@@ -529,7 +550,14 @@ const WordTrackWeekPlan = () => {
   };
 
   const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
+function formatMilliseconds(ms) {
+    const totalSeconds = Math.floor(ms / 1000);
+    const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+    const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+    const seconds = String(totalSeconds % 60).padStart(2, '0');
+    
+    return `${hours}:${minutes}:${seconds}`;
+}
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.code === 'Space') {
@@ -712,7 +740,7 @@ const WordTrackWeekPlan = () => {
                   onMouseUp={stopDrawing}
                 >
                   <g>
-                    <rect x="0" y="0" width="100%" height="100%" stroke="black" strokeWidth="0" fill="#e5e7eb"  opacity="0.5" />
+                    <rect x="0" y="0" width="100%" height="100%" stroke="black" strokeWidth="0" fill="#e5e7eb"  opacity="0.6" />
                     <line x1="2" y1="50%" x2="100%" y2="50%" strokeDasharray="5,5" stroke="#ffffff" strokeWidth="1" />
                     <line x1="50%" y1="2" x2="50%" y2="100%" strokeDasharray="5,5" stroke="#ffffff" strokeWidth="1" />
                     {word.chs.map((ch, index) => (
@@ -814,7 +842,7 @@ const WordTrackWeekPlan = () => {
                                 key={i}
                                 className={`flex flex-col items-center mr-2 word-animation ${curChar === idx && curChari === i ? "active" : curChar > idx || (idx <= curChar && i <= curChari) ? "actived" : "text-black"}`}
                               >
-                                {c}
+                                <span style={{background:curChar === idx && curChari === i?'rgba(255,255,255,0.9)':'rgba(255,255,255,0.5)',borderRadius:'10px'}}>{c}</span>
                                 {curChar === idx && curChari === i && <i className="fa-solid fa-hand-pointer mt-1"></i>}
                               </span>
                             ))}
