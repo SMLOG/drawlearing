@@ -417,6 +417,16 @@ const WordTrackWeekPlan = () => {
   const [isVisible, setIsVisible] = useState(false); // New state for visibility
   const [dayNum, setDayNum] = useState(0);
   const [curTry, setCurTry] = useState(0);
+  const [funnyImageUrl, setFunnyImageUrl] = useState('/img/blue-sky.jpeg');
+
+  const randomFunnyImage = () => {  
+    const images = ['blue-sky.jpeg', 'ocean-kid.jpeg','play2.jpeg','play3.jpeg'];
+    const randomIndex = Math.floor(Math.random() * images.length);
+    setFunnyImageUrl('/img/'+images[randomIndex]);
+  };
+  useEffect(() => { 
+    randomFunnyImage();
+  }, []);
 
   const startPlay = async () => {
     setScreen('');
@@ -457,11 +467,15 @@ const WordTrackWeekPlan = () => {
 
       for (let i = 0; i < mergedDays[j].repetitions; i++) {
         setCurTry(i + 1);
+        randomFunnyImage();
+
         await showScreen('run', () => {
           return playDays(mergedDays[j]);
         }); // Show run screen
         playSound('/mixkit-player-jumping-in-a-video-game-2043.wav', 0.5);
         setCurAnimationState('fade-in');
+
+
         if (i < mergedDays[j].repetitions - 1) {
           await showScreen('retry', 3000); // Show retry for 2 seconds
           playSound('/mixkit-player-jumping-in-a-video-game-2043.wav', 0.5);
@@ -489,9 +503,12 @@ const WordTrackWeekPlan = () => {
     setPrevScreen(p);
     setScreen('');
   }) => {
+
+
     prevScreenRef.current = curScreenRef.current;
     curScreenRef.current = s;
 
+    setIsVisible(false); // Initial fade-out
 
 
     setScreen(s);
@@ -680,7 +697,7 @@ const WordTrackWeekPlan = () => {
 
         {(screen === 'run' || prevScreen === 'run') &&(
           <Screen className={` ${getAnimationClass('run')}`}>
-            <div className="runscreen flex flex-col-reverse">
+            <div className="runscreen flex flex-col-reverse" style={{backgroundImage:`url('${funnyImageUrl}')`}}>
             <div className="w-full flex justify-center mt-4 flex-1">
               <div className="absolute top-2 left-2 p-2 font-bold ">
                 <span className="rounded bg-green-200 p-1 m-1">Day {dayNum} </span> <span className="rounded bg-green-200 p-1">({curTry}/{weekData[curWeek].days[curDay].repetitions})</span>
@@ -695,7 +712,7 @@ const WordTrackWeekPlan = () => {
                   onMouseUp={stopDrawing}
                 >
                   <g>
-                    <rect x="0" y="0" width="100%" height="100%" stroke="black" strokeWidth="0" fill="#e5e7eb"  opacity="0.2" />
+                    <rect x="0" y="0" width="100%" height="100%" stroke="black" strokeWidth="0" fill="#e5e7eb"  opacity="0.5" />
                     <line x1="2" y1="50%" x2="100%" y2="50%" strokeDasharray="5,5" stroke="#ffffff" strokeWidth="1" />
                     <line x1="50%" y1="2" x2="50%" y2="100%" strokeDasharray="5,5" stroke="#ffffff" strokeWidth="1" />
                     {word.chs.map((ch, index) => (
