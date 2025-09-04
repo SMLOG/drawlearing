@@ -1,0 +1,100 @@
+import React from 'react';
+
+const VideoCover = ({message}) => {
+    return (
+        <div style={styles.container}>
+            <div style={styles.overlay}>
+                <h1 style={styles.title}>
+                    <div>{message}</div>
+                </h1>
+    
+            </div>
+        </div>
+    );
+};
+
+const styles = {
+    container: {
+        margin: 0,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        background: 'linear-gradient(135deg, #ffcc00, #ff6699)', // Bright gradient background
+        color: '#333',
+        textAlign: 'center',
+        fontFamily: '"Comic Sans MS", cursive, sans-serif',
+    },
+    overlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        backgroundColor: ' #7DEFFF',
+            background:    'url(http://localhost:3000/img/next-round.jpeg) no-repeat center center,linear-gradient(135deg, #80deea, #7DEFFF)',
+        backgroundSize: 'cover',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingBottom: '30%',
+        boxShadow: '0 6px 20px rgba(0, 0, 0, 0.2)',
+    },
+    title: {
+        fontSize: '80px',
+        margin: 0,
+        lineHeight: 1.3,
+        color: '#ff5722',
+    },
+    subtitle: {
+        fontSize: '40px', // Larger subtitle
+        color: '#007bff', // Different color for contrast
+    },
+    description: {
+        fontSize: '28px',
+        margin: '10px 0 20px',
+        color: '#fff',
+    },
+    boldText: {
+        color: '#ff5722',
+    },
+    playButton: {
+        backgroundColor: '#4caf50',
+        color: 'white',
+        border: 'none',
+        borderRadius: '50%',
+        width: '100px',
+        height: '100px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        cursor: 'pointer',
+        fontSize: '40px',
+        boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
+        transition: 'transform 0.3s, background-color 0.3s',
+    },
+};
+
+const handleMouseEnter = (e) => {
+    e.currentTarget.style.transform = 'scale(1.1)';
+    e.currentTarget.style.backgroundColor = '#388e3c';
+};
+
+const handleMouseLeave = (e) => {
+    e.currentTarget.style.transform = 'scale(1)';
+    e.currentTarget.style.backgroundColor = '#4caf50';
+};
+
+const PlayButton = () => (
+    <button
+        style={styles.playButton}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+    >
+        ▶
+    </button>
+);
+
+export default VideoCover;
