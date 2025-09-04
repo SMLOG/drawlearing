@@ -479,13 +479,14 @@ const WordTrackWeekPlan = () => {
         await showScreen('run', () => {
           return playDays(mergedDays[j]);
         }); // Show run screen
+
         playSound('/mixkit-player-jumping-in-a-video-game-2043.wav', 0.5);
         setCurAnimationState('fade-in');
 
 
         if (i < mergedDays[j].repetitions - 1) {
           await showScreen('retry', 3000); // Show retry for 2 seconds
-          playSound('/mixkit-player-jumping-in-a-video-game-2043.wav', 0.5);
+         // playSound('/mixkit-player-jumping-in-a-video-game-2043.wav', 0.5);
         }
 
 
@@ -496,6 +497,8 @@ const WordTrackWeekPlan = () => {
          info.end = new Date().getTime() - started;
          clipsInfo.current.push(info);
 
+      await delay(2000);
+
 
 
 
@@ -505,7 +508,7 @@ const WordTrackWeekPlan = () => {
       const duration = (clip.end - clip.start) / 1000; // Duration in seconds
       
       console.log(`Clip ${index + 1}: ${duration} seconds`);
-      return `ffmpeg -noaccurate_seek -i input.mp4 -ss ${formatMilliseconds(clip.start)} -to ${formatMilliseconds(clip.end)} -c copy "《少兒每日筆順學習書寫漢字系列》：從易到難的漢字書寫（繁體中文+粵語）day${index + 1}".mov`;
+      return `ffmpeg -noaccurate_seek -ss ${formatMilliseconds(clip.start)} -to ${formatMilliseconds(clip.end)} -i input.mov -c copy "《少兒每日筆順學習書寫漢字系列》：從易到難的漢字書寫（繁體中文+粵語）day${index + 1}".mov`;
       
     }).join('\n'));
 
