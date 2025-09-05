@@ -46,3 +46,16 @@ button {
   border: none;
 }
 *{user-select: none;-webkit-user-select: none;touch-action: manipulation;}
+
+
+       @keyframes backgroundAnimation {
+            0% {
+                transform: scale(1) translate(0, 0);
+            }
+            50% {
+                transform: scale(1.1) translate(-10px, -10px);
+            }
+            100% {
+                transform: scale(1) translate(10px, 10px);
+            }
+          } 

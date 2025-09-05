@@ -50,7 +50,7 @@ const styles = {
     },
     title: {
         fontSize: '80px',
-        margin: 0,
+        marginTop: '200px',
         lineHeight: 1.3,
         color: '#ff5722',
                     textShadow: `

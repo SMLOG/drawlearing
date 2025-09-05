@@ -1,173 +1,173 @@
 export const weeksplan = [
   {
     "week": 1,
-    "theme": "我的第一个汉字",
-    "description": "从最简单的笔画开始，建立书写信心",
-    "purpose": "通过象形字和基础数字，激发学习兴趣",
+    "theme": "我的第一個漢字",
+    "description": "從最簡單的筆畫開始，建立書寫信心",
+    "purpose": "通過象形字和基礎數字，激發學習興趣",
     "days": [
       {
         "day": 1,
         "characters": ["一", "二", "三", "十", "口", "日", "人"],
         "repetitions": 4,
-        "description": "最简单的数字和象形字，认识汉字的基本构成。",
-        "activity": "用粘土塑造字形，触摸感受笔画"
+        "description": "最簡單的數字和象形字，認識漢字的基本構成。",
+        "activity": "用粘土塑造字形，觸摸感受筆畫"
       },
       {
         "day": 2,
         "characters": ["山", "水", "火", "木", "土", "田", "雨"],
         "repetitions": 4,
         "description": "自然元素象形字，理解造字原理",
-        "activity": "看图猜字游戏，连接字与实物图片"
+        "activity": "看圖猜字遊戲，連接字與實物圖片"
       },
       {
         "day": 3,
         "characters": ["大", "小", "上", "下", "中", "天", "地"],
         "repetitions": 4,
-        "description": "对比概念字，学习反义词",
-        "activity": "大小配对游戏，空间位置实践"
+        "description": "對比概念字，學習反義詞",
+        "activity": "大小配對遊戲，空間位置實踐"
       },
       {
         "day": 4,
         "characters": ["手", "足", "耳", "目", "心", "口", "牙"],
         "repetitions": 4,
-        "description": "身体部位字，认识自己",
-        "activity": "指认身体部位，画身体图标注"
+        "description": "身體部位字，認識自己",
+        "activity": "指認身體部位，畫身體圖標註"
       },
       {
         "day": 5,
-        "characters": ["爸", "妈", "哥", "姐", "弟", "妹", "家"],
+        "characters": ["爸", "媽", "哥", "姐", "弟", "妹", "家"],
         "repetitions": 4,
-        "description": "家庭称谓，情感连接",
-        "activity": "制作家庭树，介绍家人"
+        "description": "家庭稱謂，情感連接",
+        "activity": "製作家庭樹，介紹家人"
       }
     ]
   },
   {
     "week": 2,
     "theme": "奇妙的大自然",
-    "description": "探索自然世界的汉字",
-    "purpose": "通过自然主题字词，扩展词汇量",
+    "description": "探索自然世界的漢字",
+    "purpose": "通過自然主題字詞，擴展詞彙量",
     "days": [
       {
         "day": 1,
-        "characters": ["花", "草", "树", "叶", "果", "林", "森"],
+        "characters": ["花", "草", "樹", "葉", "果", "林", "森"],
         "repetitions": 4,
-        "description": "植物相关字，了解自然",
-        "activity": "户外收集树叶，对应汉字"
+        "description": "植物相關字，了解自然",
+        "activity": "戶外收集樹葉，對應漢字"
       },
       {
         "day": 2,
-        "characters": ["鱼", "鸟", "虫", "狗", "猫", "兔", "羊"],
+        "characters": ["魚", "鳥", "蟲", "狗", "貓", "兔", "羊"],
         "repetitions": 4,
-        "description": "动物朋友，培养爱心",
-        "activity": "动物叫声模仿，汉字配对"
+        "description": "動物朋友，培養愛心",
+        "activity": "動物叫聲模仿，漢字配對"
       },
       {
         "day": 3,
-        "characters": ["春", "夏", "秋", "冬", "风", "云", "雪"],
+        "characters": ["春", "夏", "秋", "冬", "風", "雲", "雪"],
         "repetitions": 4,
-        "description": "四季天气，观察变化",
-        "activity": "制作季节转盘，描述天气"
+        "description": "四季天氣，觀察變化",
+        "activity": "製作季節轉盤，描述天氣"
       },
       {
         "day": 4,
-        "characters": ["红", "黄", "蓝", "绿", "白", "黑", "彩"],
+        "characters": ["紅", "黃", "藍", "綠", "白", "黑", "彩"],
         "repetitions": 4,
-        "description": "颜色世界，视觉刺激",
-        "activity": "颜色分类游戏，调色实践"
+        "description": "顏色世界，視覺刺激",
+        "activity": "顏色分類遊戲，調色實踐"
       },
       {
         "day": 5,
-        "characters": ["太", "阳", "月", "亮", "星", "光", "明"],
+        "characters": ["太", "陽", "月", "亮", "星", "光", "明"],
         "repetitions": 4,
-        "description": "天文现象，激发好奇",
-        "activity": "夜观星象，记录观察"
+        "description": "天文現象，激發好奇",
+        "activity": "夜觀星象，記錄觀察"
       }
     ]
   },
   {
     "week": 3,
-    "theme": "快乐的每一天",
-    "description": "日常生活常用汉字",
-    "purpose": "学习表达日常活动和情感",
+    "theme": "快樂的每一天",
+    "description": "日常生活常用漢字",
+    "purpose": "學習表達日常活動和情感",
     "days": [
       {
         "day": 1,
-        "characters": ["吃", "喝", "玩", "睡", "笑", "哭", "说"],
+        "characters": ["吃", "喝", "玩", "睡", "笑", "哭", "說"],
         "repetitions": 4,
-        "description": "基本动作，表达需求",
-        "activity": "角色扮演，动作模仿"
+        "description": "基本動作，表達需求",
+        "activity": "角色扮演，動作模仿"
       },
       {
         "day": 2,
-        "characters": ["衣", "服", "鞋", "帽", "书", "包", "笔"],
+        "characters": ["衣", "服", "鞋", "帽", "書", "包", "筆"],
         "repetitions": 4,
-        "description": "学习用品，自理能力",
-        "activity": "整理书包，物品归类"
+        "description": "學習用品，自理能力",
+        "activity": "整理書包，物品歸類"
       },
       {
         "day": 3,
-        "characters": ["车", "船", "飞", "机", "房", "屋", "门"],
+        "characters": ["車", "船", "飛", "機", "房", "屋", "門"],
         "repetitions": 4,
-        "description": "交通工具，生活环境",
-        "activity": "搭建积木，标注名称"
+        "description": "交通工具，生活環境",
+        "activity": "搭建積木，標註名稱"
       },
       {
         "day": 4,
-        "characters": ["学", "校", "老", "师", "朋", "友", "好"],
+        "characters": ["學", "校", "老", "師", "朋", "友", "好"],
         "repetitions": 4,
-        "description": "学校生活，社交技能",
-        "activity": "校园寻宝，认识环境"
+        "description": "學校生活，社交技能",
+        "activity": "校園尋寶，認識環境"
       },
       {
         "day": 5,
-        "characters": ["快", "乐", "爱", "喜", "欢", "高", "兴"],
+        "characters": ["快", "樂", "愛", "喜", "歡", "高", "興"],
         "repetitions": 4,
-        "description": "积极情感，情绪表达",
+        "description": "積極情感，情緒表達",
         "activity": "情感卡片，表情模仿"
       }
     ]
   },
   {
     "week": 4,
-    "theme": "成长的小达人",
-    "description": "进阶汉字和简单词组",
-    "purpose": "开始组词造句，提升表达能力",
+    "theme": "成長的小達人",
+    "description": "進階漢字和簡單詞組",
+    "purpose": "開始組詞造句，提升表達能力",
     "days": [
       {
         "day": 1,
-        "characters": ["早", "晚", "今", "明", "年", "时", "间"],
+        "characters": ["早", "晚", "今", "明", "年", "時", "間"],
         "repetitions": 4,
-        "description": "时间概念，生活规律",
-        "activity": "制作日程表，时间管理"
+        "description": "時間概念，生活規律",
+        "activity": "製作日程表，時間管理"
       },
       {
         "day": 2,
-        "characters": ["头", "脸", "鼻", "嘴", "眼", "耳", "发"],
+        "characters": ["頭", "臉", "鼻", "嘴", "眼", "耳", "髮"],
         "repetitions": 4,
-        "description": "详细身体部位，细致观察",
-        "activity": "画自画像，标注部位"
+        "description": "詳細身體部位，細致觀察",
+        "activity": "畫自畫像，標註部位"
       },
       {
         "day": 3,
-        "characters": ["饭", "菜", "水", "果", "米", "面", "肉"],
+        "characters": ["飯", "菜", "水", "果", "米", "麵", "肉"],
         "repetitions": 4,
-        "description": "食物名称，健康饮食",
-        "activity": "模拟超市，食物分类"
+        "description": "食物名稱，健康飲食",
+        "activity": "模擬超市，食物分類"
       },
       {
         "day": 4,
-        "characters": ["跑", "跳", "走", "站", "坐", "看", "听"],
+        "characters": ["跑", "跳", "走", "站", "坐", "看", "聽"],
         "repetitions": 4,
-        "description": "动作词汇，运动发展",
-        "activity": "运动游戏，指令执行"
+        "description": "動作詞彙，運動發展",
+        "activity": "運動遊戲，指令執行"
       },
       {
         "day": 5,
-        "characters": ["美", "丽", "真", "好", "棒", "乖", "聪"],
+        "characters": ["美", "麗", "真", "好", "棒", "乖", "聰"],
         "repetitions": 4,
-        "description": "赞美词汇，建立自信",
-        "activity": "互相赞美，正能量传递"
+        "description": "讚美詞彙，建立自信",
+        "activity": "互相讚美，正能量傳遞"
       }
     ]
   }

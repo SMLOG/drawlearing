@@ -456,7 +456,7 @@ const WordTrackWeekPlan = () => {
     );
 
     let started = new Date().getTime();
-    for (let j = 2; j < mergedDays.length&&j<4; j++) {
+    for (let j = 4; j < mergedDays.length&&j<5; j++) {
           let info = [];
 
       info.start = new Date().getTime() - started ;
@@ -518,7 +518,7 @@ const WordTrackWeekPlan = () => {
       const duration = (clip.end - clip.start) / 1000; // Duration in seconds
       
       console.log(`Clip ${index + 1}: ${duration} seconds`);
-      return `ffmpeg -noaccurate_seek -ss ${formatMilliseconds(clip.start)} -to ${formatMilliseconds(clip.end)} -i input.mov -c copy "《少兒每日筆順學習書寫漢字系列》：從易到難的漢字書寫（繁體中文+粵語）day${index + 1}".mov`;
+      return `ffmpeg -noaccurate_seek -ss ${formatMilliseconds(clip.start)} -to ${formatMilliseconds(clip.end)} -i input.mov -c copy "少兒每日筆順練字：快速幫助兒童掌握書寫漢字技巧 For Kids（繁體中文+粵語）day${index + 1}".mov`;
       
     }).join('\n'));
 
@@ -729,7 +729,7 @@ function formatMilliseconds(ms) {
             <NextAgain  message={`Again...(${curTry}/${weekData[curWeek].days[curDay].repetitions})`}/>
           </Screen>
         )}
-            <VirtualCharacter/>
+           {false&& <VirtualCharacter/>}
 
         {(screen === 'run' || prevScreen === 'run') &&(
           <Screen className={` ${getAnimationClass('run')}`}>
