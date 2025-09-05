@@ -71,7 +71,7 @@ const VirtualCharacter = () => {
         setTimeout(() => {
             leftEyeRef.current.classList.remove('blink');
             rightEyeRef.current.classList.remove('blink');
-        }, 200);
+        }, 2000);
     };
 
     const smile = () => {
@@ -135,7 +135,14 @@ const VirtualCharacter = () => {
                     </g>
                 </svg>
             </div>
-
+            <div className="controls">
+                <input type="text" id="speechInput" placeholder="输入要说的话..." />
+                <button onClick={() => speak(document.getElementById('speechInput').value || "你好，我是虚拟人物！")}>说话</button>
+                <button onClick={() => { /* Perform action */ }}>动作演示</button>
+                <button onClick={() => { /* Move eyes */ }}>眼神移动</button>
+                <button onClick={smile}>微笑</button>
+                <button onClick={manualBlink}>眨眼</button>
+            </div>
         </div>
     );
 };

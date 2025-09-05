@@ -29,6 +29,7 @@ const styles = {
         color: '#333',
         textAlign: 'center',
         fontFamily: '"Comic Sans MS", cursive, sans-serif',
+
     },
     overlay: {
         position: 'absolute',
@@ -52,6 +53,15 @@ const styles = {
         margin: 0,
         lineHeight: 1.3,
         color: '#ff5722',
+                    textShadow: `
+                -4px -4px 2px white,  
+                 4px -4px 2px white,
+                -4px  4px 2px white,
+                 4px  4px 2px white,
+                -4px 0 2px white,  
+                 4px 0 2px white,
+                0 -4px 2px white,
+                0  4px 2px white `/* 更明显且平滑的白色描边 */
     },
     subtitle: {
         fontSize: '40px', // Larger subtitle

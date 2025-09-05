@@ -4,7 +4,7 @@
 
 .word-animation.active {
   transform: scale(1.2);
-  color: #34d399; /* Change to your desired active color */
+  color: #ff5722; /* Change to your desired active color */
 }
 .word-animation.actived {
   color: #c90; /* Change to your desired completed color */

@@ -21,7 +21,7 @@ body {
 }
 
 .blink {
-    animation: blink 5s infinite;
+    animation: blink 1s infinite;
 }
 
 .subtle-move {
@@ -112,7 +112,7 @@ h1 {
 
 @keyframes subtle-move {
     0%, 100% { transform: translate(0, 0); }
-    50% { transform: translate(1px, -1px); }
+    50% { transform: translate(3px, -3px); }
 }
 
 /* Add remaining keyframes here */

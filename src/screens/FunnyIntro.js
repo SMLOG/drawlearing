@@ -23,6 +23,7 @@ const Container = styled.div`
     font-size: 90px;
     padding-bottom:20%;
     
+    
 `;
 
 const Title = styled.h1`
@@ -31,6 +32,15 @@ const Title = styled.h1`
     color: #f44336;
     text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
     font-family: 'Comic Sans MS', cursive, sans-serif;
+                text-shadow: 
+                -4px -4px 2px white,  
+                 4px -4px 2px white,
+                -4px  4px 2px white,
+                 4px  4px 2px white,
+                -4px 0 2px white,  
+                 4px 0 2px white,
+                0 -4px 2px white,
+                0  4px 2px white; /* 更明显且平滑的白色描边 */
     animation: bounce 1s infinite;
 
     @keyframes bounce {
@@ -47,6 +57,15 @@ const Description = styled.p`
     line-height: 1.6;
     color: #444;
     font-family: 'Comic Sans MS', cursive, sans-serif;
+                    text-shadow: 
+                -4px -4px 2px white,  
+                 4px -4px 2px white,
+                -4px  4px 2px white,
+                 4px  4px 2px white,
+                -4px 0 2px white,  
+                 4px 0 2px white,
+                0 -4px 2px white,
+                0  4px 2px white; /* 更明显且平滑的白色描边 */
 `;
 
 const Blockquote = styled.blockquote`
@@ -59,6 +78,15 @@ const Blockquote = styled.blockquote`
     border-radius: 10px;
     position: relative;
     border-left: 5px solid #f44336;
+                text-shadow: 
+                -4px -4px 2px white,  
+                 4px -4px 2px white,
+                -4px  4px 2px white,
+                 4px  4px 2px white,
+                -4px 0 2px white,  
+                 4px 0 2px white,
+                0 -4px 2px white,
+                0  4px 2px white; /* 更明显且平滑的白色描边 */
 `;
 
 const QuoteIcon = styled.i`

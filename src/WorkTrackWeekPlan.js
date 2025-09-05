@@ -93,6 +93,15 @@ const LineWordList = styled.div`
   font-size: 100px;
   text-align: left;
   font-family:cursive, sans-serif;
+              text-shadow: 
+                -4px -4px 2px white,  
+                 4px -4px 2px white,
+                -4px  4px 2px white,
+                 4px  4px 2px white,
+                -4px 0 2px white,  
+                 4px 0 2px white,
+                0 -4px 2px white,
+                0  4px 2px white; /* 更明显且平滑的白色描边 */
 `;
 
 const Button = styled.button`
@@ -188,7 +197,7 @@ const WordTrackWeekPlan = () => {
           await new Promise((resolve) => setTimeout(resolve, 1000));
         }
         await playSound(`/data/audio/${selectedLanguage}/${encodeURIComponent(w.ch.toLowerCase())}.mp3`, 10);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
         if (curTime !== playingRef.current) return;
       }
     }
