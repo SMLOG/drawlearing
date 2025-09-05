@@ -19,6 +19,7 @@ import VideoCover from "./screens/VideoCover";
 import VideoEndScreen from "./screens/VideoEndScreen";
 import FunnyIntro from "./screens/FunnyIntro";
 import NextAgain from "./screens/NextAgain";
+import VirtualCharacter from "./VirtualCharacter";
 
 const ScreenContainer = styled.div`
 width: 100vw;
@@ -719,6 +720,7 @@ function formatMilliseconds(ms) {
             <NextAgain  message={`Again...(${curTry}/${weekData[curWeek].days[curDay].repetitions})`}/>
           </Screen>
         )}
+            <VirtualCharacter/>
 
         {(screen === 'run' || prevScreen === 'run') &&(
           <Screen className={` ${getAnimationClass('run')}`}>
